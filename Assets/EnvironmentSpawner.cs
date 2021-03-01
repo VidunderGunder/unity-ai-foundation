@@ -15,11 +15,12 @@ public class EnvironmentSpawner : MonoBehaviour {
 
   private void Awake() {
     if (settings == null) settings = new EnvironmentSettings();
-    if (environment == null) environment = GetEnvironment();
+    Spawn();
   }
 
-  private void Start() {
-    environment.transform.parent = transform; // Doesn't work :(
+  private void Spawn() {
+    if (environment == null) environment = GetEnvironment();
+    environment.transform.parent = transform;
   }
 
   public GameObject GetEnvironment() {
@@ -37,7 +38,8 @@ public class EnvironmentSpawner : MonoBehaviour {
 
   public GameObject GetSimpleEnvironment() {
     GameObject simpleEnvironment = GameObject.CreatePrimitive(PrimitiveType.Plane);
-    simpleEnvironment.transform.localScale = new Vector3(settings.maxDimension, 1f, settings.maxDimension);
+    simpleEnvironment.transform.localScale = new Vector3(EnvironmentSettings.maxDimension, 1f, EnvironmentSettings.maxDimension);
+    simpleEnvironment.name = "Simple Environment";
     return simpleEnvironment;
   }
 
@@ -47,7 +49,27 @@ public class EnvironmentSpawner : MonoBehaviour {
   }
 
   public GameObject GetPrefabEnvironment() {
-    // TODO
+    if (EnvironmentSettings.prefabEnvironments.Count > 0) {
+      GameObject prefabEnvironment =
+        EnvironmentSettings.prefabEnvironments[
+          Random.Range(
+            0,
+            EnvironmentSettings.prefabEnvironments.Count
+          )
+        ];
+
+      prefabEnvironment.transform.localScale =
+        new Vector3(
+          EnvironmentSettings.maxDimension,
+          1f,
+          EnvironmentSettings.maxDimension
+        );
+
+      prefabEnvironment.name = "Simple Environment";
+
+      return prefabEnvironment;
+    }
+    Debug.Log("No prefabs available. Spawning simple environment.");
     return GetSimpleEnvironment();
   }
 }
