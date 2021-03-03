@@ -51,7 +51,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.inputsystem": {
-      "version": "1.0.2",
+      "version": "1.1.0-preview.3",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
@@ -77,6 +77,14 @@
         "com.unity.modules.unityanalytics": "1.0.0"
       },
       "url": "https://packages.unity.com"
+    },
+    "com.unity.ml-agents.extensions": {
+      "version": "file:C:/Code/Projects/ml-agents/com.unity.ml-agents.extensions",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {
+        "com.unity.ml-agents": "1.8.0-preview"
+      }
     },
     "com.unity.sysroot": {
       "version": "0.1.19-preview",
