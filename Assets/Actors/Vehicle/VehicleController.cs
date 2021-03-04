@@ -22,7 +22,7 @@ public class VehicleController : MonoBehaviour {
   void OnEnable() {
     // https://docs.unity3d.com/ScriptReference/WheelCollider.ConfigureVehicleSubsteps.html
     WheelCollider WheelColliders = GetComponentInChildren<WheelCollider>();
-    WheelColliders.ConfigureVehicleSubsteps(2f, 5, 10); //(1000,20,20) = substeps fixed in 20
+    WheelColliders.ConfigureVehicleSubsteps(2f, 8, 12); //(1000,20,20) = substeps fixed in 20
   }
 
   void SetTorque(float input) {
