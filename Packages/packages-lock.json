@@ -59,7 +59,7 @@
     },
     "com.unity.mathematics": {
       "version": "1.2.1",
-      "depth": 3,
+      "depth": 0,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
@@ -85,6 +85,13 @@
       "dependencies": {
         "com.unity.ml-agents": "1.8.0-preview"
       }
+    },
+    "com.unity.scriptablebuildpipeline": {
+      "version": "1.16.1",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
     },
     "com.unity.sysroot": {
       "version": "0.1.19-preview",

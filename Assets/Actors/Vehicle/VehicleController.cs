@@ -9,12 +9,15 @@ public class VehicleController : MonoBehaviour {
   public List<WheelCollider> wheelColliders;
   public List<Transform> wheels;
   [Range(0, 90f)] public float maxSteerAngle = 30f;
-  [Range(0, 1000f)] public float maxTorque = 75f;
+  [Range(0, 1000f)] public float maxTorque = 125f;
   [Range(0, 10000f)] public float brakeTorque = 2000f;
+  [Range(0, 1000f)] public float maxRpm = 250f;
+  [Range(0, 5f)] public float boostModifier = 2.5f;
 
+  [Range(0, 2f)] private bool boost = false;
   private float steerAngle = 0;
   private float torque = 0;
-  [Range(0, 2f)] private float modifier = 1f;
+
 
   void OnEnable() {
     // https://docs.unity3d.com/ScriptReference/WheelCollider.ConfigureVehicleSubsteps.html
@@ -24,7 +27,7 @@ public class VehicleController : MonoBehaviour {
 
   void SetTorque(float input) {
     input = Mathf.Clamp(input, -1f, 1f);
-    torque = input * maxTorque * modifier;
+    torque = input * maxTorque * (boost ? boostModifier : 1f);
   }
 
   void SetSteer(float input) {
@@ -34,7 +37,12 @@ public class VehicleController : MonoBehaviour {
 
   void ApplyTorque() {
     foreach (WheelCollider wheel in wheelColliders) {
-      wheel.motorTorque = torque;
+      if (Mathf.Abs(wheel.rpm) < maxRpm | boost) {
+        wheel.motorTorque = torque;
+      } else {
+        wheel.motorTorque = 0;
+      };
+
       if ((wheel.rpm > 0 & torque < 0) | (wheel.rpm < 0 & torque > 0)) {
         wheel.brakeTorque = brakeTorque;
       } else {
@@ -57,8 +65,8 @@ public class VehicleController : MonoBehaviour {
   }
 
   public void OnBoost(InputAction.CallbackContext context) {
-    if (context.started) modifier = 3f;
-    if (context.canceled) modifier = 1f;
+    if (context.started) boost = true;
+    if (context.canceled) boost = false;
   }
 
   void FixedUpdate() {
