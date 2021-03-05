@@ -564,6 +564,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1437090991}
+  - component: {fileID: 1437090992}
   m_Layer: 0
   m_Name: Environment
   m_TagString: Untagged
@@ -592,6 +593,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1437090992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1437090990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea3a88c84743c524a9bf20e3ce380fca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1548640022 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 155266001738859485, guid: a6e750ba83499fd48be5341cf0b5a851, type: 3}
@@ -803,7 +816,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5070438249058261349, guid: cb1abfd99057e424eaca10a9471ebfc3, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5070438250450338833, guid: cb1abfd99057e424eaca10a9471ebfc3, type: 3}
       propertyPath: m_Enabled
@@ -859,7 +872,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7420081123640377611, guid: cb1abfd99057e424eaca10a9471ebfc3, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8694043811274670317, guid: cb1abfd99057e424eaca10a9471ebfc3, type: 3}
       propertyPath: m_IsActive
