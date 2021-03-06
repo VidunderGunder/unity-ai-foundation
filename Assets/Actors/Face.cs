@@ -26,10 +26,6 @@ public class Face : MonoBehaviour {
   [Range(0, 10f)] [SerializeField] private WaitForSeconds eyesOpenDuration = new WaitForSeconds(1f);
   [Range(0, 1f)] [SerializeField] private WaitForSeconds blinkDuration = new WaitForSeconds(0.1f);
 
-  void Awake() {
-
-  }
-
   void Start() {
     StartCoroutine("Blink");
     SetMood();
