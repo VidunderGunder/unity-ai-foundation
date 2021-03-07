@@ -2,31 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu]
-public class SpawnerSettings : ScriptableObject {
-
-}
-
 public class Spawner : MonoBehaviour {
-  public SpawnerSettings settings;
-
-  ObjectPooler objectPooler;
+  public ObjectPooler objectPooler;
 
   private void Start() {
     objectPooler = ObjectPooler.Instance;
-    StartCoroutine(PeriodicObjectPoolSpawn(0.1f));
+    StartCoroutine(PeriodicObjectPoolSpawn(0.01f));
   }
 
   IEnumerator PeriodicObjectPoolSpawn(float period) {
     for (; ; ) {
       yield return new WaitForSeconds(period);
-      Randomize(objectPooler.SpawnFromPool("Ball", transform.position, Quaternion.identity));
+      if (objectPooler.SpawnFromPool("Primary", transform.position, Quaternion.identity).Equals(null)) yield break;
     }
   }
 
   private void Randomize(GameObject thing) {
-    RandomThrow(thing.GetComponent<Rigidbody>());
-    RandomScaleEqually(thing.transform);
+    // RandomThrow(thing.GetComponent<Rigidbody>());
+    // RandomScaleEqually(thing.transform);
     // RandomScale(thing.transform);
   }
 

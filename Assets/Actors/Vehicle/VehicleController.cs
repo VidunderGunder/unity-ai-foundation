@@ -8,6 +8,8 @@ public class VehicleController : MonoBehaviour {
   public PlayerInput playerInput;
   public List<WheelCollider> wheelColliders;
   public List<Transform> wheels;
+  public Rigidbody body;
+  public Transform centerOfMass;
   [Range(0, 90f)] public float maxSteerAngle = 30f;
   [Range(0, 1000f)] public float maxTorque = 125f;
   [Range(0, 10000f)] public float brakeTorque = 2000f;
@@ -19,10 +21,11 @@ public class VehicleController : MonoBehaviour {
   private float torque = 0;
 
 
-  void OnEnable() {
+  void OnAwake() {
     // https://docs.unity3d.com/ScriptReference/WheelCollider.ConfigureVehicleSubsteps.html
     WheelCollider WheelColliders = GetComponentInChildren<WheelCollider>();
     WheelColliders.ConfigureVehicleSubsteps(2f, 8, 12); //(1000,20,20) = substeps fixed in 20
+    body.centerOfMass = centerOfMass.position;
   }
 
   void SetTorque(float input) {
@@ -37,7 +40,7 @@ public class VehicleController : MonoBehaviour {
 
   void ApplyTorque() {
     foreach (WheelCollider wheel in wheelColliders) {
-      if (Mathf.Abs(wheel.rpm) < maxRpm | boost) {
+      if (Mathf.Abs(wheel.rpm) < (boost ? maxRpm * 3 : maxRpm)) {
         wheel.motorTorque = torque;
       } else {
         wheel.motorTorque = 0;
@@ -69,12 +72,7 @@ public class VehicleController : MonoBehaviour {
     if (context.canceled) boost = false;
   }
 
-  void FixedUpdate() {
-    ApplyTorque();
-    ApplySteer();
-  }
-
-  void Update() {
+  public void SyncVisualWheels() {
     for (int wheelIndex = 0; wheelIndex < wheelColliders.Count; wheelIndex++) {
       WheelCollider wheelCollider = wheelColliders[wheelIndex];
       Transform wheel = wheels[wheelIndex];
@@ -85,5 +83,18 @@ public class VehicleController : MonoBehaviour {
       wheel.position = wheelPosition;
       wheel.rotation = wheelRotation;
     }
+  }
+
+  private void OnValidate() {
+    SyncVisualWheels();
+  }
+
+  void FixedUpdate() {
+    ApplyTorque();
+    ApplySteer();
+  }
+
+  void Update() {
+    SyncVisualWheels();
   }
 }

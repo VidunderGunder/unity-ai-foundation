@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: daa81b50f44af1d43a831c000d49fb53, type: 3}
+  m_Name: Random Object Pooler
+  m_EditorClassIdentifier: 
+  pools:
+  - poolName: Primary
+    amount: 1000
+    spawnables:
+    - prefab: {fileID: 9192120376831604067, guid: f780ac6b4d9b5e345bdd7b9b9fdd4808, type: 3}
+      scaleMethod: 1
+      minScaleFactor: 0.75
+      maxScaleFactor: 1.25
+      rotationRange: {x: 360, y: 360, z: 360}
+      isStatic: 0
+    - prefab: {fileID: 742007277917506354, guid: edbabf83f3e0e91468c12d7e34f20be8, type: 3}
+      scaleMethod: 2
+      minScaleFactor: 1
+      maxScaleFactor: 1
+      rotationRange: {x: 360, y: 360, z: 360}
+      isStatic: 0
+    - prefab: {fileID: 9192120376831604067, guid: f780ac6b4d9b5e345bdd7b9b9fdd4808, type: 3}
+      scaleMethod: 1
+      minScaleFactor: 2
+      maxScaleFactor: 10
+      rotationRange: {x: 360, y: 360, z: 360}
+      isStatic: 1
+    - prefab: {fileID: 742007277917506354, guid: edbabf83f3e0e91468c12d7e34f20be8, type: 3}
+      scaleMethod: 2
+      minScaleFactor: 2
+      maxScaleFactor: 10
+      rotationRange: {x: 360, y: 360, z: 360}
+      isStatic: 1
+    materials:
+    - {fileID: 2100000, guid: 3591dd83a2bf25448b3d24d086ab067b, type: 2}
+    - {fileID: 2100000, guid: c2dd35932ce842144b0a1520ba5512c4, type: 2}
+    - {fileID: 2100000, guid: aa4c353e12484df469dca757273d4141, type: 2}
+    - {fileID: 2100000, guid: c64e165d523b8e745a9bea97e3e4bd46, type: 2}
+    - {fileID: 2100000, guid: 2a995bd80bbcb044f98efc1bf9839230, type: 2}
+    - {fileID: 2100000, guid: ef94f57f09254bc49bf10ffa18147f76, type: 2}

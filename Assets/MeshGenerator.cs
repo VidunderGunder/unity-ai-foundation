@@ -20,7 +20,7 @@ public class MeshGenerator : MonoBehaviour {
   [Range(0.1f, 1f)] public float unevenness = 0.1f;
   public bool centered = true;
   public float maxDisplacement = -1.25f;
-  private float resolution = 0.125f;
+  private float resolution = 0.5f;
   private float displacement;
 
   [Header("Mesh Borders")]
