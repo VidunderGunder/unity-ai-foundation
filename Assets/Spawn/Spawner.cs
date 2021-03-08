@@ -13,7 +13,9 @@ public class Spawner : MonoBehaviour {
   IEnumerator PeriodicObjectPoolSpawn(float period) {
     for (; ; ) {
       yield return new WaitForSeconds(period);
-      if (objectPooler.SpawnFromPool("Primary", transform.position, Quaternion.identity).Equals(null)) yield break;
+      foreach (var pool in objectPooler.data.poolDictionary) {
+        if (objectPooler.SpawnFromPool(pool.Key, transform.position, Quaternion.identity).Equals(null)) yield break;
+      }
     }
   }
 

@@ -19,6 +19,7 @@ public class ObjectPooler : MonoBehaviour {
   public Dictionary<string, Queue<GameObject>> InitializePools() {
     data.poolDictionary = new Dictionary<string, Queue<GameObject>>();
     foreach (var pool in data.pools) {
+      if (pool.spawnables.Count.Equals(0)) break;
       Queue<GameObject> objectPool = new Queue<GameObject>();
       for (int i = 0; i < pool.amount; i++) {
         ObjectPoolerData.Spawnable spawnable = pool.spawnables[Random.Range(0, pool.spawnables.Count)];
@@ -27,6 +28,7 @@ public class ObjectPooler : MonoBehaviour {
         obj.transform.parent = transform;
 
         // Randomize (TODO: Move outside InitializePools, make callable and add reset)
+        // ---------------------------------------------------------------------------
         obj.transform.position = transform.position;
         obj.transform.rotation = transform.rotation;
         obj.GetComponent<Renderer>().material = pool.materials[Random.Range(0, pool.materials.Count)];
@@ -50,6 +52,7 @@ public class ObjectPooler : MonoBehaviour {
         }
         obj.isStatic = spawnable.isStatic;
         if (!obj.isStatic) obj.GetComponent<Rigidbody>().mass *= obj.transform.localScale.sqrMagnitude;
+        // ---------------------------------------------------------------------------
 
         objectPool.Enqueue(obj);
       }
