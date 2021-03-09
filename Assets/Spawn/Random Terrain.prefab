@@ -58,7 +58,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1375380686043282974, guid: 2dace4e7800237e44a08e0eb8cda518f, type: 3}
       propertyPath: scale
-      value: 210
+      value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 1375380686043282974, guid: 2dace4e7800237e44a08e0eb8cda518f, type: 3}
       propertyPath: width
@@ -199,7 +199,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1375380686043282974, guid: 2dace4e7800237e44a08e0eb8cda518f, type: 3}
       propertyPath: scale
-      value: 210
+      value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 1375380686043282974, guid: 2dace4e7800237e44a08e0eb8cda518f, type: 3}
       propertyPath: width

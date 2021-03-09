@@ -2,25 +2,61 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[ExecuteAlways]
 public class ObjectPooler : MonoBehaviour {
   public ObjectPoolerData data;
 
-  #region Makeshift singleton solution (TODO: Make not static)
+  // Makeshift singleton solution (TODO: Make not static)
   public static ObjectPooler Instance;
+
   void Awake() {
+    // Makeshift singleton solution (TODO: Make not static)
     Instance = this;
   }
-  #endregion
 
-  void Start() {
+  private void OnEnable() {
     InitializePools();
+  }
+
+  public void Cleanup() {
+    if (Application.isPlaying) {
+      foreach (Transform child in transform) {
+        Destroy(child.gameObject);
+      }
+    } else {
+      foreach (Transform child in transform) {
+        DestroyImmediate(child.gameObject);
+      }
+    }
+
+    if (data.poolDictionary == null) {
+      return;
+    }
+
+    if (Application.isPlaying) {
+      foreach (var pool in data.poolDictionary) {
+        foreach (var obj in pool.Value) {
+          Destroy(obj);
+        }
+      }
+    } else {
+      foreach (var pool in data.poolDictionary) {
+        foreach (var obj in pool.Value) {
+          DestroyImmediate(obj);
+        }
+      }
+    }
+
+    data.poolDictionary = null;
   }
 
   public Dictionary<string, Queue<GameObject>> InitializePools() {
     data.poolDictionary = new Dictionary<string, Queue<GameObject>>();
+
     foreach (var pool in data.pools) {
       if (pool.spawnables.Count.Equals(0)) break;
       Queue<GameObject> objectPool = new Queue<GameObject>();
+
       for (int i = 0; i < pool.amount; i++) {
         ObjectPoolerData.Spawnable spawnable = pool.spawnables[Random.Range(0, pool.spawnables.Count)];
         GameObject obj = Instantiate(spawnable.prefab);
@@ -31,7 +67,6 @@ public class ObjectPooler : MonoBehaviour {
         // ---------------------------------------------------------------------------
         obj.transform.position = transform.position;
         obj.transform.rotation = transform.rotation;
-        obj.GetComponent<Renderer>().material = pool.materials[Random.Range(0, pool.materials.Count)];
         obj.transform.rotation = Quaternion.Euler(
           Random.Range(spawnable.minScaleFactor, spawnable.maxScaleFactor),
           Random.Range(spawnable.minScaleFactor, spawnable.maxScaleFactor),
@@ -59,24 +94,38 @@ public class ObjectPooler : MonoBehaviour {
 
       data.poolDictionary.Add(pool.poolName, objectPool);
     }
+
     return data.poolDictionary;
   }
 
-  public GameObject SpawnFromPool(string pool, Vector3 localPosition, Quaternion localRotation) {
+  public GameObject SpawnFromPool(string pool, Vector3? position = null, Quaternion? rotation = null) {
+    if (data == null || data.poolDictionary == null) {
+      return null;
+    }
+
     if (!data.poolDictionary.ContainsKey(pool)) {
-      Debug.Log("Pool with tag " + pool + " doesn't exist.");
+      Debug.Log("Pool named \"" + pool + "\" doesn't exist.");
       return null;
     }
 
     if (data.poolDictionary[pool].Count.Equals(0)) {
-      Debug.Log("Pool with tag " + pool + " is empty.");
+      Debug.Log("Pool named \"" + pool + "\" is empty.");
       return null;
     }
 
     GameObject objectToSpawn = data.poolDictionary[pool].Dequeue();
     objectToSpawn.SetActive(true);
-    // objectToSpawn.transform.position = position;
-    // objectToSpawn.transform.rotation = rotation;
+
+    // Reset position, rotation and speed
+    if (position != null) objectToSpawn.transform.position = (Vector3)position;
+    if (rotation != null) objectToSpawn.transform.rotation = (Quaternion)rotation;
+    if (!objectToSpawn.isStatic) {
+      var rb = GetComponent<Rigidbody>();
+      if (rb != null) {
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+      }
+    }
 
     // data.poolDictionary[pool].Enqueue(objectToSpawn);
 

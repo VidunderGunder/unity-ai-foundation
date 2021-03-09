@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 using Unity.MLAgents.Extensions.Input;
 
 public class VehicleController : MonoBehaviour, IInputActionAssetProvider {
-  // public class VehicleController : MonoBehaviour {
+  public bool manualControl = false;
   public PlayerInput playerInput;
   public List<WheelCollider> wheelColliders;
   public List<Transform> wheels;
@@ -24,28 +24,43 @@ public class VehicleController : MonoBehaviour, IInputActionAssetProvider {
   private float torque = 0;
   private bool handbrake = false;
 
-  PlayerActions playerActions;
+  protected PlayerActions agentActions;
+  protected PlayerActions playerActions;
 
-  void LazyInitializeActions() {
-    if (playerActions != null) {
-      return;
-    }
-    playerActions = new PlayerActions();
-    playerActions.Enable();
+  protected void LazyInitializeActions(ref PlayerActions actions) {
+    if (actions != null) return;
 
-    //  playerActions.ActorVehicle.Boost.started += ???;
+    actions = new PlayerActions();
+    actions.Enable();
+
+    // TODO: Combine started/performed/canceled somehow
+    // This is too verbose
+    actions.ActorVehicle.Movement.started += OnMovement;
+    actions.ActorVehicle.Movement.performed += OnMovement;
+    actions.ActorVehicle.Movement.canceled += OnMovement;
+    actions.ActorVehicle.Boost.started += OnBoost;
+    actions.ActorVehicle.Boost.performed += OnBoost;
+    actions.ActorVehicle.Boost.canceled += OnBoost;
+    actions.ActorVehicle.Handbrake.started += OnHandbrake;
+    actions.ActorVehicle.Handbrake.performed += OnHandbrake;
+    actions.ActorVehicle.Handbrake.canceled += OnHandbrake;
   }
 
+  // Required for Input Actuator (autamatic machine learning output)
   public (InputActionAsset, IInputActionCollection2) GetInputActionAsset() {
-    LazyInitializeActions();
-    return (playerActions.asset, playerActions);
+    LazyInitializeActions(ref agentActions);
+    return (agentActions.asset, agentActions);
   }
 
   void OnAwake() {
     // https://docs.unity3d.com/ScriptReference/WheelCollider.ConfigureVehicleSubsteps.html
-    WheelCollider WheelColliders = GetComponentInChildren<WheelCollider>();
-    WheelColliders.ConfigureVehicleSubsteps(2f, 8, 12); //(1000,20,20) = substeps fixed in 20
+    WheelCollider wheelColliders = GetComponentInChildren<WheelCollider>();
+    wheelColliders.ConfigureVehicleSubsteps(2f, 8, 12);
     body.centerOfMass = centerOfMass.position;
+  }
+
+  private void Start() {
+    if (manualControl) LazyInitializeActions(ref playerActions);
   }
 
   void SetTorque(float input) {
@@ -68,8 +83,7 @@ public class VehicleController : MonoBehaviour, IInputActionAssetProvider {
       };
 
       if (handbrake) {
-        // if (wheelIndex >= 2) 
-        wheel.brakeTorque = handbrabrakeTorque;
+        if (wheelIndex >= 2) wheel.brakeTorque = handbrabrakeTorque;
       } else {
         if ((wheel.rpm > 0 & torque < 0) | (wheel.rpm < 0 & torque > 0)) {
           wheel.brakeTorque = brakeTorque;

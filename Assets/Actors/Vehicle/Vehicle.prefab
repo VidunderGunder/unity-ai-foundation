@@ -622,7 +622,7 @@ GameObject:
   - component: {fileID: 7407584786682358717}
   - component: {fileID: 8024445410706874100}
   - component: {fileID: 1659127325196050207}
-  - component: {fileID: 2397825705959265495}
+  - component: {fileID: -6171079126222933876}
   m_Layer: 0
   m_Name: Vehicle
   m_TagString: Untagged
@@ -679,6 +679,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14b2c6ff870cc374095af2c1c1c7bd52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  manualControl: 1
   playerInput: {fileID: 1659127325196050207}
   wheelColliders:
   - {fileID: 5070438248884760583}
@@ -791,7 +792,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Actions: {fileID: -944628639613478452, guid: 0f42e80b0e2d4fb44867b994e4be2ba7, type: 3}
-  m_NotificationBehavior: 2
+  m_NotificationBehavior: 3
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
     m_PersistentCalls:
@@ -812,6 +813,18 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: -6171079126222933876}
+        m_TargetAssemblyTypeName: VehicleController, Assembly-CSharp
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -860,7 +873,7 @@ MonoBehaviour:
   m_DefaultActionMap: ActorVehicle
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &2397825705959265495
+--- !u!114 &-6171079126222933876
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

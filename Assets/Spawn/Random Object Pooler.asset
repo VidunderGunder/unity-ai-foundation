@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pools:
   - poolName: Primitives
-    amount: 0
+    amount: 2
     spawnables:
     - prefab: {fileID: 9192120376831604067, guid: f780ac6b4d9b5e345bdd7b9b9fdd4808, type: 3}
       scaleMethod: 1
@@ -40,30 +40,12 @@ MonoBehaviour:
       maxScaleFactor: 10
       rotationRange: {x: 360, y: 360, z: 360}
       isStatic: 1
-    materials:
-    - {fileID: 2100000, guid: 3591dd83a2bf25448b3d24d086ab067b, type: 2}
-    - {fileID: 2100000, guid: c2dd35932ce842144b0a1520ba5512c4, type: 2}
-    - {fileID: 2100000, guid: aa4c353e12484df469dca757273d4141, type: 2}
-    - {fileID: 2100000, guid: c64e165d523b8e745a9bea97e3e4bd46, type: 2}
-    - {fileID: 2100000, guid: 2a995bd80bbcb044f98efc1bf9839230, type: 2}
-    - {fileID: 2100000, guid: ef94f57f09254bc49bf10ffa18147f76, type: 2}
-  - poolName: Nature
-    amount: 10
-    spawnables: []
-    materials: []
-  - poolName: Buildings
-    amount: 10
-    spawnables: []
-    materials: []
-  - poolName: Animals
-    amount: 10
-    spawnables: []
-    materials: []
-  - poolName: Humans
-    amount: 10
-    spawnables: []
-    materials: []
   - poolName: Terrains
-    amount: 2
-    spawnables: []
-    materials: []
+    amount: 1
+    spawnables:
+    - prefab: {fileID: 788263648547665510, guid: eddc37946488d2a4e9d445764697d94f, type: 3}
+      scaleMethod: 1
+      minScaleFactor: 1
+      maxScaleFactor: 1
+      rotationRange: {x: 1, y: 1, z: 1}
+      isStatic: 1

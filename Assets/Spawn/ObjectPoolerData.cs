@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-// using UnityEditor;
 
 [CreateAssetMenu]
 public class ObjectPoolerData : ScriptableObject {
@@ -13,7 +12,6 @@ public class ObjectPoolerData : ScriptableObject {
     public string poolName;
     public int amount;
     public List<Spawnable> spawnables;
-    public List<Material> materials;
   }
 
   [System.Serializable]
@@ -33,11 +31,4 @@ public class ObjectPoolerData : ScriptableObject {
       Random,
     }
   }
-
-  //  [System.Serializable]
-  //   public class Pool {
-  //     public GameObject prefab;
-  //     private string tag;
-  //     public int amount;
-  //   }
 }
