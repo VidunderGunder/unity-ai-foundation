@@ -15,11 +15,12 @@ public class ObjectPooler : MonoBehaviour {
   }
 
   private void OnEnable() {
+    Cleanup();
     InitializePools();
   }
 
   public void Cleanup() {
-    if (Application.isPlaying) {
+    if (Application.IsPlaying(gameObject)) {
       foreach (Transform child in transform) {
         Destroy(child.gameObject);
       }
@@ -33,7 +34,7 @@ public class ObjectPooler : MonoBehaviour {
       return;
     }
 
-    if (Application.isPlaying) {
+    if (Application.IsPlaying(gameObject)) {
       foreach (var pool in data.poolDictionary) {
         foreach (var obj in pool.Value) {
           Destroy(obj);
@@ -109,7 +110,7 @@ public class ObjectPooler : MonoBehaviour {
     }
 
     if (data.poolDictionary[pool].Count.Equals(0)) {
-      Debug.Log("Pool named \"" + pool + "\" is empty.");
+      // Debug.Log("Pool named \"" + pool + "\" is empty.");
       return null;
     }
 

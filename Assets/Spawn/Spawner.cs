@@ -6,6 +6,10 @@ using UnityEngine;
 public class Spawner : MonoBehaviour {
   public ObjectPooler objectPooler;
 
+  private void Awake() {
+    objectPooler.Cleanup();
+  }
+
   private void Start() {
     objectPooler = ObjectPooler.Instance;
     Spawn();
