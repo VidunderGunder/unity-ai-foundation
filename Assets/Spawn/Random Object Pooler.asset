@@ -16,24 +16,24 @@ MonoBehaviour:
   - poolName: Static Primitives
     amount: 5
     scaleMethod: 1
-    minScaleFactor: 0.5
-    maxScaleFactor: 1.25
+    minScaleFactor: 5
+    maxScaleFactor: 20
     rotationRange: {x: 360, y: 360, z: 360}
     isStatic: 1
     allowedSpawnAreas: 01000000
-    forbiddenSpawnAres: 00000000
+    forbiddenSpawnAreas: 
     prefabs:
     - {fileID: 9192120376831604067, guid: f780ac6b4d9b5e345bdd7b9b9fdd4808, type: 3}
     - {fileID: 742007277917506354, guid: edbabf83f3e0e91468c12d7e34f20be8, type: 3}
   - poolName: Dynamic Primitives
-    amount: 5
+    amount: 50
     scaleMethod: 1
     minScaleFactor: 2
-    maxScaleFactor: 4
+    maxScaleFactor: 5
     rotationRange: {x: 360, y: 360, z: 360}
     isStatic: 0
     allowedSpawnAreas: 01000000
-    forbiddenSpawnAres: 00000000
+    forbiddenSpawnAreas: 
     prefabs:
     - {fileID: 9192120376831604067, guid: f780ac6b4d9b5e345bdd7b9b9fdd4808, type: 3}
     - {fileID: 742007277917506354, guid: edbabf83f3e0e91468c12d7e34f20be8, type: 3}
@@ -45,6 +45,6 @@ MonoBehaviour:
     rotationRange: {x: 0, y: 0, z: 0}
     isStatic: 1
     allowedSpawnAreas: 
-    forbiddenSpawnAres: 
+    forbiddenSpawnAreas: 
     prefabs:
     - {fileID: 788263648547665510, guid: eddc37946488d2a4e9d445764697d94f, type: 3}

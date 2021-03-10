@@ -1,3 +1,4 @@
+// using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -54,8 +55,8 @@ public class Spawner : MonoBehaviour {
 
     obj.SetActive(true);
 
-    Randomize(obj, objectPooler.data.poolOptions[poolName]);
     ResetObject(obj);
+    Randomize(obj, objectPooler.data.poolOptions[poolName]);
 
     // data.poolDictionary[pool].Enqueue(objectToSpawn);
 
@@ -66,10 +67,35 @@ public class Spawner : MonoBehaviour {
     // TODO: Spawn in spawn areas
     // --------------------------
     if (options.allowedSpawnAreas.Count > 0) {
-      if (options.forbiddenSpawnAreas.Count > 0) {
+      SpawnArea areaName = options.allowedSpawnAreas[Random.Range(0, options.allowedSpawnAreas.Count)];
+      GameObject area = null;
 
+      foreach (var a in spawnAreas) {
+        System.Enum.TryParse(a.name, out SpawnArea aName);
+        Debug.Log("a: " + aName + " area: " + areaName);
+        if (aName == areaName) {
+          area = a;
+          break;
+        }
       }
 
+      if (area == null) {
+        Debug.Log("Spawn area " + areaName + " is not available.");
+      } else {
+        var bounds = area.GetComponent<Renderer>().bounds;
+
+        if (options.forbiddenSpawnAreas.Count > 0) {
+          // Make logic for avoiding forbidden areas
+        }
+
+        obj.transform.position = bounds.center + new Vector3(
+          Random.Range(bounds.min.x, bounds.max.x),
+          Random.Range(bounds.min.y, bounds.max.y),
+          Random.Range(bounds.min.z, bounds.max.z)
+        );
+
+
+      }
     }
     // --------------------------
 
