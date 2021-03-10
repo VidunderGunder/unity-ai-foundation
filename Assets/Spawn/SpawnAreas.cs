@@ -4,4 +4,8 @@ using UnityEngine;
 
 public class SpawnAreas : MonoBehaviour {
   SpawnAreasData data;
+
+  private void Start() {
+
+  }
 }

@@ -14,9 +14,6 @@ public class MeshGenerator : MonoBehaviour {
 
   [Header("Mesh Options")]
   [Range(5f, 500f)] public float scale = 100f;
-  // TODO: Fix length/width
-  // [Range(0, 1000f)] public float length = 100f;
-  // [Range(0, 1000f)] public float width = 100f;
   [Range(0.1f, 1f)] public float unevenness = 0.1f;
   public bool centered = true;
   public float maxDisplacement = -1.25f;
@@ -32,12 +29,7 @@ public class MeshGenerator : MonoBehaviour {
     Generate();
   }
 
-  private void OnValidate() {
-    Generate();
-  }
-
   public void Generate() {
-    // bool simple = Random.Range(0, 1f) > 0.5f ? true : false;
     bool simple = false;
 
     if (simple) {

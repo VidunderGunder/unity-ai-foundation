@@ -5,18 +5,12 @@ using UnityEngine;
 [CreateAssetMenu]
 public class ObjectPoolerData : ScriptableObject {
   public List<Pool> pools;
-  public Dictionary<string, Queue<GameObject>> poolDictionary;
+  public Dictionary<string, Queue<GameObject>> poolQueues;
+  public Dictionary<string, PoolOptions> poolOptions;
 
-  [System.Serializable]
-  public class Pool {
+  public class PoolOptions {
     public string poolName;
     public int amount;
-    public List<Spawnable> spawnables;
-  }
-
-  [System.Serializable]
-  public class Spawnable {
-    public GameObject prefab;
 
     [Header("Transform")]
     public ScaleMethod scaleMethod = ScaleMethod.None;
@@ -25,10 +19,19 @@ public class ObjectPoolerData : ScriptableObject {
     public Vector3 rotationRange = 360f * Vector3.one;
     public bool isStatic = true;
 
-    public enum ScaleMethod {
-      None,
-      Equal,
-      Random,
-    }
+    [Header("Spawn Areas")]
+    public List<SpawnArea> allowedSpawnAreas;
+    public List<SpawnArea> forbiddenSpawnAreas;
+  }
+
+  [System.Serializable]
+  public class Pool : PoolOptions {
+    [Header("Objects to Spawn")]
+    public List<GameObject> prefabs;
+  }
+
+  [System.Serializable]
+  public class Spawnable {
+    public GameObject prefab;
   }
 }
