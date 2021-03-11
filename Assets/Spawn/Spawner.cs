@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum SpawnArea {
-  Agent,
-  Random,
+  Agent = 0,
+  Random = 1,
 }
 
 public enum ScaleMethod {
@@ -31,7 +31,7 @@ public class Spawner : MonoBehaviour {
 
   private void Start() {
     if (!SpawnAreaTest()) return;
-    Spawn();
+    SpawnAll();
   }
 
   public void Spawn() {
@@ -63,46 +63,72 @@ public class Spawner : MonoBehaviour {
     return obj;
   }
 
+  private GameObject GetSpawnAreaFromPool(SpawnArea areaEnumIndex) {
+    GameObject area = null;
+
+    foreach (var a in spawnAreas) {
+      System.Enum.TryParse(a.name, out SpawnArea aEnumIndex);
+      if (aEnumIndex == areaEnumIndex) {
+        area = a;
+        break;
+      }
+    }
+
+    return area;
+  }
+
+  private GameObject GetSpawnAreaFromPool(string areaName) {
+    bool areaNameExists = System.Enum.TryParse(areaName, out SpawnArea areaEnumIndex);
+    if (areaNameExists) return GetSpawnAreaFromPool(areaEnumIndex);
+    return null;
+  }
+
   void Randomize(GameObject obj, ObjectPoolerData.PoolOptions options) {
     // TODO: Spawn in spawn areas
     // --------------------------
     if (options.allowedSpawnAreas.Count > 0) {
-      SpawnArea areaName = options.allowedSpawnAreas[Random.Range(0, options.allowedSpawnAreas.Count)];
-      GameObject area = null;
-
-      foreach (var a in spawnAreas) {
-        System.Enum.TryParse(a.name, out SpawnArea aName);
-        Debug.Log("a: " + aName + " area: " + areaName);
-        if (aName == areaName) {
-          area = a;
-          break;
-        }
-      }
+      SpawnArea areaEnumIndex = options.allowedSpawnAreas[Random.Range(0, options.allowedSpawnAreas.Count)];
+      GameObject area = GetSpawnAreaFromPool(areaEnumIndex);
 
       if (area == null) {
-        Debug.Log("Spawn area " + areaName + " is not available.");
+        Debug.Log("Spawn area " + areaEnumIndex + " is not available.");
       } else {
         var bounds = area.GetComponent<Renderer>().bounds;
+        int retries = 10;
+        bool success = false;
 
-        if (options.forbiddenSpawnAreas.Count > 0) {
-          // Make logic for avoiding forbidden areas
+        for (var attempt = 0; attempt < retries; attempt++) {
+          obj.transform.position = RandomPointWithinBounds(bounds);
+
+          if (options.forbiddenSpawnAreas.Count == 0) {
+            success = true;
+            break;
+          }
+
+          foreach (var forbiddenAreaEnumIndex in options.forbiddenSpawnAreas) {
+            GameObject forbiddenArea = GetSpawnAreaFromPool(forbiddenAreaEnumIndex);
+            Bounds forbiddenBounds = forbiddenArea.GetComponent<Renderer>().bounds;
+
+            // Success checks
+            // --------------
+            if (!forbiddenBounds.Contains(obj.transform.position)) {
+              success = true;
+              break;
+            }
+            // --------------
+          }
+          if (success) break;
         }
 
-        obj.transform.position = bounds.center + new Vector3(
-          Random.Range(bounds.min.x, bounds.max.x),
-          Random.Range(bounds.min.y, bounds.max.y),
-          Random.Range(bounds.min.z, bounds.max.z)
-        );
-
-
+        if (!success) obj.SetActive(false);
       }
     }
     // --------------------------
 
     obj.transform.rotation = Quaternion.Euler(
-      Random.Range(options.minScaleFactor, options.maxScaleFactor),
-      Random.Range(options.minScaleFactor, options.maxScaleFactor),
-      Random.Range(options.minScaleFactor, options.maxScaleFactor)
+      Random.Range(-options.rotationRange.x, options.rotationRange.x),
+      Random.Range(-options.rotationRange.y, options.rotationRange.y),
+      Random.Range(-options.rotationRange.z, options.rotationRange.z)
     );
 
     switch (options.scaleMethod) {
@@ -117,6 +143,11 @@ public class Spawner : MonoBehaviour {
         break;
       default:
         break;
+    }
+
+    if (!options.isStatic) {
+      Rigidbody rb = obj.GetComponent<Rigidbody>();
+      if (rb != null) rb.mass *= obj.transform.localScale.sqrMagnitude;
     }
   }
 
@@ -137,7 +168,23 @@ public class Spawner : MonoBehaviour {
       Random.Range(min, max),
       Random.Range(min, max),
       Random.Range(min, max)
-  );
+    );
+  }
+
+  private Vector3 RandomPointWithinBounds(Bounds bounds) {
+    return bounds.center + new Vector3(
+      Random.Range(bounds.min.x, bounds.max.x),
+      Random.Range(bounds.min.y, bounds.max.y),
+      Random.Range(bounds.min.z, bounds.max.z)
+    );
+  }
+
+  public void SpawnAll() {
+    foreach (var pool in objectPooler.data.pools) {
+      for (; ; ) {
+        if (SpawnFromPool(pool.poolName) == null) break;
+      }
+    }
   }
 
   IEnumerator PeriodicObjectPoolSpawn(string pool, float period) {
