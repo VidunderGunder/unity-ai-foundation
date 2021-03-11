@@ -71,24 +71,17 @@ public class Spawner : MonoBehaviour {
     return obj;
   }
 
-  private GameObject GetSpawnAreaFromPool(SpawnArea areaEnumIndex) {
+  private GameObject GetSpawnAreaFromPool(string areaName) {
     GameObject area = null;
 
     foreach (var a in spawnAreas) {
-      System.Enum.TryParse(a.name, out SpawnArea aEnumIndex);
-      if (aEnumIndex == areaEnumIndex) {
+      if (a.name == areaName) {
         area = a;
         break;
       }
     }
 
     return area;
-  }
-
-  private GameObject GetSpawnAreaFromPool(string areaName) {
-    bool areaNameExists = System.Enum.TryParse(areaName, out SpawnArea areaEnumIndex);
-    if (areaNameExists) return GetSpawnAreaFromPool(areaEnumIndex);
-    return null;
   }
 
   private void Randomize(GameObject obj, ObjectPoolerData.PoolOptions options) {
@@ -115,17 +108,13 @@ public class Spawner : MonoBehaviour {
     // TODO: Spawn in spawn areas
     // --------------------------
     if (options.allowedSpawnAreas.Count > 0) {
-      Debug.Log("Setting position");
-      Debug.Log("------------------------------");
-      SpawnArea areaEnumIndex = options.allowedSpawnAreas[Random.Range(0, options.allowedSpawnAreas.Count)];
-      GameObject area = GetSpawnAreaFromPool(areaEnumIndex);
+      string areaName = options.allowedSpawnAreas[Random.Range(0, options.allowedSpawnAreas.Count)];
+      GameObject area = GetSpawnAreaFromPool(areaName);
 
       if (area == null) {
-        Debug.Log("Spawn area " + areaEnumIndex + " is not available.");
+        Debug.Log("Spawn area " + areaName + " is not available.");
       } else {
         var allowedBounds = area.GetComponent<Renderer>().bounds;
-        Debug.Log("allowedBounds.center: " + allowedBounds.center.ToString());
-        Debug.Log("allowedBounds.size: " + allowedBounds.size.ToString());
         int maxAttempts = 10;
         int attempts = 0;
         bool success = false;
@@ -133,35 +122,27 @@ public class Spawner : MonoBehaviour {
         for (var attempt = 0; attempt < maxAttempts; attempt++) {
           attempts++;
           obj.transform.position = RandomPointWithinBounds(allowedBounds);
+          var objectBounds = obj.GetComponent<Renderer>().bounds;
 
           if (options.forbiddenSpawnAreas.Count == 0) {
-            Debug.Log("No forbidden areas");
             success = true;
             break;
           }
 
-          foreach (var forbiddenAreaEnumIndex in options.forbiddenSpawnAreas) {
-            GameObject forbiddenArea = GetSpawnAreaFromPool(forbiddenAreaEnumIndex);
-            if (forbiddenArea == null) Debug.Log("Couldn't get Forbidden Area", obj);
+          foreach (var forbiddenAreaName in options.forbiddenSpawnAreas) {
+            GameObject forbiddenArea = GetSpawnAreaFromPool(forbiddenAreaName);
+            if (forbiddenArea == null) Debug.Log("Couldn't get Forbidden Area" + forbiddenAreaName);
             Bounds forbiddenBounds = forbiddenArea.GetComponent<Renderer>().bounds;
 
-            // Success checks
-            // --------------
-            if (obj.GetComponent<Renderer>().bounds.Intersects(forbiddenBounds)) {
-              Debug.Log("In forbidden area", obj);
+            if (objectBounds.Intersects(forbiddenBounds)) {
+              // Resume
             } else {
-              Debug.Log("In allowed area", obj);
               success = true;
               break;
             }
-            // --------------
           }
           if (success) break;
         }
-
-        Debug.Log("Spawn " + (success ? "successful!" : "failed..."), obj);
-        Debug.Log("Retries: " + attempts.ToString(), obj);
-        Debug.Log("------------------------------");
 
         if (!success) obj.SetActive(false);
       }

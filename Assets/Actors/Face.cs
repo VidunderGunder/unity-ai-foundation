@@ -12,11 +12,11 @@ public class Face : MonoBehaviour {
     Shocked,
     Asleep,
   }
-  [Space]
+
   [Header("Eyes")]
   [SerializeField] private GameObject eyesOpen;
   [SerializeField] private GameObject eyesClosed;
-  [Space]
+
   [Header("Mouth")]
   [SerializeField] private GameObject mouthHappy;
   [SerializeField] private GameObject mouthNeutral;

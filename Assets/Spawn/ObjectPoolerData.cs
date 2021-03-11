@@ -20,8 +20,8 @@ public class ObjectPoolerData : ScriptableObject {
     public bool isStatic = true;
 
     [Header("Spawn Areas")]
-    public List<SpawnArea> allowedSpawnAreas;
-    public List<SpawnArea> forbiddenSpawnAreas;
+    public List<string> allowedSpawnAreas;
+    public List<string> forbiddenSpawnAreas;
   }
 
   [System.Serializable]
