@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pools:
   - poolName: Static Primitives
-    amount: 0
+    amount: 10
     scaleMethod: 1
-    minScaleFactor: 2
-    maxScaleFactor: 10
+    minScaleFactor: 4
+    maxScaleFactor: 20
     rotationRange: {x: 360, y: 360, z: 360}
     isStatic: 1
     allowedSpawnAreas: 01000000
@@ -26,10 +26,10 @@ MonoBehaviour:
     - {fileID: 9192120376831604067, guid: f780ac6b4d9b5e345bdd7b9b9fdd4808, type: 3}
     - {fileID: 742007277917506354, guid: edbabf83f3e0e91468c12d7e34f20be8, type: 3}
   - poolName: Dynamic Primitives
-    amount: 1000
+    amount: 10
     scaleMethod: 1
     minScaleFactor: 0.75
-    maxScaleFactor: 3
+    maxScaleFactor: 2
     rotationRange: {x: 360, y: 360, z: 360}
     isStatic: 0
     allowedSpawnAreas: 01000000
