@@ -29,7 +29,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   depthCamera: {fileID: 5915486850022637002}
-  depthMaterial: {fileID: 2100000, guid: 83912197c2a3943488a462fbfa19742c, type: 2}
+  depthMaterial: {fileID: 0}
 --- !u!1001 &5363169354072577329
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -5,14 +5,9 @@ using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 
-public class VehicleAgent : Agent {
-  // Start is called before the first frame update
-  void Start() {
-
-  }
-
-  // Update is called once per frame
-  void Update() {
+public class VehicleAgent : GeneralAgent {
+  public Transform target;
+  public override void Reward() {
 
   }
 }

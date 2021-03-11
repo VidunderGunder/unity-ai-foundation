@@ -9,10 +9,10 @@ public class DepthCamera : MonoBehaviour {
   public Material depthMaterial;
 
   void Awake() {
-    // if (depthCamera == null) depthCamera = this.GetComponent<Camera>();
-    // depthCamera.depthTextureMode = DepthTextureMode.DepthNormals;
+    if (depthCamera == null) depthCamera = this.GetComponent<Camera>();
+    depthCamera.depthTextureMode = DepthTextureMode.DepthNormals;
 
-    // if (depthMaterial == null) depthMaterial = new Material(Shader.Find("DepthShader"));
+    if (depthMaterial == null) depthMaterial = new Material(Shader.Find("DepthShader"));
   }
 
   private void OnPreRender() {

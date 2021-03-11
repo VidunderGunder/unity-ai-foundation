@@ -28,6 +28,14 @@ PrefabInstance:
       value: RPi Camera Module V2 Sensor RGB
       objectReference: {fileID: 0}
     - target: {fileID: 1762536855017236731, guid: 15f5c56e0e0a37643852908705b54c92, type: 3}
+      propertyPath: m_HDR
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1762536855017236731, guid: 15f5c56e0e0a37643852908705b54c92, type: 3}
+      propertyPath: m_AllowMSAA
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1762536855017236731, guid: 15f5c56e0e0a37643852908705b54c92, type: 3}
       propertyPath: m_TargetTexture
       value: 
       objectReference: {fileID: 8400000, guid: 2989273e6d074574f82775a88edeab0b, type: 2}
