@@ -40,6 +40,14 @@ public class Spawner : MonoBehaviour {
     }
   }
 
+  public void SpawnAll() {
+    foreach (var pool in objectPooler.data.pools) {
+      for (; ; ) {
+        if (SpawnFromPool(pool.poolName) == null) break;
+      }
+    }
+  }
+
   public GameObject SpawnFromPool(string poolName, Vector3? position = null, Quaternion? rotation = null) {
 
     if (objectPooler.data == null || objectPooler.data.poolQueues == null) return null;
@@ -83,48 +91,7 @@ public class Spawner : MonoBehaviour {
     return null;
   }
 
-  void Randomize(GameObject obj, ObjectPoolerData.PoolOptions options) {
-    // TODO: Spawn in spawn areas
-    // --------------------------
-    if (options.allowedSpawnAreas.Count > 0) {
-      SpawnArea areaEnumIndex = options.allowedSpawnAreas[Random.Range(0, options.allowedSpawnAreas.Count)];
-      GameObject area = GetSpawnAreaFromPool(areaEnumIndex);
-
-      if (area == null) {
-        Debug.Log("Spawn area " + areaEnumIndex + " is not available.");
-      } else {
-        var bounds = area.GetComponent<Renderer>().bounds;
-        int retries = 10;
-        bool success = false;
-
-        for (var attempt = 0; attempt < retries; attempt++) {
-          obj.transform.position = RandomPointWithinBounds(bounds);
-
-          if (options.forbiddenSpawnAreas.Count == 0) {
-            success = true;
-            break;
-          }
-
-          foreach (var forbiddenAreaEnumIndex in options.forbiddenSpawnAreas) {
-            GameObject forbiddenArea = GetSpawnAreaFromPool(forbiddenAreaEnumIndex);
-            Bounds forbiddenBounds = forbiddenArea.GetComponent<Renderer>().bounds;
-
-            // Success checks
-            // --------------
-            if (!forbiddenBounds.Contains(obj.transform.position)) {
-              success = true;
-              break;
-            }
-            // --------------
-          }
-          if (success) break;
-        }
-
-        if (!success) obj.SetActive(false);
-      }
-    }
-    // --------------------------
-
+  private void Randomize(GameObject obj, ObjectPoolerData.PoolOptions options) {
     obj.transform.rotation = Quaternion.Euler(
       Random.Range(-options.rotationRange.x, options.rotationRange.x),
       Random.Range(-options.rotationRange.y, options.rotationRange.y),
@@ -144,6 +111,62 @@ public class Spawner : MonoBehaviour {
       default:
         break;
     }
+
+    // TODO: Spawn in spawn areas
+    // --------------------------
+    if (options.allowedSpawnAreas.Count > 0) {
+      Debug.Log("Setting position");
+      Debug.Log("------------------------------");
+      SpawnArea areaEnumIndex = options.allowedSpawnAreas[Random.Range(0, options.allowedSpawnAreas.Count)];
+      GameObject area = GetSpawnAreaFromPool(areaEnumIndex);
+
+      if (area == null) {
+        Debug.Log("Spawn area " + areaEnumIndex + " is not available.");
+      } else {
+        var allowedBounds = area.GetComponent<Renderer>().bounds;
+        Debug.Log("allowedBounds.center: " + allowedBounds.center.ToString());
+        Debug.Log("allowedBounds.size: " + allowedBounds.size.ToString());
+        int maxAttempts = 10;
+        int attempts = 0;
+        bool success = false;
+
+        for (var attempt = 0; attempt < maxAttempts; attempt++) {
+          attempts++;
+          obj.transform.position = RandomPointWithinBounds(allowedBounds);
+
+          if (options.forbiddenSpawnAreas.Count == 0) {
+            Debug.Log("No forbidden areas");
+            success = true;
+            break;
+          }
+
+          foreach (var forbiddenAreaEnumIndex in options.forbiddenSpawnAreas) {
+            GameObject forbiddenArea = GetSpawnAreaFromPool(forbiddenAreaEnumIndex);
+            if (forbiddenArea == null) Debug.Log("Couldn't get Forbidden Area", obj);
+            Bounds forbiddenBounds = forbiddenArea.GetComponent<Renderer>().bounds;
+
+            // Success checks
+            // --------------
+            if (obj.GetComponent<Renderer>().bounds.Intersects(forbiddenBounds)) {
+              Debug.Log("In forbidden area", obj);
+            } else {
+              Debug.Log("In allowed area", obj);
+              success = true;
+              break;
+            }
+            // --------------
+          }
+          if (success) break;
+        }
+
+        Debug.Log("Spawn " + (success ? "successful!" : "failed..."), obj);
+        Debug.Log("Retries: " + attempts.ToString(), obj);
+        Debug.Log("------------------------------");
+
+        if (!success) obj.SetActive(false);
+      }
+    }
+    // --------------------------
 
     if (!options.isStatic) {
       Rigidbody rb = obj.GetComponent<Rigidbody>();
@@ -177,14 +200,6 @@ public class Spawner : MonoBehaviour {
       Random.Range(bounds.min.y, bounds.max.y),
       Random.Range(bounds.min.z, bounds.max.z)
     );
-  }
-
-  public void SpawnAll() {
-    foreach (var pool in objectPooler.data.pools) {
-      for (; ; ) {
-        if (SpawnFromPool(pool.poolName) == null) break;
-      }
-    }
   }
 
   IEnumerator PeriodicObjectPoolSpawn(string pool, float period) {
