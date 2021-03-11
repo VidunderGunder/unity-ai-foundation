@@ -3,7 +3,10 @@ guid: 322192040e1c29344b468802d6f6e7a6
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - terrainData: {fileID: 11400000, guid: 4510d5aca74e25644b1fea05c8ae496c, type: 2}
+  - agent: {instanceID: 0}
+  - randomObjects: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

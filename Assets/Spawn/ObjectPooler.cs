@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteAlways]
+[HelpURL("http://example.com/docs/MyComponent.html")]
 public class ObjectPooler : MonoBehaviour {
   public ObjectPoolerData data;
 
@@ -11,6 +12,7 @@ public class ObjectPooler : MonoBehaviour {
     InitializePools();
   }
 
+  [ContextMenu("Clear Pool & Delete Children")]
   public void Cleanup() {
     if (Application.IsPlaying(gameObject)) {
       foreach (Transform child in transform) {
@@ -39,6 +41,7 @@ public class ObjectPooler : MonoBehaviour {
     data.poolQueues = null;
   }
 
+  [ContextMenu("Fill Pools")]
   public Dictionary<string, Queue<GameObject>> InitializePools() {
     data.poolQueues = new Dictionary<string, Queue<GameObject>>();
     data.poolOptions = new Dictionary<string, ObjectPoolerData.PoolOptions>();

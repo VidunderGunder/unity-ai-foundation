@@ -85,25 +85,13 @@ public class Spawner : MonoBehaviour {
   }
 
   private void Randomize(GameObject obj, ObjectPoolerData.PoolOptions options) {
-    obj.transform.rotation = Quaternion.Euler(
-      Random.Range(-options.rotationRange.x, options.rotationRange.x),
-      Random.Range(-options.rotationRange.y, options.rotationRange.y),
-      Random.Range(-options.rotationRange.z, options.rotationRange.z)
+    obj.transform.rotation.Randomize(options.rotationRange);
+    obj.transform.localScale = RandomScale(
+      obj.transform.localScale,
+      options.minScale,
+      options.maxScale,
+      options.scaleMethod
     );
-
-    switch (options.scaleMethod) {
-      case ScaleMethod.None:
-        break;
-      case ScaleMethod.Equal:
-        float scaleFactor = Random.Range(options.minScaleFactor, options.maxScaleFactor);
-        obj.transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
-        break;
-      case ScaleMethod.Random:
-        obj.transform.localScale = RandomVector(options.minScaleFactor, options.maxScaleFactor);
-        break;
-      default:
-        break;
-    }
 
     // TODO: Spawn in spawn areas
     // --------------------------
@@ -151,9 +139,76 @@ public class Spawner : MonoBehaviour {
 
     if (!options.isStatic) {
       Rigidbody rb = obj.GetComponent<Rigidbody>();
+      // TODO: Make sure mass function is repeatable
       if (rb != null) rb.mass *= obj.transform.localScale.sqrMagnitude;
     }
   }
+
+  // New functions
+  // ----------------------------------------------------------------------------
+  public Vector3 RandomScale(Vector3 scale, float min, float max, ScaleMethod method = ScaleMethod.None) {
+    switch (method) {
+      case ScaleMethod.None:
+        return scale;
+      case ScaleMethod.Equal:
+        float equalScale = Random.Range(min, max);
+        return new Vector3(equalScale, equalScale, equalScale);
+      case ScaleMethod.Random:
+        return RandomVector(min, max);
+      default:
+        return scale;
+    }
+  }
+
+  // // TODO: Spawn in spawn areas
+  // // --------------------------
+  // if (options.allowedSpawnAreas.Count > 0) {
+  //   string areaName = options.allowedSpawnAreas[Random.Range(0, options.allowedSpawnAreas.Count)];
+  //   GameObject area = GetSpawnAreaFromPool(areaName);
+
+  //   if (area == null) {
+  //     Debug.Log("Spawn area " + areaName + " is not available.");
+  //   } else {
+  //     var allowedBounds = area.GetComponent<Renderer>().bounds;
+  //     int maxAttempts = 10;
+  //     int attempts = 0;
+  //     bool success = false;
+
+  //     for (var attempt = 0; attempt < maxAttempts; attempt++) {
+  //       attempts++;
+  //       obj.transform.position = RandomPointWithinBounds(allowedBounds);
+  //       var objectBounds = obj.GetComponent<Renderer>().bounds;
+
+  //       if (options.forbiddenSpawnAreas.Count == 0) {
+  //         success = true;
+  //         break;
+  //       }
+
+  //       foreach (var forbiddenAreaName in options.forbiddenSpawnAreas) {
+  //         GameObject forbiddenArea = GetSpawnAreaFromPool(forbiddenAreaName);
+  //         if (forbiddenArea == null) Debug.Log("Couldn't get Forbidden Area" + forbiddenAreaName);
+  //         Bounds forbiddenBounds = forbiddenArea.GetComponent<Renderer>().bounds;
+
+  //         if (objectBounds.Intersects(forbiddenBounds)) {
+  //           // Resume
+  //         } else {
+  //           success = true;
+  //           break;
+  //         }
+  //       }
+  //       if (success) break;
+  //     }
+
+  //     if (!success) obj.SetActive(false);
+  //   }
+  // }
+  // // --------------------------
+
+  // if (!options.isStatic) {
+  //   Rigidbody rb = obj.GetComponent<Rigidbody>();
+  //   if (rb != null) rb.mass *= obj.transform.localScale.sqrMagnitude;
+  // }
+  // ----------------------------------------------------------------------------
 
   void ResetObject(GameObject obj) {
     obj.transform.position = transform.position;
@@ -182,6 +237,8 @@ public class Spawner : MonoBehaviour {
       Random.Range(bounds.min.z, bounds.max.z)
     );
   }
+
+
 
   IEnumerator PeriodicObjectPoolSpawn(string pool, float period) {
     for (; ; ) {

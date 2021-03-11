@@ -14,8 +14,8 @@ public class ObjectPoolerData : ScriptableObject {
 
     [Header("Transform")]
     public ScaleMethod scaleMethod = ScaleMethod.None;
-    public float minScaleFactor = 1f;
-    public float maxScaleFactor = 1f;
+    public float minScale = 1f;
+    public float maxScale = 1f;
     public Vector3 rotationRange = 360f * Vector3.one;
     public bool isStatic = true;
 

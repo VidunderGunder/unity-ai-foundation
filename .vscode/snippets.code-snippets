@@ -1,0 +1,8 @@
+{
+  "Summary documentation": {
+    "scope": "csharp",
+    "prefix": "sm",
+    "body": ["/// <summary>${1:This does that}</summary>"],
+    "description": "Log output to console"
+  }
+}
