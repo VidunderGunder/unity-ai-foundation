@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 5915486850022637002}
-  x: 40
-  y: 30
+  x: 20
+  y: 20
   aspectRatio: 1.3333334
 --- !u!114 &-1799580697356934938
 MonoBehaviour:
