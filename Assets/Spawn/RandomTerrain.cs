@@ -4,12 +4,12 @@ using UnityEngine;
 
 [ExecuteAlways]
 public class RandomTerrain : MonoBehaviour {
-  public RandomTerrainData data;
-  public List<MeshGenerator> meshGenerators;
+  public EnvironmentData env;
+  public List<MeshGenerator> generators;
 
   public void Randomize() {
-    foreach (MeshGenerator generator in meshGenerators) {
-      generator.scale = data.scale;
+    foreach (MeshGenerator gen in generators) {
+      gen.scale = env.size;
     }
   }
 

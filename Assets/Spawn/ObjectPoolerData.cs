@@ -16,7 +16,8 @@ public class ObjectPoolerData : ScriptableObject {
     public ScaleMethod scaleMethod = ScaleMethod.None;
     public float minScale = 1f;
     public float maxScale = 1f;
-    public Vector3 rotationRange = 360f * Vector3.one;
+
+    public Vector3 rotationRange = 180f * Vector3.one;
     public bool isStatic = true;
 
     [Header("Spawn Areas")]

@@ -3,11 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum SpawnArea {
-  Agent = 0,
-  Random = 1,
-}
-
 public enum ScaleMethod {
   None,
   Equal,
@@ -16,6 +11,7 @@ public enum ScaleMethod {
 
 [ExecuteAlways]
 public class Spawner : MonoBehaviour {
+  public EnvironmentData env;
   public ObjectPooler objectPooler;
   public List<GameObject> spawnAreas;
 
