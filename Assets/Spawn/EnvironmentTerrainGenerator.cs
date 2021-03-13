@@ -27,7 +27,14 @@ public class EnvironmentTerrainGenerator : MonoBehaviour {
   private Vector3[] vertices;
   private int[] triangles;
 
+  // TODO: Trigger on events:
   void Awake() {
+    Generate();
+  }
+  void Enabled() {
+    Generate();
+  }
+  void Start() {
     Generate();
   }
 

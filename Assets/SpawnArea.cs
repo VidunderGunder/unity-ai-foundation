@@ -69,7 +69,7 @@ public class SpawnArea : MonoBehaviour {
     );
   }
 
-  // TODO: Activate on change, not in Update()
+  // TODO: Activate on difficulty change, not in Update()
   private void Update() {
     OnDifficultyChange();
   }
