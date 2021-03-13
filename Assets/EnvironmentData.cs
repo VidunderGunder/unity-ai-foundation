@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[ExecuteAlways]
 [CreateAssetMenu]
 public class EnvironmentData : ScriptableObject {
   [Header("Settings")]

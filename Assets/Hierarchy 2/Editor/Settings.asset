@@ -35,7 +35,7 @@ MonoBehaviour:
     comSelBGColor: {r: 1, g: 0.16078432, b: 0.16078432, a: 0.5529412}
     selectionColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 1}
     colorHeaderTitle: {r: 0.89019614, g: 0.89019614, b: 0.89019614, a: 1}
-    colorHeaderBackground: {r: 0.34509805, g: 0.34509805, b: 0.34509805, a: 1}
+    colorHeaderBackground: {r: 0.15686275, g: 0.15686275, b: 0.15686275, a: 1}
   playmodeTheme:
     colorRowEven: {r: 0.10388456, g: 0.10388456, b: 0.10388456, a: 1}
     colorRowOdd: {r: 0.10773214, g: 0.10773214, b: 0.10773214, a: 1}
@@ -74,7 +74,7 @@ MonoBehaviour:
   applyStaticTargetAndChild: 1
   applyTagTargetAndChild: 1
   applyLayerTargetAndChild: 1
-  headerPrefix: $h
+  headerPrefix: $h-
   headerDefaultTag: Untagged
   onlyDisplayWhileMouseEnter: 0
   contentDisplay: 0

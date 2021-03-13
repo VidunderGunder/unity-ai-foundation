@@ -176,7 +176,7 @@ GameObject:
   m_Layer: 0
   m_Name: Brain Left
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 2800000, guid: a37ee2197e4c94341a01e41ee0eeee85, type: 3}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -257,7 +257,7 @@ GameObject:
   m_Layer: 0
   m_Name: Brain Right
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 2800000, guid: a37ee2197e4c94341a01e41ee0eeee85, type: 3}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -336,7 +336,7 @@ GameObject:
   m_Layer: 0
   m_Name: Brain
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 2800000, guid: a37ee2197e4c94341a01e41ee0eeee85, type: 3}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -377,7 +377,7 @@ GameObject:
   m_Layer: 0
   m_Name: Brain Tissue
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 2800000, guid: a37ee2197e4c94341a01e41ee0eeee85, type: 3}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -825,14 +825,30 @@ PrefabInstance:
       propertyPath: depthMaterial
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 1034020035004213526, guid: 43054697fd69f884dad926b2fb1b3aa6, type: 3}
+      propertyPath: m_Icon
+      value: 
+      objectReference: {fileID: 2800000, guid: fcf6482748fb8434ead16235d04d878c, type: 3}
     - target: {fileID: 1382576630174108957, guid: 43054697fd69f884dad926b2fb1b3aa6, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.2855755
       objectReference: {fileID: 0}
+    - target: {fileID: 2263393861821175035, guid: 43054697fd69f884dad926b2fb1b3aa6, type: 3}
+      propertyPath: m_Icon
+      value: 
+      objectReference: {fileID: 2800000, guid: 8e49ec42051de5e4ca8b000506b203fd, type: 3}
+    - target: {fileID: 2921924929468343967, guid: 43054697fd69f884dad926b2fb1b3aa6, type: 3}
+      propertyPath: m_Icon
+      value: 
+      objectReference: {fileID: 2800000, guid: 788777cea71911f48b6e1199de449802, type: 3}
     - target: {fileID: 3702554589339051241, guid: 43054697fd69f884dad926b2fb1b3aa6, type: 3}
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4636431939904238384, guid: 43054697fd69f884dad926b2fb1b3aa6, type: 3}
+      propertyPath: m_Icon
+      value: 
+      objectReference: {fileID: 2800000, guid: 1116aa8089b17e44f9e413cd87745338, type: 3}
     - target: {fileID: 4636431939904238384, guid: 43054697fd69f884dad926b2fb1b3aa6, type: 3}
       propertyPath: m_Name
       value: Camera Module V2 (Raspberry Pi) Portrait

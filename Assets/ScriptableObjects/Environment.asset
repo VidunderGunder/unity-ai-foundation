@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Environment
   m_EditorClassIdentifier: 
   difficulty: 0
-  size: 100
+  size: 120
   randomTerrain: {fileID: 11400000, guid: 4510d5aca74e25644b1fea05c8ae496c, type: 2}
