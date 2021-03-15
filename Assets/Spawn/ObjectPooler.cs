@@ -5,7 +5,28 @@ using UnityEngine;
 [ExecuteAlways]
 [HelpURL("http://example.com/docs/MyComponent.html")]
 public class ObjectPooler : MonoBehaviour {
-  public ObjectPoolerData data;
+  // public ObjectPoolerData data;
+  public List<Pool> pools;
+  public Dictionary<string, Queue<GameObject>> poolQueues;
+  public Dictionary<string, PoolOptions> poolOptions;
+
+  [System.Serializable]
+  public class PoolOptions : SpawnOptions {
+    [Header("General")]
+    public string poolName;
+    public int amount;
+  }
+
+  [System.Serializable]
+  public class Pool : PoolOptions {
+    [Header("Objects to Spawn")]
+    public List<GameObject> prefabs;
+  }
+
+  [System.Serializable]
+  public class Spawnable {
+    public GameObject prefab;
+  }
 
   private void OnEnable() {
     Cleanup();
@@ -24,29 +45,29 @@ public class ObjectPooler : MonoBehaviour {
       }
     }
 
-    if (data.poolQueues == null) return;
+    if (poolQueues == null) return;
     if (Application.IsPlaying(gameObject)) {
-      foreach (var pool in data.poolQueues) {
+      foreach (var pool in poolQueues) {
         foreach (var obj in pool.Value) {
           Destroy(obj);
         }
       }
     } else {
-      foreach (var pool in data.poolQueues) {
+      foreach (var pool in poolQueues) {
         foreach (var obj in pool.Value) {
           DestroyImmediate(obj);
         }
       }
     }
-    data.poolQueues = null;
+    poolQueues = null;
   }
 
   [ContextMenu("Fill Pools")]
   public Dictionary<string, Queue<GameObject>> InitializePools() {
-    data.poolQueues = new Dictionary<string, Queue<GameObject>>();
-    data.poolOptions = new Dictionary<string, ObjectPoolerData.PoolOptions>();
+    poolQueues = new Dictionary<string, Queue<GameObject>>();
+    poolOptions = new Dictionary<string, PoolOptions>();
 
-    foreach (var pool in data.pools) {
+    foreach (var pool in pools) {
       if (pool.prefabs.Count.Equals(0)) break;
       Queue<GameObject> objectPool = new Queue<GameObject>();
 
@@ -64,11 +85,11 @@ public class ObjectPooler : MonoBehaviour {
         objectPool.Enqueue(obj);
       }
 
-      data.poolQueues.Add(pool.poolName, objectPool);
-      ObjectPoolerData.PoolOptions options = (ObjectPoolerData.PoolOptions)pool;
-      data.poolOptions.Add(pool.poolName, options);
+      poolQueues.Add(pool.poolName, objectPool);
+      PoolOptions options = (PoolOptions)pool;
+      poolOptions.Add(pool.poolName, options);
     }
 
-    return data.poolQueues;
+    return poolQueues;
   }
 }

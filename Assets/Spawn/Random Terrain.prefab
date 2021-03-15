@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 800071273537678839}
   m_Layer: 0
   m_Name: Random Terrain
-  m_TagString: Untagged
+  m_TagString: Terrain
   m_Icon: {fileID: 2800000, guid: 580d9267d248b8247803b0e4cdc7741f, type: 3}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -208,6 +208,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2061515788915897404, guid: 2dace4e7800237e44a08e0eb8cda518f, type: 3}
+      propertyPath: m_TagString
+      value: Terrain
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1375380686043282974, guid: 2dace4e7800237e44a08e0eb8cda518f, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 2dace4e7800237e44a08e0eb8cda518f, type: 3}
@@ -343,6 +347,10 @@ PrefabInstance:
     - target: {fileID: 2061515788915897404, guid: 2dace4e7800237e44a08e0eb8cda518f, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2061515788915897404, guid: 2dace4e7800237e44a08e0eb8cda518f, type: 3}
+      propertyPath: m_TagString
+      value: Terrain
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1375380686043282974, guid: 2dace4e7800237e44a08e0eb8cda518f, type: 3}

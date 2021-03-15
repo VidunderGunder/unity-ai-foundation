@@ -8,7 +8,9 @@ public class ObjectPoolerData : ScriptableObject {
   public Dictionary<string, Queue<GameObject>> poolQueues;
   public Dictionary<string, PoolOptions> poolOptions;
 
+  [System.Serializable]
   public class PoolOptions : SpawnOptions {
+    [Header("General")]
     public string poolName;
     public int amount;
   }

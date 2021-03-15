@@ -55,12 +55,13 @@ public static class VectorExtensions {
 
 public static class QuaternionExtensions {
   /// <summary>Spin the wheel!<br />Or...<br />Sphere, I guess?</summary>
-  public static void Randomize(this Quaternion r) {
+  public static Quaternion Randomize(this Quaternion r) {
     r = Quaternion.Euler(
       Random.Range(-180f, 180f),
       Random.Range(-180f, 180f),
       Random.Range(-180f, 180f)
     );
+    return r;
   }
   /// <summary>
   /// Randomizes x-, y- and z-rotation from the starting point.<br />
@@ -69,12 +70,13 @@ public static class QuaternionExtensions {
   /// y: (-max) - - - - - - (origin) - - - - - - (max)<br />
   /// z: (-max) - - - - - - (origin) - - - - - - (max)<br />
   /// </summary>
-  public static void Randomize(this Quaternion r, float maxRotation) {
+  public static Quaternion Randomize(this Quaternion r, float maxRotation) {
     r *= Quaternion.Euler(
       Random.Range(-maxRotation, maxRotation),
       Random.Range(-maxRotation, maxRotation),
       Random.Range(-maxRotation, maxRotation)
     );
+    return r;
   }
   /// <summary>
   /// Randomizes x-, y- and z-rotation from the starting point.<br />
@@ -83,11 +85,12 @@ public static class QuaternionExtensions {
   /// y: (-maxY) - - - - - - (origin) - - - - - - (maxY)<br />
   /// z: (-maxZ) - - - - - - (origin) - - - - - - (maxZ)<br />
   /// </summary>
-  public static void Randomize(this Quaternion r, Vector3 maxRotation) {
+  public static Quaternion Randomize(this Quaternion r, Vector3 maxRotation) {
     r *= Quaternion.Euler(
       Random.Range(-maxRotation.x, maxRotation.x),
       Random.Range(-maxRotation.y, maxRotation.y),
       Random.Range(-maxRotation.z, maxRotation.z)
     );
+    return r;
   }
 }

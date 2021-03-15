@@ -2,23 +2,22 @@
     "My Behavior": {
         "checkpoints": [
             {
-                "steps": 0,
-                "file_path": "results\\ppo\\My Behavior\\My Behavior-0.onnx",
+                "steps": 128,
+                "file_path": "results\\ppo\\My Behavior\\My Behavior-128.onnx",
                 "reward": null,
-                "creation_time": 1615300339.028822
+                "creation_time": 1615829628.1566422
             }
         ],
         "final_checkpoint": {
-            "steps": 0,
+            "steps": 128,
             "file_path": "results\\ppo\\My Behavior.onnx",
             "reward": null,
-            "creation_time": 1615300339.028822
+            "creation_time": 1615829628.1566422
         }
     },
     "metadata": {
         "stats_format_version": "0.2.0",
-        "mlagents_version": "0.23.0",
-        "torch_version": "1.7.1",
-        "tensorflow_version": -1
+        "mlagents_version": "0.24.1",
+        "torch_version": "1.7.1"
     }
 }

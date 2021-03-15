@@ -13,42 +13,47 @@ MonoBehaviour:
   m_Name: Random Object Pooler
   m_EditorClassIdentifier: 
   pools:
-  - poolName: Static Primitives
-    amount: 250
-    scaleMethod: 1
-    minScale: 5
-    maxScale: 10
+  - scaleMethod: 1
+    minScale: 4
+    maxScale: 20
     rotationRange: {x: 180, y: 180, z: 180}
     isStatic: 1
     allowedSpawnAreas:
     - Random
-    forbiddenSpawnAreas:
+    forbiddenSpawnAreas: []
+    noCollisions:
+    - Target
     - Agent
+    poolName: Static Primitives
+    amount: 20
     prefabs:
     - {fileID: 9192120376831604067, guid: f780ac6b4d9b5e345bdd7b9b9fdd4808, type: 3}
     - {fileID: 742007277917506354, guid: edbabf83f3e0e91468c12d7e34f20be8, type: 3}
-  - poolName: Dynamic Primitives
-    amount: 1000
-    scaleMethod: 1
-    minScale: 1
-    maxScale: 2
+  - scaleMethod: 1
+    minScale: 0.75
+    maxScale: 3
     rotationRange: {x: 180, y: 180, z: 180}
     isStatic: 0
     allowedSpawnAreas:
     - Random
-    forbiddenSpawnAreas:
+    forbiddenSpawnAreas: []
+    noCollisions:
+    - Target
     - Agent
+    poolName: Dynamic Primitives
+    amount: 100
     prefabs:
     - {fileID: 9192120376831604067, guid: f780ac6b4d9b5e345bdd7b9b9fdd4808, type: 3}
     - {fileID: 742007277917506354, guid: edbabf83f3e0e91468c12d7e34f20be8, type: 3}
-  - poolName: Terrains
-    amount: 1
-    scaleMethod: 0
+  - scaleMethod: 0
     minScale: 1
     maxScale: 1
     rotationRange: {x: 0, y: 0, z: 0}
     isStatic: 1
     allowedSpawnAreas: []
     forbiddenSpawnAreas: []
+    noCollisions: []
+    poolName: Terrains
+    amount: 1
     prefabs:
     - {fileID: 788263648547665510, guid: eddc37946488d2a4e9d445764697d94f, type: 3}

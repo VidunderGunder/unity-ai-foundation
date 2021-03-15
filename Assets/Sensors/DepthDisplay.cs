@@ -11,9 +11,6 @@ public class DepthDisplay : MonoBehaviour {
 
   void Awake() {
     if (cam == null) cam = GetComponent<Camera>();
-  }
-
-  void Update() {
     cam.pixelRect = new Rect(0, 0, x, y);
     cam.aspect = aspectRatio;
   }

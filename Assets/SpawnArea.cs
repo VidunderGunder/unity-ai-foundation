@@ -42,16 +42,6 @@ public class SpawnArea : MonoBehaviour {
     float difficultyPerStage = 1f / stages.Count; // <= 1f
     float progressThroughCurrentStage = (squishedDifficulty - difficultyPerStage * fromStage) * stages.Count; // in range 0-1f
 
-    Debug.Log(" ");
-    Debug.Log("SPAWN AREA DEBUG");
-    Debug.Log("-------------------------------");
-    Debug.Log("fromStage: " + fromStage);
-    Debug.Log("toStage: " + toStage);
-    Debug.Log("difficultyPerStage: " + difficultyPerStage);
-    Debug.Log("progressThroughCurrentStage: " + progressThroughCurrentStage);
-    Debug.Log("-------------------------------");
-    Debug.Log(" ");
-
     transform.position = Vector3.Lerp(
         stages[fromStage].position,
         stages[toStage].position,
