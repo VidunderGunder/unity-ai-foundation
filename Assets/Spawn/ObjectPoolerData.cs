@@ -8,21 +8,9 @@ public class ObjectPoolerData : ScriptableObject {
   public Dictionary<string, Queue<GameObject>> poolQueues;
   public Dictionary<string, PoolOptions> poolOptions;
 
-  public class PoolOptions {
+  public class PoolOptions : SpawnOptions {
     public string poolName;
     public int amount;
-
-    [Header("Transform")]
-    public ScaleMethod scaleMethod = ScaleMethod.None;
-    public float minScale = 1f;
-    public float maxScale = 1f;
-
-    public Vector3 rotationRange = 180f * Vector3.one;
-    public bool isStatic = true;
-
-    [Header("Spawn Areas")]
-    public List<string> allowedSpawnAreas;
-    public List<string> forbiddenSpawnAreas;
   }
 
   [System.Serializable]
