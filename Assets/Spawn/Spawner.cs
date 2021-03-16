@@ -35,9 +35,6 @@ public class Spawner : MonoBehaviour {
     public float? originalMass = null;
   }
 
-  public Material debugMaterialSuccess;
-  public Material debugMaterialFail;
-
   private void Start() {
     Spawn();
   }
@@ -56,9 +53,7 @@ public class Spawner : MonoBehaviour {
 
   public void SpawnObject(Spawnable thing) {
     ResetObject(thing.transform.gameObject);
-    // thing.transform.gameObject.SetActive(true);
     RandomizeObject(thing);
-    // thing.transform.gameObject.SetActive(true);
   }
 
   public void DisableAllPoolObjects() {
@@ -153,13 +148,12 @@ public class Spawner : MonoBehaviour {
 
         Collider[] collisions = Physics.OverlapBox(
           tf.position,
-          tf.lossyScale
+          tf.lossyScale,
+          tf.rotation
         );
 
         foreach (var forbidden in options.avoid) {
           foreach (var collision in collisions) {
-            Debug.Log(collision.name, collision);
-            Debug.Log(forbidden.name, forbidden);
             if (collision.Equals(forbidden)) {
               forbiddenCollisions++;
             }
@@ -171,15 +165,6 @@ public class Spawner : MonoBehaviour {
           break;
         }
       }
-
-      // if (success) {
-      //   // Debug.Log("Failed completely." + " (" + tf.name + ")");
-      //   // tf.gameObject.SetActive(false);
-      //   if (debugMaterialSuccess != null) tf.GetComponent<Renderer>().material = debugMaterialSuccess;
-      // } else {
-      //   if (debugMaterialFail != null) tf.GetComponent<Renderer>().material = debugMaterialFail;
-      // }
-
     }
 
     return tf.position;

@@ -12,9 +12,9 @@ public class VehicleController : MonoBehaviour, IInputActionAssetProvider {
   public Rigidbody body;
   public Transform centerOfMass;
   [Range(0, 90f)] public float maxSteerAngle = 30f;
-  [Range(0, 1000f)] public float maxTorque = 125f;
-  [Range(0, 10000f)] public float brakeTorque = 2000f;
-  [Range(0, 100000f)] public float handbrabrakeTorque = 10000f;
+  [Range(0, 2000f)] public float maxTorque = 2500f;
+  [Range(0, 10000f)] public float brakeTorque = 10000f;
+  [Range(0, 20000f)] public float handbrabrakeTorque = 10000f;
   [Range(0, 1000f)] public float maxRpm = 250f;
   [Range(0, 5f)] public float boostModifier = 2.5f;
   public bool boostAlwaysOn = false;
@@ -38,12 +38,12 @@ public class VehicleController : MonoBehaviour, IInputActionAssetProvider {
     actions.ActorVehicle.Movement.started += OnMovement;
     actions.ActorVehicle.Movement.performed += OnMovement;
     actions.ActorVehicle.Movement.canceled += OnMovement;
-    actions.ActorVehicle.Boost.started += OnBoost;
-    actions.ActorVehicle.Boost.performed += OnBoost;
-    actions.ActorVehicle.Boost.canceled += OnBoost;
-    actions.ActorVehicle.Handbrake.started += OnHandbrake;
-    actions.ActorVehicle.Handbrake.performed += OnHandbrake;
-    actions.ActorVehicle.Handbrake.canceled += OnHandbrake;
+    // actions.ActorVehicle.Boost.started += OnBoost;
+    // actions.ActorVehicle.Boost.performed += OnBoost;
+    // actions.ActorVehicle.Boost.canceled += OnBoost;
+    // actions.ActorVehicle.Handbrake.started += OnHandbrake;
+    // actions.ActorVehicle.Handbrake.performed += OnHandbrake;
+    // actions.ActorVehicle.Handbrake.canceled += OnHandbrake;
   }
 
   // Required for Input Actuator (autamatic machine learning output)
@@ -55,7 +55,7 @@ public class VehicleController : MonoBehaviour, IInputActionAssetProvider {
   void OnAwake() {
     // https://docs.unity3d.com/ScriptReference/WheelCollider.ConfigureVehicleSubsteps.html
     WheelCollider wheelColliders = GetComponentInChildren<WheelCollider>();
-    wheelColliders.ConfigureVehicleSubsteps(2f, 8, 12);
+    wheelColliders.ConfigureVehicleSubsteps(2f, 12, 16);
     body.centerOfMass = centerOfMass.position;
   }
 

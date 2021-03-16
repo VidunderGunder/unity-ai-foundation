@@ -22,7 +22,8 @@ public class VehicleAgent : GeneralAgent {
   [SerializeField] private Transform target;
   [SerializeField] private Rigidbody agentRigidbody;
 
-  [System.NonSerialized] public Vector3 agentStartPosition;
+  // TODO: Make more robust (direct reference to environment)
+  private Vector3 environmentOrigin;
 
   private float maxDistanceFromStart;
   private float maxDistanceFromStartSq;
@@ -48,6 +49,11 @@ public class VehicleAgent : GeneralAgent {
 
     maxDistanceFromStart = 1.41f * 1.05f * env.size / 2;
     maxDistanceFromStartSq = maxDistanceFromStart * maxDistanceFromStart;
+  }
+
+  private void Start() {
+    // TODO: Make more robust (direct reference to environment)
+    environmentOrigin = transform.parent.position;
   }
 
   public override void OnEpisodeBegin() {
@@ -93,11 +99,11 @@ public class VehicleAgent : GeneralAgent {
     hasStopped = agentRigidbody.velocity.sqrMagnitude < 0.0002f;
     bool success = hasStopped & atTarget;
 
-    bool agentBelowGround = transform.position.y < agentStartPosition.y - 15f;
-    bool agentOutsideArea = (transform.position - agentStartPosition).sqrMagnitude > maxDistanceFromStartSq;
+    bool agentBelowGround = transform.position.y < environmentOrigin.y - 15f;
+    bool agentOutsideArea = (transform.position - environmentOrigin).sqrMagnitude > maxDistanceFromStartSq;
 
-    bool targetBelowGround = target.transform.position.y < agentStartPosition.y - 15f;
-    bool targetOutsideArea = (target.transform.position - agentStartPosition).sqrMagnitude > maxDistanceFromStartSq;
+    bool targetBelowGround = target.transform.position.y < environmentOrigin.y - 15f;
+    bool targetOutsideArea = (target.transform.position - environmentOrigin).sqrMagnitude > maxDistanceFromStartSq;
 
     bool error =
       agentBelowGround |

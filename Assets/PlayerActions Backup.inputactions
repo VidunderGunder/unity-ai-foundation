@@ -12,13 +12,40 @@
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Boost",
+                    "type": "Button",
+                    "id": "f36848dc-6569-42de-9a1d-20a126070942",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Handbrake",
+                    "type": "Button",
+                    "id": "4e76911e-e336-47a2-ad22-a2d93a500262",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
                 {
+                    "name": "",
+                    "id": "f5307c53-41ea-416a-a5b8-d76faf685b0c",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard and Mouse",
+                    "action": "Boost",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
                     "name": "WASD",
-                    "id": "d85e3a96-d7c5-41c3-9cc3-88f79fbb21b6",
-                    "path": "2DVector",
+                    "id": "2932f319-d5fb-4c61-b5d8-9f319ac08af0",
+                    "path": "2DVector(mode=2)",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -28,7 +55,7 @@
                 },
                 {
                     "name": "up",
-                    "id": "9d27f672-4ce6-444b-91c9-f4301d799f36",
+                    "id": "f8cf6418-d7a8-44f9-bcc7-6ee745a5864b",
                     "path": "<Keyboard>/w",
                     "interactions": "",
                     "processors": "",
@@ -39,7 +66,7 @@
                 },
                 {
                     "name": "down",
-                    "id": "270856c0-2318-4177-8a09-962873460fdc",
+                    "id": "6c458c5c-da09-4e04-879c-d9e2f73cee3b",
                     "path": "<Keyboard>/s",
                     "interactions": "",
                     "processors": "",
@@ -50,7 +77,7 @@
                 },
                 {
                     "name": "left",
-                    "id": "04c63da1-ff31-4305-9f6e-a0ff8e94c299",
+                    "id": "59d06f9d-474c-4fb4-a374-1cca531dfd50",
                     "path": "<Keyboard>/a",
                     "interactions": "",
                     "processors": "",
@@ -61,7 +88,7 @@
                 },
                 {
                     "name": "right",
-                    "id": "498dc5d9-3cae-43ca-8882-10dc5c2563be",
+                    "id": "a3ca8ba2-a564-446e-a715-c804349424dd",
                     "path": "<Keyboard>/d",
                     "interactions": "",
                     "processors": "",
@@ -72,18 +99,18 @@
                 },
                 {
                     "name": "Arrows",
-                    "id": "68647747-3d9a-409d-823b-4ea33b8db293",
-                    "path": "2DVector",
+                    "id": "405c14b3-46db-495f-b860-ae1cafe81dc5",
+                    "path": "2DVector(mode=2)",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Keyboard and Mouse",
                     "action": "Movement",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "up",
-                    "id": "9f79eba2-318b-4eec-96e3-a5470ef1e6e3",
+                    "id": "4a0c0a70-9d08-42fe-9aaf-0d28f474cc98",
                     "path": "<Keyboard>/upArrow",
                     "interactions": "",
                     "processors": "",
@@ -94,7 +121,7 @@
                 },
                 {
                     "name": "down",
-                    "id": "065e3428-eef2-4787-a035-17349227a12f",
+                    "id": "fd5105fc-87a9-4735-9983-416d7678556f",
                     "path": "<Keyboard>/downArrow",
                     "interactions": "",
                     "processors": "",
@@ -105,7 +132,7 @@
                 },
                 {
                     "name": "left",
-                    "id": "fd8e7174-f8c9-451e-b331-1fb0a897a4b5",
+                    "id": "f2689f1a-de95-408b-8855-9f4b4b3230f6",
                     "path": "<Keyboard>/leftArrow",
                     "interactions": "",
                     "processors": "",
@@ -116,7 +143,7 @@
                 },
                 {
                     "name": "right",
-                    "id": "d84e5e2f-4138-4a5f-a4ff-22e26a64b283",
+                    "id": "a12f4138-caea-4b02-8ff8-6a18b1e022ed",
                     "path": "<Keyboard>/rightArrow",
                     "interactions": "",
                     "processors": "",
@@ -124,6 +151,17 @@
                     "action": "Movement",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "db5527ea-13f1-4bc1-9c85-849e40aa6b6d",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard and Mouse",
+                    "action": "Handbrake",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

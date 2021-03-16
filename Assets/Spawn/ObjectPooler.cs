@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[ExecuteAlways]
 [HelpURL("http://example.com/docs/MyComponent.html")]
 public class ObjectPooler : MonoBehaviour {
   // public ObjectPoolerData data;
@@ -31,6 +30,10 @@ public class ObjectPooler : MonoBehaviour {
   private void OnEnable() {
     Cleanup();
     InitializePools();
+  }
+
+  private void OnDisable() {
+    Cleanup();
   }
 
   [ContextMenu("Clear Pool & Delete Children")]
