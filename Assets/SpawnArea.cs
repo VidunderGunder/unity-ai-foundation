@@ -13,7 +13,7 @@ public class SpawnArea : MonoBehaviour {
   }
 
   private void LerpTransformByDifficulty() {
-    if (stages.Count.Equals(0)) return;
+    if (stages.Count <= 1) return;
     if (env.difficulty == 0) {
       transform.position = stages[0].position;
       transform.rotation = stages[0].rotation;

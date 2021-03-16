@@ -1,4 +1,3 @@
-// using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,8 +12,8 @@ public class SpawnOptions {
   public bool isStatic = true;
 
   [Header("Spawn Areas")]
-  public List<GameObject> allowedSpawnAreas;
-  public List<GameObject> forbiddenSpawnAreas;
+  public List<Collider> allow;
+  public List<Collider> avoid;
 }
 
 public enum ScaleMethod {
@@ -23,12 +22,10 @@ public enum ScaleMethod {
   Random,
 }
 
-// [ExecuteAlways]
 public class Spawner : MonoBehaviour {
   public EnvironmentData env;
   public List<Spawnable> objects;
   public ObjectPooler objectPooler;
-  public List<GameObject> spawnAreas;
 
   [System.Serializable]
   public class Spawnable : SpawnOptions {
@@ -38,20 +35,18 @@ public class Spawner : MonoBehaviour {
     public float? originalMass = null;
   }
 
+  public Material debugMaterialSuccess;
+  public Material debugMaterialFail;
+
   private void Start() {
     Spawn();
   }
 
   public void Spawn() {
+    DisableAllPoolObjects();
     SpawnAllObjects();
     SpawnAllPoolObjects();
   }
-
-  // public void Spawn() {
-  //   foreach (var pool in objectPooler.pools) {
-  //     StartCoroutine(PeriodicObjectPoolSpawn(pool.poolName, 0.001f));
-  //   }
-  // }
 
   public void SpawnAllObjects() {
     foreach (var thing in objects) {
@@ -61,20 +56,26 @@ public class Spawner : MonoBehaviour {
 
   public void SpawnObject(Spawnable thing) {
     ResetObject(thing.transform.gameObject);
-    thing.transform.gameObject.SetActive(true);
+    // thing.transform.gameObject.SetActive(true);
     RandomizeObject(thing);
+    // thing.transform.gameObject.SetActive(true);
+  }
+
+  public void DisableAllPoolObjects() {
+    foreach (Transform child in transform) {
+      child.gameObject.SetActive(false);
+    }
   }
 
   public void SpawnAllPoolObjects() {
     foreach (var pool in objectPooler.pools) {
-      for (; ; ) {
-        if (SpawnFromPool(pool.poolName) == null) break;
+      for (int i = 0; i < pool.amount; i++) {
+        SpawnFromPool(pool.poolName);
       }
     }
   }
 
   public GameObject SpawnFromPool(string poolName, Vector3? position = null, Quaternion? rotation = null) {
-
     if (objectPooler == null || objectPooler.poolQueues == null) return null;
     if (!objectPooler.poolQueues.ContainsKey(poolName)) {
       Debug.Log("Pool named \"" + poolName + "\" doesn't exist.");
@@ -91,22 +92,9 @@ public class Spawner : MonoBehaviour {
     ResetObject(obj);
     RandomizePoolObject(obj, objectPooler.poolOptions[poolName]);
 
-    // data.poolDictionary[pool].Enqueue(objectToSpawn);
+    objectPooler.poolQueues[poolName].Enqueue(obj);
 
     return obj;
-  }
-
-  private GameObject GetSpawnAreaFromPool(string areaName) {
-    GameObject area = null;
-
-    foreach (var a in spawnAreas) {
-      if (a.name == areaName) {
-        area = a;
-        break;
-      }
-    }
-
-    return area;
   }
 
   private void RandomizeObject(Spawnable thing) {
@@ -140,53 +128,63 @@ public class Spawner : MonoBehaviour {
       options.maxScale,
       options.scaleMethod
     );
-
-    if (options.allowedSpawnAreas.Count > 0) {
-      GameObject area = options.allowedSpawnAreas[Random.Range(0, options.allowedSpawnAreas.Count)];
-
-      if (area == null) {
-        Debug.Log("Spawn area " + area.name + " is not available.");
-      } else {
-        var allowedBounds = area.GetComponent<Collider>().bounds;
-        int maxAttempts = 10;
-        int attempts = 0;
-        bool success = false;
-
-        for (var attempt = 0; attempt < maxAttempts; attempt++) {
-          attempts++;
-          tf.position = RandomPointWithinBounds(allowedBounds);
-          var objectBounds = tf.gameObject.GetComponent<Collider>().bounds;
-
-          if (options.forbiddenSpawnAreas.Count == 0) {
-            success = true;
-            break;
-          }
-
-          foreach (var forbiddenArea in options.forbiddenSpawnAreas) {
-            if (forbiddenArea == null) Debug.Log("Couldn't get Forbidden Area" + forbiddenArea.name);
-            Bounds forbiddenBounds = forbiddenArea.GetComponent<Collider>().bounds;
-
-            if (objectBounds.Intersects(forbiddenBounds)) {
-              // Resume
-            } else {
-              success = true;
-              break;
-            }
-          }
-
-          if (success) break;
-        }
-
-
-        if (!success) tf.gameObject.SetActive(false);
-      }
-    }
+    tf.position = GetAllowedRandomPosition(tf, options);
 
     return tf;
   }
 
-  // New functions
-  // ----------------------------------------------------------------------------
+  private Vector3 GetAllowedRandomPosition(Transform tf, SpawnOptions options) {
+    if (options.allow.Count > 0) {
+      Collider allowed = options.allow[Random.Range(0, options.allow.Count)];
+
+      if (options.avoid.Count == 0) {
+        tf.position = RandomPointWithinBounds(allowed.bounds);
+        return tf.position;
+      }
+
+      int maxAttempts = 25;
+      bool success = false;
+
+      for (var attempt = 0; attempt < maxAttempts; attempt++) {
+        int forbiddenCollisions = 0;
+
+        if (success) break;
+        tf.position = RandomPointWithinBounds(allowed.bounds);
+
+        Collider[] collisions = Physics.OverlapBox(
+          tf.position,
+          tf.lossyScale
+        );
+
+        foreach (var forbidden in options.avoid) {
+          foreach (var collision in collisions) {
+            Debug.Log(collision.name, collision);
+            Debug.Log(forbidden.name, forbidden);
+            if (collision.Equals(forbidden)) {
+              forbiddenCollisions++;
+            }
+          }
+        }
+
+        if (forbiddenCollisions.Equals(0)) {
+          success = true;
+          break;
+        }
+      }
+
+      // if (success) {
+      //   // Debug.Log("Failed completely." + " (" + tf.name + ")");
+      //   // tf.gameObject.SetActive(false);
+      //   if (debugMaterialSuccess != null) tf.GetComponent<Renderer>().material = debugMaterialSuccess;
+      // } else {
+      //   if (debugMaterialFail != null) tf.GetComponent<Renderer>().material = debugMaterialFail;
+      // }
+
+    }
+
+    return tf.position;
+  }
+
   public Vector3 RandomScale(Vector3 scale, float min, float max, ScaleMethod method = ScaleMethod.None) {
     switch (method) {
       case ScaleMethod.None:
@@ -200,55 +198,6 @@ public class Spawner : MonoBehaviour {
         return scale;
     }
   }
-
-  // // TODO: Spawn in spawn areas
-  // // --------------------------
-  // if (options.allowedSpawnAreas.Count > 0) {
-  //   string areaName = options.allowedSpawnAreas[Random.Range(0, options.allowedSpawnAreas.Count)];
-  //   GameObject area = GetSpawnAreaFromPool(areaName);
-
-  //   if (area == null) {
-  //     Debug.Log("Spawn area " + areaName + " is not available.");
-  //   } else {
-  //     var allowedBounds = area.GetComponent<Renderer>().bounds;
-  //     int maxAttempts = 10;
-  //     int attempts = 0;
-  //     bool success = false;
-
-  //     for (var attempt = 0; attempt < maxAttempts; attempt++) {
-  //       obj.transform.position = RandomPointWithinBounds(allowedBounds);
-  //       var objectBounds = obj.GetComponent<Renderer>().bounds;
-
-  //       if (options.forbiddenSpawnAreas.Count == 0) {
-  //         success = true;
-  //         break;
-  //       }
-
-  //       foreach (var forbiddenAreaName in options.forbiddenSpawnAreas) {
-  //         GameObject forbiddenArea = GetSpawnAreaFromPool(forbiddenAreaName);
-  //         if (forbiddenArea == null) Debug.Log("Couldn't get Forbidden Area" + forbiddenAreaName);
-  //         Bounds forbiddenBounds = forbiddenArea.GetComponent<Renderer>().bounds;
-
-  //         if (objectBounds.Intersects(forbiddenBounds)) {
-  //           // Resume
-  //         } else {
-  //           success = true;
-  //           break;
-  //         }
-  //       }
-  //       if (success) break;
-  //     }
-
-  //     if (!success) obj.SetActive(false);
-  //   }
-  // }
-  // // --------------------------
-
-  // if (!options.isStatic) {
-  //   Rigidbody rb = obj.GetComponent<Rigidbody>();
-  //   if (rb != null) rb.mass *= obj.transform.localScale.sqrMagnitude;
-  // }
-  // ----------------------------------------------------------------------------
 
   void ResetObject(GameObject obj) {
     obj.transform.localPosition = Vector3.zero;
@@ -279,12 +228,5 @@ public class Spawner : MonoBehaviour {
      Random.Range(bounds.min.y, bounds.max.y),
      Random.Range(bounds.min.z, bounds.max.z)
    );
-  }
-
-  IEnumerator PeriodicObjectPoolSpawn(string pool, float period) {
-    for (; ; ) {
-      if (objectPooler == null || SpawnFromPool(pool) == null) yield break;
-      yield return new WaitForSeconds(period);
-    }
   }
 }
