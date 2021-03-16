@@ -4434,8 +4434,8 @@ Camera:
     serializedVersion: 2
     x: 0
     y: 0
-    width: 1
-    height: 1
+    width: 0.023696683
+    height: 0.056338027
   near clip plane: 0.1
   far clip plane: 1000
   field of view: 62.36995
@@ -4446,7 +4446,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 215
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 8400000, guid: 2989273e6d074574f82775a88edeab0b, type: 2}
+  m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 0
@@ -5298,8 +5298,8 @@ GameObject:
   m_Component:
   - component: {fileID: 3201023307530718462}
   - component: {fileID: 7043661514958284812}
-  - component: {fileID: 1416682427291386753}
   - component: {fileID: 6115468027281126688}
+  - component: {fileID: 1416682427291386753}
   m_Layer: 0
   m_Name: RPi Camera Module V2 Sensor Depth
   m_TagString: Agent
@@ -5354,7 +5354,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 215
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 8400000, guid: 36971f009c8e7d642815dc2afa2fa962, type: 2}
+  m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 0
@@ -5364,6 +5364,20 @@ Camera:
   m_OcclusionCulling: 0
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!114 &6115468027281126688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8458245079302169572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e63e83dd6bae394386d0e31000ba70d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  depthCamera: {fileID: 7043661514958284812}
+  depthMaterial: {fileID: 2100000, guid: 0bd5efcc16a0ce0438245e114281c87d, type: 2}
 --- !u!114 &1416682427291386753
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5380,17 +5394,3 @@ MonoBehaviour:
   x: 30
   y: 40
   aspectRatio: 0.75
---- !u!114 &6115468027281126688
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8458245079302169572}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e63e83dd6bae394386d0e31000ba70d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  depthCamera: {fileID: 7043661514958284812}
-  depthMaterial: {fileID: 2100000, guid: 0bd5efcc16a0ce0438245e114281c87d, type: 2}
