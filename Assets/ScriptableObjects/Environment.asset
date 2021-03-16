@@ -14,4 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   difficulty: 0
   size: 175
-  randomTerrain: {fileID: 11400000, guid: 4510d5aca74e25644b1fea05c8ae496c, type: 2}
+  prefab: {fileID: 3082945226797900518, guid: 5ffd47da2d75dfb4098c2ce26487e897, type: 3}
+  skipFirstInstance: 1
+  instances: {x: 5, y: 1, z: 3}
+  startPosition: {x: 0, y: 0, z: 0}
+  margin: 5
