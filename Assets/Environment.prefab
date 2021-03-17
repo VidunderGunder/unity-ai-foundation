@@ -1388,9 +1388,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3082945227171240821}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -4}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 18.75}
+  m_LocalScale: {x: 52.500004, y: 1, z: 18.75}
   m_Children: []
   m_Father: {fileID: 3082945228655370538}
   m_RootOrder: 1
@@ -2483,9 +2483,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3082945228000591468}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -12}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -18.75}
+  m_LocalScale: {x: 18.75, y: 1, z: 18.75}
   m_Children: []
   m_Father: {fileID: 3082945228655370538}
   m_RootOrder: 0
@@ -2691,7 +2691,7 @@ Transform:
   m_GameObject: {fileID: 3082945228191994596}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 175, y: 1, z: 175}
+  m_LocalScale: {x: 75, y: 1, z: 75}
   m_Children:
   - {fileID: 3082945228246552743}
   - {fileID: 3082945227518445755}
@@ -2997,7 +2997,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3082945228353375069}
   serializedVersion: 2
-  m_Mass: 1500
+  m_Mass: 875
   m_Drag: 0
   m_AngularDrag: 0
   m_UseGravity: 1
@@ -3072,7 +3072,7 @@ MonoBehaviour:
   agentParameters:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
-  MaxStep: 3000
+  MaxStep: 1000
   spawner: {fileID: 1162580839547646710}
   env: {fileID: 11400000, guid: d2dbdef77e4169c42baa3ed5761025dd, type: 2}
   target: {fileID: 2187793450984618157}
@@ -3244,8 +3244,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Camera: {fileID: 6207630803524557416}
   m_SensorName: RPiv2RGB
-  m_Width: 32
-  m_Height: 32
+  m_Width: 30
+  m_Height: 40
   m_Grayscale: 1
   m_ObservationStacks: 3
   m_Compression: 1
@@ -3263,8 +3263,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Camera: {fileID: 7043661514958284812}
   m_SensorName: RPiv2Depth
-  m_Width: 32
-  m_Height: 32
+  m_Width: 30
+  m_Height: 40
   m_Grayscale: 1
   m_ObservationStacks: 3
   m_Compression: 1
@@ -3425,7 +3425,7 @@ Transform:
   m_GameObject: {fileID: 3082945228416199614}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 175, y: 0, z: 175}
+  m_LocalScale: {x: 75, y: 1, z: 75}
   m_Children: []
   m_Father: {fileID: 3082945228655370538}
   m_RootOrder: 2
@@ -4220,7 +4220,8 @@ MonoBehaviour:
     - {fileID: 935760777205248000}
     - {fileID: 3486121088257077851}
     poolName: Static Primitives
-    amount: 100
+    amount: 15
+    scaleAmountWithDifficulty: 1
     prefabs:
     - {fileID: 9192120376831604067, guid: f780ac6b4d9b5e345bdd7b9b9fdd4808, type: 3}
     - {fileID: 742007277917506354, guid: edbabf83f3e0e91468c12d7e34f20be8, type: 3}
@@ -4228,13 +4229,15 @@ MonoBehaviour:
     minScale: 0.75
     maxScale: 3
     rotationRange: {x: 180, y: 180, z: 180}
-    isStatic: 0
-    allow: []
+    isStatic: 1
+    allow:
+    - {fileID: 3082945228416199608}
     avoid:
     - {fileID: 935760777205248000}
     - {fileID: 3486121088257077851}
     poolName: Dynamic Primitives
-    amount: 0
+    amount: 5
+    scaleAmountWithDifficulty: 1
     prefabs:
     - {fileID: 9192120376831604067, guid: f780ac6b4d9b5e345bdd7b9b9fdd4808, type: 3}
     - {fileID: 742007277917506354, guid: edbabf83f3e0e91468c12d7e34f20be8, type: 3}
@@ -4247,6 +4250,7 @@ MonoBehaviour:
     avoid: []
     poolName: Terrains
     amount: 1
+    scaleAmountWithDifficulty: 0
     prefabs:
     - {fileID: 788263648547665510, guid: eddc37946488d2a4e9d445764697d94f, type: 3}
 --- !u!114 &1162580839547646710
@@ -4434,14 +4438,14 @@ Camera:
     serializedVersion: 2
     x: 0
     y: 0
-    width: 0.023696683
-    height: 0.056338027
+    width: 0.022796353
+    height: 0.062111802
   near clip plane: 0.1
   far clip plane: 1000
   field of view: 62.36995
   orthographic: 0
   orthographic size: 5
-  m_Depth: 0
+  m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 215
@@ -5342,14 +5346,14 @@ Camera:
     serializedVersion: 2
     x: 0
     y: 0
-    width: 1
-    height: 1
+    width: 0.022796353
+    height: 0.062111802
   near clip plane: 0.1
   far clip plane: 25
   field of view: 62.36995
   orthographic: 0
   orthographic size: 5
-  m_Depth: 0
+  m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 215

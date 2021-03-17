@@ -7,7 +7,6 @@ using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 
 public class VehicleAgent : GeneralAgent {
-  [Header("Dependencies")]
   // public Transform target;
 
   // public override void CollectObservations(VectorSensor sensor) {
@@ -17,6 +16,7 @@ public class VehicleAgent : GeneralAgent {
   [System.NonSerialized] public float minCumulativeReward = -2f;
   [System.NonSerialized] public float maxCumulativeReward = 3f;
 
+  [Header("Dependencies")]
   [SerializeField] private Spawner spawner;
   [SerializeField] private EnvironmentData env;
   [SerializeField] private Transform target;

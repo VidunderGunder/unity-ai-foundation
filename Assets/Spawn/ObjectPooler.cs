@@ -14,6 +14,7 @@ public class ObjectPooler : MonoBehaviour {
     [Header("General")]
     public string poolName;
     public int amount;
+    public bool scaleAmountWithDifficulty = false;
   }
 
   [System.Serializable]

@@ -52,7 +52,7 @@ public class Spawner : MonoBehaviour {
   }
 
   public void SpawnObject(Spawnable thing) {
-    ResetObject(thing.transform.gameObject);
+    ResetSpawnable(thing);
     RandomizeObject(thing);
   }
 
@@ -64,7 +64,16 @@ public class Spawner : MonoBehaviour {
 
   public void SpawnAllPoolObjects() {
     foreach (var pool in objectPooler.pools) {
-      for (int i = 0; i < pool.amount; i++) {
+      int amount =
+        pool.scaleAmountWithDifficulty
+          ? env.difficulty <= 0.05f
+            ? 0
+            : Random.Range(
+                0,
+                (int)(pool.amount * env.difficulty * env.difficulty) + 1
+              )
+          : pool.amount;
+      for (int i = 0; i < amount; i++) {
         SpawnFromPool(pool.poolName);
       }
     }
@@ -165,7 +174,10 @@ public class Spawner : MonoBehaviour {
           break;
         }
       }
+
+      if (!success) tf.gameObject.SetActive(false);
     }
+
 
     return tf.position;
   }
@@ -196,6 +208,18 @@ public class Spawner : MonoBehaviour {
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
       }
+    }
+  }
+
+  private void ResetSpawnable(Spawnable thing) {
+    thing.transform.localPosition = Vector3.zero;
+    thing.transform.position = transform.position;
+    thing.transform.localRotation = Quaternion.identity;
+    thing.transform.rotation = transform.rotation;
+
+    if (thing.rigidbody != null) {
+      thing.rigidbody.velocity = Vector3.zero;
+      thing.rigidbody.angularVelocity = Vector3.zero;
     }
   }
 
