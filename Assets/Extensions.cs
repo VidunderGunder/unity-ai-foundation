@@ -11,6 +11,34 @@ public static class TransformExtensions {
   public static Vector3 RelativeVectorTo(this Transform self, Vector3 target) {
     return (Quaternion.Inverse(self.rotation) * (target - self.position));
   }
+
+  /// <summary>Finds relative vector pointing from self (local origin) to target.</summary>
+  public static Vector3 PlaceOnGround(this Transform self, LayerMask ground, float offset = 0) {
+    float radius;
+
+    if (self.GetComponent<Collider>() != null) {
+      radius = self.GetComponent<Collider>().bounds.extents.y;
+    } else {
+      radius = 1f;
+    }
+
+    RaycastHit hit;
+
+    if (
+      Physics.Raycast(
+        new Ray(self.position + Vector3.up * 50, Vector3.down),
+        out hit,
+        Mathf.Infinity,
+        ground
+      )
+    ) {
+      if (hit.collider != null) {
+        self.position = new Vector3(self.position.x, hit.point.y + radius + offset, self.position.z);
+      }
+    }
+
+    return self.position;
+  }
 }
 
 public static class RigidbodyExtensions {

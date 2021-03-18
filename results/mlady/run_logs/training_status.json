@@ -2,34 +2,22 @@
     "My Behavior": {
         "checkpoints": [
             {
-                "steps": 88716,
-                "file_path": "results\\mlady\\My Behavior\\My Behavior-88716.onnx",
-                "reward": 0.10712110932299321,
-                "creation_time": 1615974184.881553
-            },
-            {
-                "steps": 107537,
-                "file_path": "results\\mlady\\My Behavior\\My Behavior-107537.onnx",
-                "reward": 0.5450572228934514,
-                "creation_time": 1615974361.332393
-            },
-            {
-                "steps": 107537,
-                "file_path": "results\\mlady\\My Behavior\\My Behavior-107537.onnx",
-                "reward": null,
-                "creation_time": 1615974530.8419228
+                "steps": 1950,
+                "file_path": "results\\mlady\\My Behavior\\My Behavior-1950.onnx",
+                "reward": -0.02271963843225461,
+                "creation_time": 1616078553.5002146
             }
         ],
         "final_checkpoint": {
-            "steps": 107537,
+            "steps": 1950,
             "file_path": "results\\mlady\\My Behavior.onnx",
-            "reward": null,
-            "creation_time": 1615974530.8419228
+            "reward": -0.02271963843225461,
+            "creation_time": 1616078553.5002146
         }
     },
     "metadata": {
         "stats_format_version": "0.2.0",
-        "mlagents_version": "0.24.1",
+        "mlagents_version": "0.25.0",
         "torch_version": "1.7.1"
     }
 }

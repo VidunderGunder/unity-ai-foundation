@@ -23,53 +23,49 @@ public class AgentCameraHelper : MonoBehaviour {
 
 
   private void Start() {
-    if (RGBCameraSensor == null || depthCameraSensor == null) {
-      foreach (var cameraSensor in gameObject.GetComponents<CameraSensorComponent>()) {
-        if (cameraSensor.SensorName.ToLower().Contains("rgb")) RGBCameraSensor = cameraSensor;
-        if (cameraSensor.SensorName.ToLower().Contains("depth")) depthCameraSensor = cameraSensor;
-      }
-    }
-
     if (RGBCameraSensor == null) throw new System.Exception("No RGB Camera Sensor found - aborting.");
     if (depthCameraSensor == null) throw new System.Exception("No RGB Camera Sensor found - aborting.");
 
+    EnsureMinimumPixels();
     SetResolutions();
+  }
 
-    if (rgbResolution.x < 20) rgbResolution.x = 20;
-    if (rgbResolution.y < 20) rgbResolution.y = 20;
-    if (depthResolution.x < 20) depthResolution.x = 20;
-    if (depthResolution.y < 20) depthResolution.y = 20;
+  private void EnsureMinimumPixels(int pixels = 20) {
+    if (rgbResolution.x < pixels) rgbResolution.x = pixels;
+    if (rgbResolution.y < pixels) rgbResolution.y = pixels;
+    if (depthResolution.x < pixels) depthResolution.x = pixels;
+    if (depthResolution.y < pixels) depthResolution.y = pixels;
   }
 
   private void SetResolutions() {
     // Cameras
     if (RGBDisplay != null) {
-      RGBDisplay.x = rgbResolution.x;
-      RGBDisplay.y = rgbResolution.y;
+      if (RGBDisplay.x != rgbResolution.x) RGBDisplay.x = rgbResolution.x;
+      if (RGBDisplay.y != rgbResolution.y) RGBDisplay.y = rgbResolution.y;
     }
     if (depthDisplay != null) {
-      depthDisplay.x = rgbResolution.x;
-      depthDisplay.y = rgbResolution.y;
+      if (depthDisplay.x != rgbResolution.x) depthDisplay.x = rgbResolution.x;
+      if (depthDisplay.y != rgbResolution.y) depthDisplay.y = rgbResolution.y;
     }
 
     // Camera sensors
     if (RGBCameraSensor != null) {
-      RGBCameraSensor.Width = rgbResolution.x;
-      RGBCameraSensor.Height = rgbResolution.y;
+      if (RGBCameraSensor.Width != rgbResolution.x) RGBCameraSensor.Width = rgbResolution.x;
+      if (RGBCameraSensor.Height != rgbResolution.y) RGBCameraSensor.Height = rgbResolution.y;
     }
     if (depthCameraSensor != null) {
-      depthCameraSensor.Width = rgbResolution.x;
-      depthCameraSensor.Height = rgbResolution.y;
+      if (depthCameraSensor.Width != rgbResolution.x) depthCameraSensor.Width = rgbResolution.x;
+      if (depthCameraSensor.Height != rgbResolution.y) depthCameraSensor.Height = rgbResolution.y;
     }
 
     // Render textures
     if (RGBRenderTexture != null) {
-      RGBRenderTexture.width = rgbResolution.x;
-      RGBRenderTexture.height = rgbResolution.y;
+      if (RGBRenderTexture.width != rgbResolution.x) RGBRenderTexture.width = rgbResolution.x;
+      if (RGBRenderTexture.height != rgbResolution.y) RGBRenderTexture.height = rgbResolution.y;
     }
     if (depthRenderTexture != null) {
-      depthRenderTexture.width = rgbResolution.x;
-      depthRenderTexture.height = rgbResolution.y;
+      if (depthRenderTexture.width != rgbResolution.x) depthRenderTexture.width = rgbResolution.x;
+      if (depthRenderTexture.height != rgbResolution.y) depthRenderTexture.height = rgbResolution.y;
     }
   }
 

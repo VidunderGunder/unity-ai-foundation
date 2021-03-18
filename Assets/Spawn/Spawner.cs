@@ -26,23 +26,33 @@ public class Spawner : MonoBehaviour {
   public EnvironmentData env;
   public List<Spawnable> objects;
   public ObjectPooler objectPooler;
+  public LayerMask ground = -1;
 
   [System.Serializable]
   public class Spawnable : SpawnOptions {
     public Transform transform;
     public Rigidbody rigidbody;
-    [System.NonSerialized]
-    public float? originalMass = null;
+    public bool spawnOnGround = false;
+    public float groundOffset = 0;
+    [System.NonSerialized] public float? originalMass = null;
   }
 
-  private void Start() {
-    Spawn();
-  }
+  // private void Start() {
+  //   Spawn();
+  // }
 
   public void Spawn() {
     DisableAllPoolObjects();
     SpawnAllObjects();
     SpawnAllPoolObjects();
+    MoveToGround();
+  }
+
+  private void MoveToGround() {
+    foreach (var thing in objects) {
+      if (!thing.spawnOnGround) continue;
+      thing.transform.PlaceOnGround(ground, thing.groundOffset);
+    }
   }
 
   public void SpawnAllObjects() {

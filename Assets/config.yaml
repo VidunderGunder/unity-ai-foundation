@@ -22,13 +22,11 @@ checkpoint_settings:
   run_id: mlady
   initialize_from: null
   load_model: false
-  # resume: false
+  # resume: true
   # force: true
-  resume: true
-  # force: false
   train_model: false
   inference: false
-  results_dir: results
+  results_dir: Assets/ML-Agents/Results
 torch_settings:
   device: cuda
 debug: false

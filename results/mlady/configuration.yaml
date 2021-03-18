@@ -10,17 +10,17 @@ engine_settings:
   width: 84
   height: 84
   quality_level: 5
-  time_scale: 100.0
+  time_scale: 20.0
   target_frame_rate: -1
   capture_frame_rate: 60
   no_graphics: false
 environment_parameters: null
 checkpoint_settings:
   run_id: mlady
-  initialize_from: mlady
+  initialize_from: null
   load_model: false
-  resume: true
-  force: false
+  resume: false
+  force: true
   train_model: false
   inference: false
   results_dir: results

@@ -16,6 +16,6 @@ MonoBehaviour:
   size: 150
   prefab: {fileID: 3082945226797900518, guid: 5ffd47da2d75dfb4098c2ce26487e897, type: 3}
   skipFirstInstance: 1
-  instances: {x: 12, y: 1, z: 7}
+  instances: {x: 2, y: 1, z: 2}
   startPosition: {x: 0, y: 0, z: 0}
   margin: 20
