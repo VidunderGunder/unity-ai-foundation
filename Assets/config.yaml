@@ -22,8 +22,8 @@ checkpoint_settings:
   run_id: mlady
   initialize_from: null
   load_model: false
-  # resume: true
-  # force: true
+  resume: true
+  force: true
   train_model: false
   inference: false
   results_dir: Assets/ML-Agents/Results

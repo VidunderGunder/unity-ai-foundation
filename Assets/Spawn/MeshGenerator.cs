@@ -2,115 +2,126 @@ using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter))]
 [ExecuteAlways]
-public class MeshGenerator : MonoBehaviour {
-  Mesh mesh;
-  MeshCollider meshCollider;
-  float xScale;
-  float zScale;
-  int xNodes;
-  int zNodes;
-  Vector3[] vertices;
-  int[] triangles;
+public class MeshGenerator : MonoBehaviour
+{
+    private readonly float resolution = 0.5f;
+    public float borderHeight = 0;
 
-  [Header("Mesh Options")]
-  [Range(5f, 500f)] public float scale = 100f;
-  [Range(0.1f, 1f)] public float unevenness = 0.1f;
-  public bool centered = true;
-  public float maxDisplacement = -1.25f;
-  private float resolution = 0.5f;
-  private float displacement;
+    [Header("Mesh Borders")] public bool borders = true;
 
-  [Header("Mesh Borders")]
-  public bool borders = true;
-  public float borderHeight = 0;
-  public int borderThickness = 1;
+    public int borderThickness = 1;
+    public bool centered = true;
+    private float displacement;
+    public float maxDisplacement = -1.25f;
+    private Mesh mesh;
+    private MeshCollider meshCollider;
 
-  void Awake() {
-    Generate();
-  }
+    [Header("Mesh Options")] [Range(5f, 500f)]
+    public float scale = 100f;
 
-  public void Generate() {
-    bool simple = false;
+    private int[] triangles;
+    [Range(0.1f, 1f)] public float unevenness = 0.1f;
+    private Vector3[] vertices;
+    private int xNodes;
+    private float xScale;
+    private int zNodes;
+    private float zScale;
 
-    if (simple) {
-      xNodes = 2;
-      zNodes = 2;
-    } else {
-      xNodes = (int)Mathf.Round(resolution * scale);
-      zNodes = (int)Mathf.Round(resolution * scale);
+    private void Awake()
+    {
+        Generate();
     }
 
-    xScale = (float)(scale / xNodes);
-    zScale = (float)(scale / zNodes);
+    public void Generate()
+    {
+        var simple = false;
 
-    mesh = new Mesh();
-    GetComponent<MeshFilter>().mesh = mesh;
-
-    bool flat = Random.Range(0, 1f) > 0.5f ? true : false;
-    displacement = flat ? 0 : Random.Range(0, maxDisplacement);
-
-    CreateShape();
-    UpdateMesh();
-
-    meshCollider = new MeshCollider();
-    GetComponent<MeshCollider>().sharedMesh = mesh;
-  }
-
-  void CreateShape() {
-    vertices = new Vector3[(xNodes + 1) * (zNodes + 1)];
-
-    float xStart = centered ? -zNodes / 2f : 0;
-    float xEnd = centered ? zNodes / 2f : zNodes;
-    float zStart = centered ? -xNodes / 2f : 0;
-    float zEnd = centered ? xNodes / 2f : xNodes;
-
-    for (float i = 0, z = zStart; z <= zEnd; z++) {
-      for (float x = xStart; x <= xEnd; x++) {
-        float y;
-
-        if (
-          borders &
-          x <= (int)xStart + borderThickness |
-          x >= (int)xEnd - borderThickness |
-          z <= (int)zStart + borderThickness |
-          z >= (int)zEnd - borderThickness
-        ) {
-          y = borderHeight;
-        } else {
-          y = Mathf.PerlinNoise(x * unevenness, z * unevenness) * maxDisplacement;
+        if (simple)
+        {
+            xNodes = 2;
+            zNodes = 2;
+        }
+        else
+        {
+            xNodes = (int) Mathf.Round(resolution * scale);
+            zNodes = (int) Mathf.Round(resolution * scale);
         }
 
-        vertices[(int)i] = new Vector3(x * xScale, y, z * zScale);
-        i++;
-      }
+        xScale = scale / xNodes;
+        zScale = scale / zNodes;
+
+        mesh = new Mesh();
+        GetComponent<MeshFilter>().mesh = mesh;
+
+        var flat = Random.Range(0, 1f) > 0.5f ? true : false;
+        displacement = flat ? 0 : Random.Range(0, maxDisplacement);
+
+        CreateShape();
+        UpdateMesh();
+
+        meshCollider = new MeshCollider();
+        GetComponent<MeshCollider>().sharedMesh = mesh;
     }
 
-    triangles = new int[xNodes * zNodes * 6];
-    int vertexCount = 0;
-    int triangleCount = 0;
+    private void CreateShape()
+    {
+        vertices = new Vector3[(xNodes + 1) * (zNodes + 1)];
 
-    for (int z = 0; z < zNodes; z++) {
-      for (int x = 0; x < xNodes; x++) {
-        triangles[triangleCount + 0] = vertexCount + 0;
-        triangles[triangleCount + 1] = vertexCount + xNodes + 1;
-        triangles[triangleCount + 2] = vertexCount + 1;
-        triangles[triangleCount + 3] = vertexCount + 1;
-        triangles[triangleCount + 4] = vertexCount + xNodes + 1;
-        triangles[triangleCount + 5] = vertexCount + xNodes + 2;
+        var xStart = centered ? -zNodes / 2f : 0;
+        var xEnd = centered ? zNodes / 2f : zNodes;
+        var zStart = centered ? -xNodes / 2f : 0;
+        var zEnd = centered ? xNodes / 2f : xNodes;
 
-        vertexCount++;
-        triangleCount += 6;
-      }
-      vertexCount++;
+        for (float i = 0, z = zStart; z <= zEnd; z++)
+        for (var x = xStart; x <= xEnd; x++)
+        {
+            float y;
+
+            if (
+                (borders &
+                 (x <= (int) xStart + borderThickness)) |
+                (x >= (int) xEnd - borderThickness) |
+                (z <= (int) zStart + borderThickness) |
+                (z >= (int) zEnd - borderThickness)
+            )
+                y = borderHeight;
+            else
+                y = Mathf.PerlinNoise(x * unevenness, z * unevenness) * maxDisplacement;
+
+            vertices[(int) i] = new Vector3(x * xScale, y, z * zScale);
+            i++;
+        }
+
+        triangles = new int[xNodes * zNodes * 6];
+        var vertexCount = 0;
+        var triangleCount = 0;
+
+        for (var z = 0; z < zNodes; z++)
+        {
+            for (var x = 0; x < xNodes; x++)
+            {
+                triangles[triangleCount + 0] = vertexCount + 0;
+                triangles[triangleCount + 1] = vertexCount + xNodes + 1;
+                triangles[triangleCount + 2] = vertexCount + 1;
+                triangles[triangleCount + 3] = vertexCount + 1;
+                triangles[triangleCount + 4] = vertexCount + xNodes + 1;
+                triangles[triangleCount + 5] = vertexCount + xNodes + 2;
+
+                vertexCount++;
+                triangleCount += 6;
+            }
+
+            vertexCount++;
+        }
     }
-  }
 
-  void UpdateMesh() {
-    mesh.Clear();
+    private void UpdateMesh()
+    {
+        mesh.Clear();
 
-    mesh.vertices = vertices;
-    mesh.triangles = triangles;
+        mesh.vertices = vertices;
+        mesh.triangles = triangles;
 
-    mesh.RecalculateNormals();
-  }
+        mesh.RecalculateNormals();
+    }
 }

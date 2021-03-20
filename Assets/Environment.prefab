@@ -4296,7 +4296,7 @@ MonoBehaviour:
   objectPooler: {fileID: 63041684633847502}
   ground:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 1
 --- !u!1 &4708482839830744147
 GameObject:
   m_ObjectHideFlags: 0

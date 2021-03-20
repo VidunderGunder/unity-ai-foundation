@@ -8,6 +8,7 @@
     "fudge.auto-using",
     "eamodio.gitlens",
     "usernamehw.errorlens",
-    "redhat.vscode-yaml"
+    "redhat.vscode-yaml",
+    "fakesharper.fakesharper"
   ]
 }
