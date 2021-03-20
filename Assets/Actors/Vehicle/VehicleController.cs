@@ -1,146 +1,166 @@
-using System.Collections;
 using System.Collections.Generic;
+using Unity.MLAgents.Extensions.Input;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Unity.MLAgents.Extensions.Input;
 
-public class VehicleController : MonoBehaviour, IInputActionAssetProvider {
-  public bool manualControl = false;
-  public PlayerInput playerInput;
-  public List<WheelCollider> wheelColliders;
-  public List<Transform> wheels;
-  public Rigidbody body;
-  public Transform centerOfMass;
-  [Range(0, 90f)] public float maxSteerAngle = 30f;
-  [Range(0, 2000f)] public float maxTorque = 2500f;
-  [Range(0, 10000f)] public float brakeTorque = 10000f;
-  [Range(0, 20000f)] public float handbrabrakeTorque = 10000f;
-  [Range(0, 1000f)] public float maxRpm = 250f;
-  [Range(0, 5f)] public float boostModifier = 2.5f;
-  public bool boostAlwaysOn = false;
+public class VehicleController : MonoBehaviour, IInputActionAssetProvider
+{
+    protected PlayerActions agentActions;
+    public Rigidbody body;
 
-  [Range(0, 2f)] private bool boost = false;
-  private float steerAngle = 0;
-  private float torque = 0;
-  private bool handbrake = false;
+    [Range(0, 2f)] private bool boost;
+    public bool boostAlwaysOn = false;
+    [Range(0, 5f)] public float boostModifier = 2.5f;
+    [Range(0, 10000f)] public float brakeTorque = 10000f;
+    public Transform centerOfMass;
+    [Range(0, 20000f)] public float handbrabrakeTorque = 10000f;
+    private bool handbrake;
+    public bool manualControl = false;
+    [Range(0, 1000f)] public float maxRpm = 250f;
+    [Range(0, 90f)] public float maxSteerAngle = 30f;
+    [Range(0, 2000f)] public float maxTorque = 2500f;
+    protected PlayerActions playerActions;
+    public PlayerInput playerInput;
+    private float steerAngle;
+    private float torque;
+    public List<WheelCollider> wheelColliders;
+    public List<Transform> wheels;
 
-  protected PlayerActions agentActions;
-  protected PlayerActions playerActions;
+    // Required for Input Actuator (autamatic machine learning output)
+    public (InputActionAsset, IInputActionCollection2) GetInputActionAsset()
+    {
+        LazyInitializeActions(ref agentActions);
+        return (agentActions.asset, agentActions);
+    }
 
-  protected void LazyInitializeActions(ref PlayerActions actions) {
-    if (actions != null) return;
+    protected void LazyInitializeActions(ref PlayerActions actions)
+    {
+        if (actions != null) return;
 
-    actions = new PlayerActions();
-    actions.Enable();
+        actions = new PlayerActions();
+        actions.Enable();
 
-    // TODO: Combine started/performed/canceled somehow
-    // This is too verbose
-    actions.ActorVehicle.Movement.started += OnMovement;
-    actions.ActorVehicle.Movement.performed += OnMovement;
-    actions.ActorVehicle.Movement.canceled += OnMovement;
-    // actions.ActorVehicle.Boost.started += OnBoost;
-    // actions.ActorVehicle.Boost.performed += OnBoost;
-    // actions.ActorVehicle.Boost.canceled += OnBoost;
-    // actions.ActorVehicle.Handbrake.started += OnHandbrake;
-    // actions.ActorVehicle.Handbrake.performed += OnHandbrake;
-    // actions.ActorVehicle.Handbrake.canceled += OnHandbrake;
-  }
+        // TODO: Combine started/performed/canceled somehow
+        // This is too verbose
+        actions.ActorVehicle.Movement.started += OnMovement;
+        actions.ActorVehicle.Movement.performed += OnMovement;
+        actions.ActorVehicle.Movement.canceled += OnMovement;
+        // actions.ActorVehicle.Boost.started += OnBoost;
+        // actions.ActorVehicle.Boost.performed += OnBoost;
+        // actions.ActorVehicle.Boost.canceled += OnBoost;
+        // actions.ActorVehicle.Handbrake.started += OnHandbrake;
+        // actions.ActorVehicle.Handbrake.performed += OnHandbrake;
+        // actions.ActorVehicle.Handbrake.canceled += OnHandbrake;
+    }
 
-  // Required for Input Actuator (autamatic machine learning output)
-  public (InputActionAsset, IInputActionCollection2) GetInputActionAsset() {
-    LazyInitializeActions(ref agentActions);
-    return (agentActions.asset, agentActions);
-  }
+    private void OnAwake()
+    {
+        // https://docs.unity3d.com/ScriptReference/WheelCollider.ConfigureVehicleSubsteps.html
+        var wheelColliders = GetComponentInChildren<WheelCollider>();
+        wheelColliders.ConfigureVehicleSubsteps(2f, 12, 16);
+        body.centerOfMass = centerOfMass.position;
+    }
 
-  void OnAwake() {
-    // https://docs.unity3d.com/ScriptReference/WheelCollider.ConfigureVehicleSubsteps.html
-    WheelCollider wheelColliders = GetComponentInChildren<WheelCollider>();
-    wheelColliders.ConfigureVehicleSubsteps(2f, 12, 16);
-    body.centerOfMass = centerOfMass.position;
-  }
+    private void Start()
+    {
+        if (manualControl) LazyInitializeActions(ref playerActions);
+    }
 
-  private void Start() {
-    if (manualControl) LazyInitializeActions(ref playerActions);
-  }
+    private void SetTorque(float input)
+    {
+        input = Mathf.Clamp(input, -1f, 1f);
+        torque = input * maxTorque * (boost | boostAlwaysOn ? boostModifier : 1f);
+    }
 
-  void SetTorque(float input) {
-    input = Mathf.Clamp(input, -1f, 1f);
-    torque = input * maxTorque * (boost | boostAlwaysOn ? boostModifier : 1f);
-  }
+    private void SetSteer(float input)
+    {
+        input = Mathf.Clamp(input, -1f, 1f);
+        steerAngle = input * maxSteerAngle;
+    }
 
-  void SetSteer(float input) {
-    input = Mathf.Clamp(input, -1f, 1f);
-    steerAngle = input * maxSteerAngle;
-  }
+    private void ApplyTorque()
+    {
+        var wheelIndex = 0;
+        foreach (var wheel in wheelColliders)
+        {
+            if (Mathf.Abs(wheel.rpm) < (boost | boostAlwaysOn ? maxRpm * 3 : maxRpm))
+                wheel.motorTorque = torque;
+            else
+                wheel.motorTorque = 0;
+            ;
 
-  void ApplyTorque() {
-    int wheelIndex = 0;
-    foreach (WheelCollider wheel in wheelColliders) {
-      if (Mathf.Abs(wheel.rpm) < (boost | boostAlwaysOn ? maxRpm * 3 : maxRpm)) {
-        wheel.motorTorque = torque;
-      } else {
-        wheel.motorTorque = 0;
-      };
+            if (handbrake)
+            {
+                if (wheelIndex >= 2) wheel.brakeTorque = handbrabrakeTorque;
+            }
+            else
+            {
+                if (((wheel.rpm > 0) & (torque < 0)) | ((wheel.rpm < 0) & (torque > 0)))
+                    wheel.brakeTorque = brakeTorque;
+                else
+                    wheel.brakeTorque = 0;
+            }
 
-      if (handbrake) {
-        if (wheelIndex >= 2) wheel.brakeTorque = handbrabrakeTorque;
-      } else {
-        if ((wheel.rpm > 0 & torque < 0) | (wheel.rpm < 0 & torque > 0)) {
-          wheel.brakeTorque = brakeTorque;
-        } else {
-          wheel.brakeTorque = 0;
+            wheelIndex++;
         }
-      }
-      wheelIndex++;
     }
-  }
 
-  void ApplySteer() {
-    for (int wheelIndex = 0; wheelIndex < 2; wheelIndex++) {
-      WheelCollider wheelCollider = wheelColliders[wheelIndex];
-      wheelCollider.steerAngle = steerAngle;
+    private void ApplySteer()
+    {
+        for (var wheelIndex = 0; wheelIndex < 2; wheelIndex++)
+        {
+            var wheelCollider = wheelColliders[wheelIndex];
+            wheelCollider.steerAngle = steerAngle;
+        }
     }
-  }
 
-  public void OnMovement(InputAction.CallbackContext context) {
-    Vector2 movement = context.ReadValue<Vector2>();
-    SetSteer(movement.x);
-    SetTorque(movement.y);
-  }
-
-  public void OnBoost(InputAction.CallbackContext context) {
-    if (context.started) boost = true;
-    if (context.canceled) boost = false;
-  }
-
-  public void OnHandbrake(InputAction.CallbackContext context) {
-    if (context.started) handbrake = true;
-    if (context.canceled) handbrake = false;
-  }
-
-  public void SyncVisualWheels() {
-    for (int wheelIndex = 0; wheelIndex < wheelColliders.Count; wheelIndex++) {
-      WheelCollider wheelCollider = wheelColliders[wheelIndex];
-      Transform wheel = wheels[wheelIndex];
-
-      Vector3 wheelPosition;
-      Quaternion wheelRotation;
-      wheelCollider.GetWorldPose(out wheelPosition, out wheelRotation);
-      wheel.position = wheelPosition;
-      wheel.rotation = wheelRotation;
+    public void OnMovement(InputAction.CallbackContext context)
+    {
+        var movement = context.ReadValue<Vector2>();
+        SetSteer(movement.x);
+        SetTorque(movement.y);
     }
-  }
 
-  private void OnValidate() {
-    SyncVisualWheels();
-  }
+    public void OnBoost(InputAction.CallbackContext context)
+    {
+        if (context.started) boost = true;
+        if (context.canceled) boost = false;
+    }
 
-  void FixedUpdate() {
-    ApplyTorque();
-    ApplySteer();
-  }
+    public void OnHandbrake(InputAction.CallbackContext context)
+    {
+        if (context.started) handbrake = true;
+        if (context.canceled) handbrake = false;
+    }
 
-  void Update() {
-    SyncVisualWheels();
-  }
+    public void SyncVisualWheels()
+    {
+        for (var wheelIndex = 0; wheelIndex < wheelColliders.Count; wheelIndex++)
+        {
+            var wheelCollider = wheelColliders[wheelIndex];
+            var wheel = wheels[wheelIndex];
+
+            Vector3 wheelPosition;
+            Quaternion wheelRotation;
+            wheelCollider.GetWorldPose(out wheelPosition, out wheelRotation);
+            wheel.position = wheelPosition;
+            wheel.rotation = wheelRotation;
+        }
+    }
+
+    private void OnValidate()
+    {
+        SyncVisualWheels();
+    }
+
+    private void FixedUpdate()
+    {
+        ApplyTorque();
+        ApplySteer();
+    }
+
+    private void Update()
+    {
+        SyncVisualWheels();
+    }
 }
