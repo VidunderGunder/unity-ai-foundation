@@ -77,9 +77,9 @@ public class ConfigEditor : Editor
 
     public bool DisplayEntry(Config.Entry entry, bool isLabel = false)
     {
-        var notTrainerField = entry.key != "trainer_type";
+        var isTrainerField = entry.key == "trainer_type";
         var wrongTrainer = !entry.trainers.Contains(config.trainer);
-        var excludeEntry = !entry.active | wrongTrainer && notTrainerField;
+        var excludeEntry = !entry.alwaysActive && !entry.active | wrongTrainer && !isTrainerField;
 
         EditorGUILayout.BeginHorizontal();
         EditorGUI.BeginDisabledGroup(excludeEntry);
@@ -112,7 +112,7 @@ public class ConfigEditor : Editor
 
         EditorGUI.EndDisabledGroup();
 
-        if (notTrainerField)
+        if (!isTrainerField && !entry.alwaysActive)
         {
             EditorGUI.BeginDisabledGroup(wrongTrainer);
             var temp = EditorGUI.indentLevel;

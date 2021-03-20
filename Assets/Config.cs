@@ -8,7 +8,7 @@ public class Config : MonoBehaviour
     public bool showHelp = true;
     public bool showOutput = true;
     public bool disableYAMLOutput = false;
-    public class Entries : Dictionary<string, Entry> { }
+    public static List<string> defaultTrainers = new List<string> { "ppo", "sac", "poca" };
     public string trainer
     {
         get
@@ -17,17 +17,21 @@ public class Config : MonoBehaviour
         }
     }
 
+    public class Entries : Dictionary<string, Entry> { }
     public Entries entries = new Entries
     {
         {
-            "default_settings", new Entry("default_settings", new Entries
+            "default_settings", new Entry(
+                "default_settings",
+                alwaysActive: true,
+                entries: new Entries
             {
                 // Training Config Docs (behavior settings only)
                 // https://github.com/Unity-Technologies/ml-agents/blob/main/docs/Training-Configuration-File.md
                 {
                     "trainer_type", new Entry(
                         "trainer_type", "ppo",
-                        active: true,
+                        alwaysActive: true,
                         help: "(default = ppo) The type of trainer to use: ppo, sac, or poca."
                     )
                 },
@@ -161,7 +165,7 @@ public class Config : MonoBehaviour
                                 "beta", new Entry(
                                     "beta", 0.005f,
                                     active: true,
-                                    trainers: new List<string> {"ppo", "paco"},
+                                    trainers: new List<string> {"ppo", "poca"},
                                     help:
                                     "(default = 5.0e-3) Strength of the entropy regularization, which makes the policy \"more random.\" This ensures that agents properly explore the action space during training. Increasing this will ensure more random actions are taken. This should be adjusted such that the entropy (measurable from TensorBoard) slowly decreases alongside increases in reward. If entropy drops too quickly, increase beta. If entropy drops too slowly, decrease beta.\n\nTypical range: 1e-4 - 1e-2"
                                 )
@@ -170,16 +174,16 @@ public class Config : MonoBehaviour
                                 "epsilon", new Entry(
                                     "epsilon", 0.2f,
                                     active: true,
-                                    trainers: new List<string> {"ppo", "paco"},
+                                    trainers: new List<string> {"ppo", "poca"},
                                     help:
                                     "(default = 0.2) Influences how rapidly the policy can evolve during training. Corresponds to the acceptable threshold of divergence between the old and new policies during gradient descent updating. Setting this value small will result in more stable updates, but will also slow the training process.\n\nTypical range: 0.1 - 0.3"
                                 )
                             },
                             {
-                                "lambd", new Entry(
+                                "lambd", new Entry( // Not sure if `lambd` is a typo?
                                     "lambd", 0.95f,
                                     active: true,
-                                    trainers: new List<string> {"ppo", "paco"},
+                                    trainers: new List<string> {"ppo", "poca"},
                                     help:
                                     "(default = 0.95) Regularization parameter (lambda) used when calculating the Generalized Advantage Estimate (GAE). This can be thought of as how much the agent relies on its current value estimate when calculating an updated value estimate. Low values correspond to relying more on the current value estimate (which can be high bias), and high values correspond to relying more on the actual rewards received in the environment (which can be high variance). The parameter provides a trade-off between the two, and the right value can lead to a more stable training process.\n\nTypical range: 0.9 - 0.95"
                                 )
@@ -188,7 +192,7 @@ public class Config : MonoBehaviour
                                 "num_epoch", new Entry(
                                     "num_epoch", 3,
                                     active: true,
-                                    trainers: new List<string> {"ppo", "paco"},
+                                    trainers: new List<string> {"ppo", "poca"},
                                     help:
                                     "(default = 3) Number of passes to make through the experience buffer when performing gradient descent optimization.The larger the batch_size, the larger it is acceptable to make this. Decreasing this will ensure more stable updates, at the cost of slower learning.\n\nTypical range: 1000 - 10000"
                                 )
@@ -426,8 +430,9 @@ public class Config : MonoBehaviour
         public string help;
         public string key;
         public string label;
-        public List<string> trainers = new List<string> { "ppo", "sac", "poca" };
+        public List<string> trainers;
         public object value;
+        public bool alwaysActive;
 
         // Data Type Entries
         // ----------------------------------------
@@ -437,11 +442,19 @@ public class Config : MonoBehaviour
             string help = null,
             string label = null,
             bool active = true,
-            List<string> trainers = null
+            List<string> trainers = null,
+            bool alwaysActive = false
         )
         {
             value = input;
-            AssignCommonProperties(key, label, help, active, trainers);
+            AssignCommonProperties(
+                key,
+                label,
+                help,
+                active,
+                trainers,
+                alwaysActive
+            );
         }
 
         public Entry(
@@ -450,11 +463,19 @@ public class Config : MonoBehaviour
             string help = null,
             string label = null,
             bool active = true,
-            List<string> trainers = null
+            List<string> trainers = null,
+            bool alwaysActive = false
         )
         {
             value = input;
-            AssignCommonProperties(key, label, help, active, trainers);
+            AssignCommonProperties(
+                key,
+                label,
+                help,
+                active,
+                trainers,
+                alwaysActive
+            );
         }
 
         public Entry(
@@ -463,11 +484,19 @@ public class Config : MonoBehaviour
             string help = null,
             string label = null,
             bool active = true,
-            List<string> trainers = null
+            List<string> trainers = null,
+            bool alwaysActive = false
         )
         {
             value = input;
-            AssignCommonProperties(key, label, help, active, trainers);
+            AssignCommonProperties(
+                key,
+                label,
+                help,
+                active,
+                trainers,
+                alwaysActive
+            );
         }
 
         public Entry(
@@ -476,11 +505,19 @@ public class Config : MonoBehaviour
             string help = null,
             string label = null,
             bool active = true,
-            List<string> trainers = null
+            List<string> trainers = null,
+            bool alwaysActive = false
         )
         {
             value = input;
-            AssignCommonProperties(key, label, help, active, trainers);
+            AssignCommonProperties(
+                key,
+                label,
+                help,
+                active,
+                trainers,
+                alwaysActive
+            );
         }
         // ----------------------------------------
 
@@ -492,11 +529,19 @@ public class Config : MonoBehaviour
             string help = null,
             string label = null,
             bool active = true,
-            List<string> trainers = null
+            List<string> trainers = null,
+            bool alwaysActive = false
         )
         {
             this.entries = entries;
-            AssignCommonProperties(key, label, help, active, trainers);
+            AssignCommonProperties(
+                key,
+                label,
+                help,
+                active,
+                trainers,
+                alwaysActive
+            );
         }
         // ----------------------------------------
 
@@ -505,14 +550,16 @@ public class Config : MonoBehaviour
             string label = null,
             string help = null,
             bool active = true,
-            List<string> trainers = null
+            List<string> trainers = null,
+            bool alwaysActive = false
         )
         {
             this.key = key;
             this.label = label != null ? label : key;
             this.help = help;
-            this.active = active;
-            if (trainers != null) this.trainers = trainers;
+            this.active = alwaysActive ? true : active;
+            this.trainers = trainers != null ? trainers : defaultTrainers;
+            this.alwaysActive = alwaysActive;
         }
     }
 }
