@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -14,12 +15,26 @@ public class ConfigEditor : Editor
         config = (Config) target;
 
         if (GUILayout.Button("Create New Config File"))
-            config.path = EditorUtility.SaveFilePanelInProject("Initialize Config File", "config", "yaml", "");
-        EditorGUILayout.ObjectField(
-            AssetDatabase.LoadAssetAtPath<TextAsset>(config.path),
+        {
+            config.path = EditorUtility.SaveFilePanelInProject(
+                title: "Initialize Config File",
+                defaultName: "config",
+                extension: "yaml",
+                message: null
+            );
+            File.WriteAllText(config.path, string.Empty);
+        }
+
+        config.file = AssetDatabase.LoadAssetAtPath<TextAsset>(config.path);
+
+        // TODO: Read file if file is provided instead of generated
+        EditorGUI.BeginDisabledGroup(true);
+        config.file = (TextAsset) EditorGUILayout.ObjectField(
+            config.file,
             typeof(TextAsset),
             false
         );
+        EditorGUI.EndDisabledGroup();
 
         if (config.fileExists)
         {
@@ -38,7 +53,10 @@ public class ConfigEditor : Editor
         }
         else
         {
-            EditorGUILayout.HelpBox("Add a config file to enable editing :)", MessageType.None);
+            EditorGUILayout.HelpBox(
+                "Add a config file to enable editing :)\n\nSadly, you can't yet load a YAML file, only write.",
+                MessageType.None
+            );
         }
     }
 

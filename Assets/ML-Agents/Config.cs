@@ -5,10 +5,15 @@ using UnityEngine;
 
 public class Config : MonoBehaviour
 {
+    public static List<string> defaultTrainers = new List<string> { "ppo", "sac", "poca" };
+
     public bool showHelp = true;
     public bool showOutput = true;
     public bool disableYAMLOutput = false;
-    public static List<string> defaultTrainers = new List<string> { "ppo", "sac", "poca" };
+    public string path;
+    public TextAsset file;
+
+    public bool fileExists => path != null && path != "" && File.Exists(path);
     public string trainer
     {
         get
@@ -362,8 +367,6 @@ public class Config : MonoBehaviour
         {"debug", new Entry("debug", false)}
     };
 
-    public string path;
-    public bool fileExists => path != null && path != "" && File.Exists(path);
 
     public void WriteLines(Entries entries, StreamWriter writer, int indent = 0)
     {

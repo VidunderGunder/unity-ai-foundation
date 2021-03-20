@@ -440,7 +440,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 345995077}
-  m_LocalRotation: {x: 0.100661896, y: 0.000000018001469, z: -0.000000001821313, w: 0.99492073}
+  m_LocalRotation: {x: 0.10066192, y: 0.000000017469372, z: -0.0000000017674782, w: 0.99492073}
   m_LocalPosition: {x: 0, y: 2.25, z: -16.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -741,7 +741,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1086707116}
-  m_LocalRotation: {x: 0.100661896, y: 0.000000018001469, z: -0.000000001821313, w: 0.99492073}
+  m_LocalRotation: {x: 0.10066192, y: 0.000000017469372, z: -0.0000000017674782, w: 0.99492073}
   m_LocalPosition: {x: 0, y: 2.25, z: -16.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -841,7 +841,7 @@ GameObject:
   - component: {fileID: 1338257272}
   - component: {fileID: 1338257271}
   m_Layer: 0
-  m_Name: Configuration
+  m_Name: Config
   m_TagString: Untagged
   m_Icon: {fileID: 2800000, guid: 38cc38268e46fea40a7b384245c9829f, type: 3}
   m_NavMeshLayer: 0
@@ -859,7 +859,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2fb70220c2fac5448e9af0327f84277, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  showHelp: 0
+  showOutput: 0
   disableYAMLOutput: 0
+  file: {fileID: 4900000, guid: d088c6a20fc1cc144ae62045841579f5, type: 3}
   path: Assets/ML-Agents/config.yaml
 --- !u!114 &1338257272
 MonoBehaviour:

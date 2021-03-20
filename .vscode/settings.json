@@ -55,7 +55,6 @@
     "Obj/": true,
     "ProjectSettings/": true,
     "temp/": true,
-    "Temp/": true,
-    "Assets/ML-Agents": true
+    "Temp/": true
   }
 }
