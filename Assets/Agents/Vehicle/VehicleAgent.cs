@@ -32,7 +32,8 @@ public class VehicleAgent : GeneralAgent
 
     [NonSerialized] public float minCumulativeReward = -2f;
 
-    [Header("Dependencies")] [SerializeField]
+    [Header("Dependencies")]
+    [SerializeField]
     private Spawner spawner;
 
     [SerializeField] private Transform target;
@@ -45,7 +46,7 @@ public class VehicleAgent : GeneralAgent
         if (agentRigidbody == null) agentRigidbody = GetComponent<Rigidbody>();
         if (target == null) target = transform.parent.Find("Target");
 
-        maxDistanceFromStart = 1.41f * 1.05f * env.size / 2;
+        maxDistanceFromStart = 1.41f * 1.05f * env.Size / 2;
         maxDistanceFromStartSq = maxDistanceFromStart * maxDistanceFromStart;
     }
 
@@ -66,7 +67,7 @@ public class VehicleAgent : GeneralAgent
     public override void CollectObservations(VectorSensor sensor)
     {
         sensor.AddObservation(transform.RelativeVectorTo(target.position)); // Existential penalty
-        AddReward(-1f / MaxStep * (hasStopped & !atTarget ? 1f + env.difficulty : 0.1f)); // Existential penalty
+        AddReward(-1f / MaxStep * (hasStopped & !atTarget ? 1f + env.Difficulty : 0.1f)); // Existential penalty
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -102,7 +103,7 @@ public class VehicleAgent : GeneralAgent
 
     private void FixedUpdate()
     {
-        hasStopped = agentRigidbody.velocity.sqrMagnitude < 0.0002f;
+        hasStopped = agentRigidbody.velocity.sqrMagnitude < 0.01f;
         var success = hasStopped & atTarget;
 
         var agentBelowGround = transform.position.y < environmentOrigin.y - 15f;

@@ -9,7 +9,7 @@ public class RandomTerrain : MonoBehaviour
 
     public void Randomize()
     {
-        foreach (var gen in generators) gen.scale = env.size;
+        foreach (var gen in generators) gen.scale = env.Size;
     }
 
     private void OnValidate()

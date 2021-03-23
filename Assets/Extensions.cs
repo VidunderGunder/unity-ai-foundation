@@ -1,4 +1,49 @@
+using System.Collections.Generic;
 using UnityEngine;
+
+
+public static class StringExtensions
+{
+    public static string ToDirtyTitleCase(this string text)
+    {
+        var words = text.Split('_');
+        text = "";
+        var allLower = new List<string>
+        {
+            "of",
+            "the",
+            "in",
+            "and",
+            "to",
+            "per"
+        };
+        var allUpper = new List<string>
+        {
+            "ID",
+            "YAML"
+        };
+        var isFirst = true;
+
+        foreach (var word in words)
+        {
+            if (isFirst)
+                isFirst = false;
+            else
+                text += " ";
+
+            if (word.Length <= 0) continue;
+
+            if (allUpper.Contains(word.ToUpper()))
+                text += word.ToUpper();
+            else if (allLower.Contains(word.ToLower()))
+                text += word.ToLower();
+            else
+                text += word[0].ToString().ToUpper() + word.Substring(1);
+        }
+
+        return text;
+    }
+}
 
 public static class TransformExtensions
 {

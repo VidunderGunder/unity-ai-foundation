@@ -21,7 +21,8 @@ public class EnvironmentTerrainGenerator : MonoBehaviour
     private MeshCollider meshCollider;
     private int[] triangles;
 
-    [Header("Mesh Options")] [Range(0.1f, 1f)]
+    [Header("Mesh Options")]
+    [Range(0.1f, 1f)]
     public float unevenness = 0.1f;
 
     private Vector3[] vertices;
@@ -57,12 +58,12 @@ public class EnvironmentTerrainGenerator : MonoBehaviour
         }
         else
         {
-            xNodes = (int) Mathf.Round(resolution * env.size);
-            zNodes = (int) Mathf.Round(resolution * env.size);
+            xNodes = (int) Mathf.Round(resolution * env.Size);
+            zNodes = (int) Mathf.Round(resolution * env.Size);
         }
 
-        xScale = env.size / xNodes;
-        zScale = env.size / zNodes;
+        xScale = env.Size / xNodes;
+        zScale = env.Size / zNodes;
 
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
@@ -87,24 +88,24 @@ public class EnvironmentTerrainGenerator : MonoBehaviour
         var zEnd = centered ? xNodes / 2f : xNodes;
 
         for (float i = 0, z = zStart; z <= zEnd; z++)
-        for (var x = xStart; x <= xEnd; x++)
-        {
-            float y;
+            for (var x = xStart; x <= xEnd; x++)
+            {
+                float y;
 
-            if (
-                (borders &
-                 (x <= (int) xStart + borderThickness)) |
-                (x >= (int) xEnd - borderThickness) |
-                (z <= (int) zStart + borderThickness) |
-                (z >= (int) zEnd - borderThickness)
-            )
-                y = borderHeight;
-            else
-                y = Mathf.PerlinNoise(x * unevenness, z * unevenness) * maxDisplacement;
+                if (
+                    (borders &
+                     (x <= (int) xStart + borderThickness)) |
+                    (x >= (int) xEnd - borderThickness) |
+                    (z <= (int) zStart + borderThickness) |
+                    (z >= (int) zEnd - borderThickness)
+                )
+                    y = borderHeight;
+                else
+                    y = Mathf.PerlinNoise(x * unevenness, z * unevenness) * maxDisplacement;
 
-            vertices[(int) i] = new Vector3(x * xScale, y, z * zScale);
-            i++;
-        }
+                vertices[(int) i] = new Vector3(x * xScale, y, z * zScale);
+                i++;
+            }
 
         triangles = new int[xNodes * zNodes * 6];
         var vertexCount = 0;

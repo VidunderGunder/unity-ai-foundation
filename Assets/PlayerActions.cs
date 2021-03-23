@@ -34,6 +34,14 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Handbrake"",
+                    ""type"": ""Button"",
+                    ""id"": ""2d1c5223-5377-4da0-8d28-fd1102617ae0"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -146,6 +154,17 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""df70572e-07ec-4e0a-a850-be705d15e018"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and Mouse"",
+                    ""action"": ""Handbrake"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -199,6 +218,7 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
         // ActorVehicle
         m_ActorVehicle = asset.FindActionMap("ActorVehicle", throwIfNotFound: true);
         m_ActorVehicle_Movement = m_ActorVehicle.FindAction("Movement", throwIfNotFound: true);
+        m_ActorVehicle_Handbrake = m_ActorVehicle.FindAction("Handbrake", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -259,11 +279,13 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
     private readonly InputActionMap m_ActorVehicle;
     private IActorVehicleActions m_ActorVehicleActionsCallbackInterface;
     private readonly InputAction m_ActorVehicle_Movement;
+    private readonly InputAction m_ActorVehicle_Handbrake;
     public struct ActorVehicleActions
     {
         private @PlayerActions m_Wrapper;
         public ActorVehicleActions(@PlayerActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Movement => m_Wrapper.m_ActorVehicle_Movement;
+        public InputAction @Handbrake => m_Wrapper.m_ActorVehicle_Handbrake;
         public InputActionMap Get() { return m_Wrapper.m_ActorVehicle; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -276,6 +298,9 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
                 @Movement.started -= m_Wrapper.m_ActorVehicleActionsCallbackInterface.OnMovement;
                 @Movement.performed -= m_Wrapper.m_ActorVehicleActionsCallbackInterface.OnMovement;
                 @Movement.canceled -= m_Wrapper.m_ActorVehicleActionsCallbackInterface.OnMovement;
+                @Handbrake.started -= m_Wrapper.m_ActorVehicleActionsCallbackInterface.OnHandbrake;
+                @Handbrake.performed -= m_Wrapper.m_ActorVehicleActionsCallbackInterface.OnHandbrake;
+                @Handbrake.canceled -= m_Wrapper.m_ActorVehicleActionsCallbackInterface.OnHandbrake;
             }
             m_Wrapper.m_ActorVehicleActionsCallbackInterface = instance;
             if (instance != null)
@@ -283,6 +308,9 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
                 @Movement.started += instance.OnMovement;
                 @Movement.performed += instance.OnMovement;
                 @Movement.canceled += instance.OnMovement;
+                @Handbrake.started += instance.OnHandbrake;
+                @Handbrake.performed += instance.OnHandbrake;
+                @Handbrake.canceled += instance.OnHandbrake;
             }
         }
     }
@@ -326,5 +354,6 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
     public interface IActorVehicleActions
     {
         void OnMovement(InputAction.CallbackContext context);
+        void OnHandbrake(InputAction.CallbackContext context);
     }
 }

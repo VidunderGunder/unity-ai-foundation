@@ -3017,7 +3017,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14b2c6ff870cc374095af2c1c1c7bd52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  body: {fileID: 3082945228353375071}
+  boostAlwaysOn: 0
+  boostModifier: 1
+  brakeTorque: 10000
+  centerOfMass: {fileID: 2916792165186016430}
+  handbrabrakeTorque: 20000
   manualControl: 0
+  maxRpm: 1000
+  maxSteerAngle: 32.5
+  maxTorque: 1000
   playerInput: {fileID: 8904572367056670807}
   wheelColliders:
   - {fileID: 3082945227582619471}
@@ -3029,15 +3038,6 @@ MonoBehaviour:
   - {fileID: 3082945227838961078}
   - {fileID: 3082945228085495281}
   - {fileID: 3082945228824281554}
-  body: {fileID: 3082945228353375071}
-  centerOfMass: {fileID: 2916792165186016430}
-  maxSteerAngle: 32.5
-  maxTorque: 1000
-  brakeTorque: 10000
-  handbrabrakeTorque: 20000
-  maxRpm: 1000
-  boostModifier: 1
-  boostAlwaysOn: 0
 --- !u!114 &6150820917648359452
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3050,13 +3050,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbba7c1f31128424f8497e6de513734f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mood: 0
-  eyesOpen: {fileID: 3082945226960246317}
   eyesClosed: {fileID: 751096834083180099}
+  eyesOpen: {fileID: 3082945226960246317}
+  mood: 0
   mouthHappy: {fileID: 3082945227828108764}
   mouthNeutral: {fileID: 8123638914357692780}
-  mouthSad: {fileID: 5525592172324785701}
   mouthOpen: {fileID: 1455348947247533989}
+  mouthSad: {fileID: 5525592172324785701}
 --- !u!114 &2908184068449448868
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3072,11 +3072,11 @@ MonoBehaviour:
   agentParameters:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
-  MaxStep: 1000
-  spawner: {fileID: 1162580839547646710}
-  env: {fileID: 11400000, guid: d2dbdef77e4169c42baa3ed5761025dd, type: 2}
-  target: {fileID: 2187793450984618157}
+  MaxStep: 3000
   agentRigidbody: {fileID: 3082945228353375071}
+  env: {fileID: 11400000, guid: d2dbdef77e4169c42baa3ed5761025dd, type: 2}
+  spawner: {fileID: 1162580839547646710}
+  target: {fileID: 2187793450984618157}
 --- !u!114 &745352324218774773
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3100,7 +3100,7 @@ MonoBehaviour:
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
   m_Model: {fileID: 0}
-  m_InferenceDevice: 2
+  m_InferenceDevice: 1
   m_BehaviorType: 0
   m_BehaviorName: My Behavior
   TeamId: 0
@@ -3280,14 +3280,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6307d65efccf50c46b67ff2214f22637, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RGBCameraSensor: {fileID: 7827549664977055095}
   depthCameraSensor: {fileID: 5044892147549982200}
-  rgbResolution: {x: 30, y: 40}
-  depthResolution: {x: 30, y: 40}
-  RGBDisplay: {fileID: 0}
-  RGBRenderTexture: {fileID: 0}
   depthDisplay: {fileID: 0}
   depthRenderTexture: {fileID: 0}
+  depthResolution: {x: 30, y: 40}
+  RGBCameraSensor: {fileID: 7827549664977055095}
+  RGBDisplay: {fileID: 0}
+  RGBRenderTexture: {fileID: 0}
+  rgbResolution: {x: 30, y: 40}
 --- !u!65 &935760777205248000
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4209,47 +4209,47 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pools:
-  - scaleMethod: 1
+  - allow:
+    - {fileID: 3082945228416199608}
+    avoid:
+    - {fileID: 935760777205248000}
+    - {fileID: 3486121088257077851}
+    isStatic: 1
+    maxScale: 25
     minScale: 4
-    maxScale: 20
     rotationRange: {x: 180, y: 180, z: 180}
-    isStatic: 1
-    allow:
-    - {fileID: 3082945228416199608}
-    avoid:
-    - {fileID: 935760777205248000}
-    - {fileID: 3486121088257077851}
+    scaleMethod: 1
+    amount: 25
     poolName: Static Primitives
-    amount: 15
     scaleAmountWithDifficulty: 1
     prefabs:
     - {fileID: 9192120376831604067, guid: f780ac6b4d9b5e345bdd7b9b9fdd4808, type: 3}
     - {fileID: 742007277917506354, guid: edbabf83f3e0e91468c12d7e34f20be8, type: 3}
-  - scaleMethod: 1
-    minScale: 0.75
-    maxScale: 3
-    rotationRange: {x: 180, y: 180, z: 180}
-    isStatic: 1
-    allow:
+  - allow:
     - {fileID: 3082945228416199608}
     avoid:
     - {fileID: 935760777205248000}
     - {fileID: 3486121088257077851}
+    isStatic: 1
+    maxScale: 5
+    minScale: 0.75
+    rotationRange: {x: 180, y: 180, z: 180}
+    scaleMethod: 1
+    amount: 15
     poolName: Dynamic Primitives
-    amount: 5
     scaleAmountWithDifficulty: 1
     prefabs:
     - {fileID: 9192120376831604067, guid: f780ac6b4d9b5e345bdd7b9b9fdd4808, type: 3}
     - {fileID: 742007277917506354, guid: edbabf83f3e0e91468c12d7e34f20be8, type: 3}
-  - scaleMethod: 0
-    minScale: 1
-    maxScale: 1
-    rotationRange: {x: 0, y: 0, z: 0}
-    isStatic: 1
-    allow: []
+  - allow: []
     avoid: []
-    poolName: Terrains
+    isStatic: 1
+    maxScale: 1
+    minScale: 1
+    rotationRange: {x: 0, y: 0, z: 0}
+    scaleMethod: 0
     amount: 1
+    poolName: Terrains
     scaleAmountWithDifficulty: 0
     prefabs:
     - {fileID: 788263648547665510, guid: eddc37946488d2a4e9d445764697d94f, type: 3}
@@ -4266,37 +4266,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   env: {fileID: 11400000, guid: d2dbdef77e4169c42baa3ed5761025dd, type: 2}
-  objects:
-  - scaleMethod: 0
-    minScale: 1
-    maxScale: 1
-    rotationRange: {x: 0, y: 0, z: 0}
-    isStatic: 0
-    allow:
-    - {fileID: 3082945228000591470}
-    avoid:
-    - {fileID: 3486121088257077851}
-    transform: {fileID: 3082945228353375070}
-    rigidbody: {fileID: 3082945228353375071}
-    spawnOnGround: 1
-    groundOffset: -0.4
-  - scaleMethod: 0
-    minScale: 1
-    maxScale: 1
-    rotationRange: {x: 0, y: 0, z: 0}
-    isStatic: 1
-    allow:
-    - {fileID: 3082945227171240823}
-    avoid:
-    - {fileID: 935760777205248000}
-    transform: {fileID: 2187793450984618157}
-    rigidbody: {fileID: 0}
-    spawnOnGround: 0
-    groundOffset: 0
-  objectPooler: {fileID: 63041684633847502}
   ground:
     serializedVersion: 2
     m_Bits: 1
+  objectPooler: {fileID: 63041684633847502}
+  objects:
+  - allow:
+    - {fileID: 3082945228000591470}
+    avoid:
+    - {fileID: 3486121088257077851}
+    isStatic: 0
+    maxScale: 1
+    minScale: 1
+    rotationRange: {x: 0, y: 0, z: 0}
+    scaleMethod: 0
+    groundOffset: -0.4
+    rigidbody: {fileID: 3082945228353375071}
+    spawnOnGround: 1
+    transform: {fileID: 3082945228353375070}
+  - allow:
+    - {fileID: 3082945227171240823}
+    avoid:
+    - {fileID: 935760777205248000}
+    isStatic: 1
+    maxScale: 1
+    minScale: 1
+    rotationRange: {x: 0, y: 0, z: 0}
+    scaleMethod: 0
+    groundOffset: 0
+    rigidbody: {fileID: 0}
+    spawnOnGround: 0
+    transform: {fileID: 2187793450984618157}
 --- !u!1 &4708482839830744147
 GameObject:
   m_ObjectHideFlags: 0
@@ -4479,10 +4479,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5826b336ae327c940bfbf786de3cd92c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  aspectRatio: 0.75
   cam: {fileID: 6207630803524557416}
   x: 30
   y: 40
-  aspectRatio: 0.75
 --- !u!1 &5385589266128900495
 GameObject:
   m_ObjectHideFlags: 0
@@ -5401,7 +5401,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54cbfdd1bbbd3724f9021bac0d0eb330, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  aspectRatio: 0.75
   cam: {fileID: 7043661514958284812}
   x: 30
   y: 40
-  aspectRatio: 0.75
