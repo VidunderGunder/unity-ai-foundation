@@ -22,19 +22,18 @@ public class UpdateText : MonoBehaviour
     {
         rewardText.text = string.Format("{0:N2}", vehicleAgent.GetCumulativeReward());
         previousCumulativeRewardText.text = string.Format("{0:N2}", vehicleAgent.PreviousCumulativeReward);
-        difficultyText.text = string.Format("{0:N2}", env.difficulty);
+        difficultyText.text = string.Format("{0:N2}", env.Difficulty);
     }
 
     private void UpdateTextMesh(float reward)
     {
         rewardThisDifficulty += reward;
-        if (env.cumulativeRewardToNextDifficulty <= rewardThisDifficulty && env.difficulty < 1)
+        if (env.CumulativeRewardToNextDifficulty <= rewardThisDifficulty && env.Difficulty < 1)
         {
-            env.difficulty += env.nextDifficulty;
-            if (1 < env.difficulty) env.difficulty = 1;
+            env.SetDifficulty(env.Difficulty + env.NextDifficulty);
             rewardThisDifficulty = 0;
         }
-        difficultyText.text = string.Format("{0:N2}", env.difficulty);
+        difficultyText.text = string.Format("{0:N2}", env.Difficulty);
         rewardThisDifficultyText.text = string.Format("{0:N2}", rewardThisDifficulty);
     }
 }

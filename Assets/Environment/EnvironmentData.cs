@@ -10,8 +10,8 @@ public class EnvironmentData : ScriptableObject
     [SerializeField] private Vector3Int instances = Vector3Int.one;
     [SerializeField] private float margin = 5f;
     [SerializeField] private bool debug = false;
-    public float cumulativeRewardToNextDifficulty = 10f;
-    public float nextDifficulty = 0.1f;
+    [SerializeField] private float cumulativeRewardToNextDifficulty = 10f;
+    [SerializeField] private float nextDifficulty = 0.1f;
 
     [Header("Grid")]
     [SerializeField] private GameObject prefab;
@@ -28,6 +28,8 @@ public class EnvironmentData : ScriptableObject
     public bool SkipFirstInstance { get => skipFirstInstance; }
     public Vector3 StartPosition { get => startPosition; }
     public bool Debug { get => debug; }
+    public float CumulativeRewardToNextDifficulty { get => cumulativeRewardToNextDifficulty; set => cumulativeRewardToNextDifficulty = value; }
+    public float NextDifficulty { get => nextDifficulty; set => nextDifficulty = value; }
 
 #if UNITY_EDITOR
     /// <summary>
