@@ -3072,7 +3072,7 @@ MonoBehaviour:
   agentParameters:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
-  MaxStep: 1000
+  MaxStep: 3000
   agentRigidbody: {fileID: 3082945228353375071}
   env: {fileID: 11400000, guid: d2dbdef77e4169c42baa3ed5761025dd, type: 2}
   spawner: {fileID: 1162580839547646710}
@@ -3100,7 +3100,7 @@ MonoBehaviour:
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
   m_Model: {fileID: 0}
-  m_InferenceDevice: 2
+  m_InferenceDevice: 1
   m_BehaviorType: 0
   m_BehaviorName: My Behavior
   TeamId: 0
@@ -4215,11 +4215,11 @@ MonoBehaviour:
     - {fileID: 935760777205248000}
     - {fileID: 3486121088257077851}
     isStatic: 1
-    maxScale: 20
+    maxScale: 25
     minScale: 4
     rotationRange: {x: 180, y: 180, z: 180}
     scaleMethod: 1
-    amount: 15
+    amount: 25
     poolName: Static Primitives
     scaleAmountWithDifficulty: 1
     prefabs:
@@ -4231,11 +4231,11 @@ MonoBehaviour:
     - {fileID: 935760777205248000}
     - {fileID: 3486121088257077851}
     isStatic: 1
-    maxScale: 3
+    maxScale: 5
     minScale: 0.75
     rotationRange: {x: 180, y: 180, z: 180}
     scaleMethod: 1
-    amount: 5
+    amount: 15
     poolName: Dynamic Primitives
     scaleAmountWithDifficulty: 1
     prefabs:

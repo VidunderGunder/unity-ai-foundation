@@ -26,7 +26,7 @@ public class SpawnArea : MonoBehaviour
 
         ;
 
-        if (env.difficulty == 0)
+        if (env.Difficulty == 0)
         {
             transform.position = stages[0].position;
             transform.rotation = stages[0].rotation;
@@ -34,7 +34,7 @@ public class SpawnArea : MonoBehaviour
             return;
         }
 
-        if (env.difficulty == 1f)
+        if (env.Difficulty == 1f)
         {
             transform.position = stages[stages.Count - 1].position;
             transform.rotation = stages[stages.Count - 1].rotation;
@@ -43,7 +43,7 @@ public class SpawnArea : MonoBehaviour
         }
 
         // Eliminate input range deadzone for the last stage
-        var squishedDifficulty = env.difficulty * ((stages.Count - 1f) / stages.Count);
+        var squishedDifficulty = env.Difficulty * ((stages.Count - 1f) / stages.Count);
 
         var fromStage = (int) (squishedDifficulty * stages.Count);
         if (fromStage == stages.Count)

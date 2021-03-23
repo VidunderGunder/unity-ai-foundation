@@ -10,23 +10,23 @@ public class Gridify : MonoBehaviour
         if (env == null) return;
 
         distance = new Vector3(
-            env.size + env.margin,
+            env.Size + env.Margin,
             50,
-            env.size + env.margin
+            env.Size + env.Margin
         );
 
-        for (var x = 0; x < env.instances.x; x++)
-        for (var z = 0; z < env.instances.z; z++)
-        for (var y = 0; y < env.instances.y; y++)
-            if (!(env.skipFirstInstance && x.Equals(0) && y.Equals(0) && z.Equals(0)))
-                Instantiate(
-                    env.prefab,
-                    new Vector3(
-                        env.startPosition.x + x * distance.x,
-                        env.startPosition.y + y * distance.y,
-                        env.startPosition.z + z * distance.z
-                    ),
-                    Quaternion.identity
-                );
+        for (var x = 0; x < env.Instances.x; x++)
+            for (var z = 0; z < env.Instances.z; z++)
+                for (var y = 0; y < env.Instances.y; y++)
+                    if (!(env.SkipFirstInstance && x.Equals(0) && y.Equals(0) && z.Equals(0)))
+                        Instantiate(
+                            env.Prefab,
+                            new Vector3(
+                                env.StartPosition.x + x * distance.x,
+                                env.StartPosition.y + y * distance.y,
+                                env.StartPosition.z + z * distance.z
+                            ),
+                            Quaternion.identity
+                        );
     }
 }

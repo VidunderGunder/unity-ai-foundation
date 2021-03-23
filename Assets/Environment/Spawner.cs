@@ -74,11 +74,11 @@ public class Spawner : MonoBehaviour
         {
             var amount =
                 pool.scaleAmountWithDifficulty
-                    ? env.difficulty <= 0.05f
+                    ? env.Difficulty <= 0.05f
                         ? 0
                         : Random.Range(
                             0,
-                            (int) (pool.amount * env.difficulty * env.difficulty) + 1
+                            (int) (pool.amount * env.Difficulty * env.Difficulty) + 1
                         )
                     : pool.amount;
             for (var i = 0; i < amount; i++) SpawnFromPool(pool.poolName);

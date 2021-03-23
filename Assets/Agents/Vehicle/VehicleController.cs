@@ -48,9 +48,9 @@ public class VehicleController : MonoBehaviour, IInputActionAssetProvider
         // actions.ActorVehicle.Boost.started += OnBoost;
         // actions.ActorVehicle.Boost.performed += OnBoost;
         // actions.ActorVehicle.Boost.canceled += OnBoost;
-        // actions.ActorVehicle.Handbrake.started += OnHandbrake;
-        // actions.ActorVehicle.Handbrake.performed += OnHandbrake;
-        // actions.ActorVehicle.Handbrake.canceled += OnHandbrake;
+        actions.ActorVehicle.Handbrake.started += OnHandbrake;
+        actions.ActorVehicle.Handbrake.performed += OnHandbrake;
+        actions.ActorVehicle.Handbrake.canceled += OnHandbrake;
     }
 
     private void OnAwake()
