@@ -197,7 +197,10 @@ MonoBehaviour:
     NearClipPlane: 0.001
     FarClipPlane: 5000
     Dutch: 0
+    ModeOverride: 0
     LensShift: {x: 0, y: 0}
+    GateFit: 0
+    m_SensorSize: {x: 1.881804, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -725,7 +728,10 @@ MonoBehaviour:
     NearClipPlane: 0.1
     FarClipPlane: 5000
     Dutch: 0
+    ModeOverride: 0
     LensShift: {x: 0, y: 0}
+    GateFit: 0
+    m_SensorSize: {x: 1.881804, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -1124,7 +1130,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1022345788652852063, guid: f878b3f366ca34f4a86e99513f09be8d, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1022345788781553556, guid: f878b3f366ca34f4a86e99513f09be8d, type: 3}
       propertyPath: m_Name
@@ -1328,7 +1334,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3356491081218018097, guid: f878b3f366ca34f4a86e99513f09be8d, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4987970344088972670, guid: f878b3f366ca34f4a86e99513f09be8d, type: 3}
       propertyPath: m_Depth
