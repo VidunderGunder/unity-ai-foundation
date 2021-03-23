@@ -15,6 +15,8 @@ public class CinemachineSwitch : MonoBehaviour
 
     [SerializeField] private CinemachineVirtualCamera vcam2;
 
+    public bool OverworldCamera { get => overworldCamera; }
+
     private void Awake()
     {
         // animator = GetComponent<Animator>();

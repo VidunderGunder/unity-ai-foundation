@@ -1,10 +1,10 @@
-// using System;
-
 using System;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
+using Unity.MLAgents;
 
-public class VehicleAgent : GeneralAgent
+
+public class VehicleAgent : Agent
 {
     private readonly float maxCumulativeCollisionPenalty = 2f;
 
@@ -32,13 +32,19 @@ public class VehicleAgent : GeneralAgent
 
     [NonSerialized] public float minCumulativeReward = -2f;
 
-    [Header("Dependencies")] [SerializeField]
+    [Header("Dependencies")]
+    [SerializeField]
     private Spawner spawner;
 
     [SerializeField] private Transform target;
 
+    private float previousCumulativeReward = 0f;
+
+
     // [Observable]
     private float targetDistanceSq => target != null ? (transform.position - target.position).sqrMagnitude : 0;
+
+    public float PreviousCumulativeReward { get => previousCumulativeReward; set => previousCumulativeReward = value; }
 
     private void Awake()
     {
@@ -63,10 +69,12 @@ public class VehicleAgent : GeneralAgent
         initialDistanceSq = targetDistanceSq;
     }
 
+
     public override void CollectObservations(VectorSensor sensor)
     {
         sensor.AddObservation(transform.RelativeVectorTo(target.position)); // Existential penalty
         AddReward(-1f / MaxStep * (hasStopped & !atTarget ? 1f + env.difficulty : 0.1f)); // Existential penalty
+        Events.current.UpdateSingelAgentRewardTriggerEnter();
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -128,6 +136,9 @@ public class VehicleAgent : GeneralAgent
         if (episodeShouldEnd)
         {
             AddReward(success ? 1f : 0);
+            PreviousCumulativeReward = GetCumulativeReward();
+            Events.current.UpdateAgentsRewardTriggerEnter(GetCumulativeReward());
+            Events.current.UpdateSingelAgentRewardTriggerEnter();
             EndEpisode();
         }
     }

@@ -180,9 +180,9 @@ public class Spawner : MonoBehaviour
                 );
 
                 foreach (var forbidden in options.avoid)
-                foreach (var collision in collisions)
-                    if (collision.Equals(forbidden))
-                        forbiddenCollisions++;
+                    foreach (var collision in collisions)
+                        if (collision.Equals(forbidden))
+                            forbiddenCollisions++;
 
                 if (forbiddenCollisions.Equals(0))
                 {

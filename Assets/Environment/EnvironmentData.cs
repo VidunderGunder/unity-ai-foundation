@@ -8,6 +8,8 @@ public class EnvironmentData : ScriptableObject
 
     public Vector3Int instances = Vector3Int.one;
     public float margin = 5f;
+    public float cumulativeRewardToNextDifficulty = 10f;
+    public float nextDifficulty = 0.1f;
 
     [Header("Grid")] public GameObject prefab;
 
