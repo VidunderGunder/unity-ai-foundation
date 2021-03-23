@@ -10,7 +10,7 @@ default_settings:
     num_epoch: 3
     learning_rate_schedule: linear
   network_settings:
-    normalize: false
+    normalize: true
     hidden_units: 128
     num_layers: 2
     vis_encode_type: simple
@@ -27,8 +27,8 @@ default_settings:
         memory: null
   init_path: null
   keep_checkpoints: 5
-  checkpoint_interval: 5000000
-  max_steps: 5000000
+  checkpoint_interval: 500000
+  max_steps: 500000
   time_horizon: 64
   summary_freq: 1000
   threaded: true
@@ -45,7 +45,7 @@ engine_settings:
   width: 84
   height: 84
   quality_level: 5
-  time_scale: 1.0
+  time_scale: 25.0
   target_frame_rate: -1
   capture_frame_rate: 60
   no_graphics: false

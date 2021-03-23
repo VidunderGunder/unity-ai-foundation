@@ -208,7 +208,7 @@ public class ConfigEditor : Editor
     public bool DefaultField(Config.Entry entry, bool isLabel = false)
     {
         var wrongTrainer = !entry.Trainers.Contains((string) config.defaultSettings.trainer_type.value);
-        var excludeEntry = !entry.AlwaysActive && !entry.active || wrongTrainer;
+        var excludeEntry = !entry.AlwaysActive && !entry.active | wrongTrainer;
 
         EditorGUILayout.BeginHorizontal();
         EditorGUI.BeginDisabledGroup(excludeEntry);

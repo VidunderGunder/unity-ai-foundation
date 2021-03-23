@@ -550,7 +550,7 @@ public class Config : MonoBehaviour
         void EntryLine(Entry entry)
         {
             var wrongTrainer = !entry.Trainers.Contains((string) defaultSettings.trainer_type.value);
-            var excludeEntry = !entry.AlwaysActive && !entry.active || wrongTrainer;
+            var excludeEntry = !entry.AlwaysActive && !entry.active | wrongTrainer;
             if (excludeEntry) return;
 
             switch (entry.type.Name)

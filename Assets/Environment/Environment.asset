@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Environment
   m_EditorClassIdentifier: 
   difficulty: 0.5
-  instances: {x: 2, y: 1, z: 1}
-  margin: 20
+  instances: {x: 5, y: 1, z: 3}
+  margin: 50
   debug: 1
   prefab: {fileID: 3082945226797900518, guid: 5ffd47da2d75dfb4098c2ce26487e897, type: 3}
   size: 125

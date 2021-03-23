@@ -443,7 +443,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 345995077}
-  m_LocalRotation: {x: 0.1006619, y: 0.000000016945135, z: -0.0000000017144374, w: 0.99492073}
+  m_LocalRotation: {x: 0.10066192, y: 0.000000017469372, z: -0.0000000017674782, w: 0.99492073}
   m_LocalPosition: {x: 0, y: 2.25, z: -16.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -747,7 +747,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1086707116}
-  m_LocalRotation: {x: 0.1006619, y: 0.000000016945135, z: -0.0000000017144374, w: 0.99492073}
+  m_LocalRotation: {x: 0.10066192, y: 0.000000017469372, z: -0.0000000017674782, w: 0.99492073}
   m_LocalPosition: {x: 0, y: 2.25, z: -16.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -869,22 +869,22 @@ MonoBehaviour:
   defaultSettings:
     trainer_type:
       active: 1
-      value: ppo
+      value: sac
     summary_freq:
       active: 1
-      value: 1000
+      value: 10000
     time_horizon:
       active: 1
       value: 64
     max_steps:
       active: 1
-      value: 5000000
+      value: 500000
     keep_checkpoints:
       active: 1
       value: 5
     checkpoint_interval:
       active: 1
-      value: 5000000
+      value: 500000
     init_path:
       active: 0
       value: 
@@ -900,7 +900,7 @@ MonoBehaviour:
         value: 2
       normalize:
         active: 1
-        value: False
+        value: True
       vis_encode_type:
         active: 1
         value: simple
@@ -950,7 +950,7 @@ MonoBehaviour:
   engineSettings:
     time_scale:
       active: 1
-      value: 1
+      value: 25
     quality_level:
       active: 1
       value: 5

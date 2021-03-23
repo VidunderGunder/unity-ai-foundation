@@ -1,8 +1,8 @@
 default_settings:
   trainer_type: ppo
-  summary_freq: 1000
-  max_steps: 5000000
-  checkpoint_interval: 5000000
+  summary_freq: 10000
+  max_steps: 500000
+  checkpoint_interval: 500000
   keep_checkpoints: 5
   time_horizon: 64
   threaded: true
@@ -19,13 +19,13 @@ default_settings:
     hidden_units: 128
     num_layers: 2
     vis_encode_type: simple
-    normalize: false
+    normalize: true
 checkpoint_settings:
   results_dir: Results
   run_id: mlady
   force: true
 engine_settings:
-  time_scale: 1
+  time_scale: 25
   quality_level: 5
 torch_settings:
   device: cuda
