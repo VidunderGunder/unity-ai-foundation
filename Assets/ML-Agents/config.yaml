@@ -1,0 +1,31 @@
+default_settings:
+  trainer_type: ppo
+  summary_freq: 10000
+  max_steps: 500000
+  checkpoint_interval: 500000
+  keep_checkpoints: 5
+  time_horizon: 64
+  threaded: true
+  hyperparameters:
+    batch_size: 256
+    buffer_size: 10240
+    learning_rate: 0.0003
+    learning_rate_schedule: linear
+    beta: 0.005
+    epsilon: 0.2
+    lambd: 0.95
+    num_epoch: 3
+  network_settings:
+    hidden_units: 128
+    num_layers: 2
+    vis_encode_type: simple
+    normalize: true
+checkpoint_settings:
+  results_dir: Results
+  run_id: mlady
+  force: true
+engine_settings:
+  time_scale: 25
+  quality_level: 5
+torch_settings:
+  device: cuda
