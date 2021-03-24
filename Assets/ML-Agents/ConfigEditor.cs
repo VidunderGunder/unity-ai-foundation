@@ -126,8 +126,8 @@ public class ConfigEditor : Editor
         DefaultField(config.defaultSettings.hyperparameters.init_entcoef);
         DefaultField(config.defaultSettings.hyperparameters.buffer_init_steps);
         DefaultField(config.defaultSettings.hyperparameters.tau);
-        DefaultField(config.defaultSettings.hyperparameters.reward_signal_num_update);
         DefaultField(config.defaultSettings.hyperparameters.steps_per_update);
+        DefaultField(config.defaultSettings.hyperparameters.reward_signal_num_update);
         DefaultField(config.defaultSettings.hyperparameters.save_replay_buffer);
         EditorGUI.indentLevel--;
 
