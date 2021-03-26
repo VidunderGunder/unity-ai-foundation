@@ -7,6 +7,7 @@ TagManager:
   - Target
   - Agent
   - Terrain
+  - Obstacle
   layers:
   - Default
   - TransparentFX

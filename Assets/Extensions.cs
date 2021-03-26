@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public static class StringExtensions
 {
     public static string ToDirtyTitleCase(this string text)
@@ -74,14 +73,16 @@ public static class TransformExtensions
 
         if (
             Physics.Raycast(
-                new Ray(self.position + Vector3.up * 50, Vector3.down),
+                new Ray(self.position - Vector3.down * radius * 1.01f, Vector3.down),
                 out hit,
                 Mathf.Infinity,
                 ground
             )
         )
             if (hit.collider != null)
+            {
                 self.position = new Vector3(self.position.x, hit.point.y + radius + offset, self.position.z);
+            }
 
         return self.position;
     }
@@ -98,6 +99,30 @@ public static class RigidbodyExtensions
 
 public static class VectorExtensions
 {
+    /// <summary>Returns the sum of all vector elements.</summary>
+    public static float Sum(this Vector3 v)
+    {
+        return v.x + v.y + v.z;
+    }
+
+    /// <summary>Returns the sum of all vector elements.</summary>
+    public static int Sum(this Vector3Int v)
+    {
+        return v.x + v.y + v.z;
+    }
+
+    /// <summary>Returns the product of all vector elements.</summary>
+    public static float Product(this Vector3 v)
+    {
+        return v.x * v.y * v.z;
+    }
+
+    /// <summary>Returns the product of all vector elements.</summary>
+    public static int Product(this Vector3Int v)
+    {
+        return v.x * v.y * v.z;
+    }
+
     /// <summary>Returns the y-value of a given vector to 0.</summary>
     public static Vector3 Flattened(this Vector3 v)
     {

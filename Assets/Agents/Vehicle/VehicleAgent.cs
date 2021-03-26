@@ -1,45 +1,38 @@
 // using System;
 
-using System;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
 
 public class VehicleAgent : GeneralAgent
 {
     private readonly float maxCumulativeCollisionPenalty = 2f;
-
     private readonly float maxSingleCollisionPenalty = 1.5f;
     [SerializeField] private Rigidbody agentRigidbody;
     private bool atTarget;
-    private float closestDistanceSq;
+    private float closestDistanceYet;
+    private float closestDistanceYetSq;
     private float cumulativeCollisionPenalty;
     [SerializeField] private EnvironmentData env;
 
     // TODO: Make more robust (direct reference to environment)
     private Vector3 environmentOrigin;
+    private float stoppedVelocity;
+    private float stoppedVelocitySq;
     private bool hasStopped;
-    private float initialDistanceSq;
-    [NonSerialized] public float maxCumulativeReward = 3f;
+    private float initialDistance;
+    [System.NonSerialized] public float maxCumulativeReward = 5f;
+    [System.NonSerialized] public float minCumulativeReward = -2f;
 
     private float maxDistanceFromStart;
-
     private float maxDistanceFromStartSq;
-    // public Transform target;
-
-    // public override void CollectObservations(VectorSensor sensor) {
-    //   sensor.AddObservation(transform.RelativeVectorTo(target.position)); // Existential penalty
-    // }
-
-    [NonSerialized] public float minCumulativeReward = -2f;
+    private float maxVectorMagnitude = 75f;
 
     [Header("Dependencies")]
-    [SerializeField]
-    private Spawner spawner;
-
+    [SerializeField] private Spawner spawner;
     [SerializeField] private Transform target;
 
     // [Observable]
-    private float targetDistanceSq => target != null ? (transform.position - target.position).sqrMagnitude : 0;
+    private float TargetDistance => target != null ? (transform.position - target.position).magnitude : 0;
 
     private void Awake()
     {
@@ -48,6 +41,9 @@ public class VehicleAgent : GeneralAgent
 
         maxDistanceFromStart = 1.41f * 1.05f * env.Size / 2;
         maxDistanceFromStartSq = maxDistanceFromStart * maxDistanceFromStart;
+
+        stoppedVelocity = 0.5f;
+        stoppedVelocitySq = stoppedVelocity * stoppedVelocity;
     }
 
     private void Start()
@@ -60,13 +56,22 @@ public class VehicleAgent : GeneralAgent
     {
         spawner.Spawn();
         cumulativeCollisionPenalty = 0;
-        closestDistanceSq = targetDistanceSq;
-        initialDistanceSq = targetDistanceSq;
+
+        closestDistanceYet = TargetDistance;
+        initialDistance = TargetDistance;
     }
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        sensor.AddObservation(transform.RelativeVectorTo(target.position)); // Existential penalty
+        Vector3 targetVector = transform.RelativeVectorTo(target.position);
+        if (targetVector.magnitude > maxVectorMagnitude)
+        {
+            // Cap vector length
+            targetVector = targetVector.normalized * maxVectorMagnitude;
+        }
+        targetVector = targetVector / maxVectorMagnitude; // Normalized
+        sensor.AddObservation(targetVector / maxVectorMagnitude); // Existential penalty
+
         AddReward(-1f / MaxStep * (hasStopped & !atTarget ? 1f + env.Difficulty : 0.1f)); // Existential penalty
     }
 
@@ -103,7 +108,7 @@ public class VehicleAgent : GeneralAgent
 
     private void FixedUpdate()
     {
-        hasStopped = agentRigidbody.velocity.sqrMagnitude < 0.01f;
+        hasStopped = agentRigidbody.velocity.sqrMagnitude < stoppedVelocitySq;
         var success = hasStopped & atTarget;
 
         var agentBelowGround = transform.position.y < environmentOrigin.y - 15f;
@@ -120,15 +125,15 @@ public class VehicleAgent : GeneralAgent
 
         var episodeShouldEnd = error | success;
 
-        if (!atTarget & (targetDistanceSq < closestDistanceSq))
+        if (!atTarget & (TargetDistance < closestDistanceYet))
         {
-            AddReward((closestDistanceSq - targetDistanceSq) / initialDistanceSq);
-            closestDistanceSq = targetDistanceSq;
+            AddReward((closestDistanceYet - TargetDistance) / initialDistance);
+            closestDistanceYet = TargetDistance;
         }
 
         if (episodeShouldEnd)
         {
-            AddReward(success ? 1f : 0);
+            AddReward(success ? 2f : 0);
             EndEpisode();
         }
     }

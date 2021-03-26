@@ -533,8 +533,8 @@ public class Config : MonoBehaviour
             EntryLine(defaultSettings.hyperparameters.init_entcoef);
             EntryLine(defaultSettings.hyperparameters.buffer_init_steps);
             EntryLine(defaultSettings.hyperparameters.tau);
-            EntryLine(defaultSettings.hyperparameters.reward_signal_num_update);
             EntryLine(defaultSettings.hyperparameters.steps_per_update);
+            EntryLine(defaultSettings.hyperparameters.reward_signal_num_update);
             EntryLine(defaultSettings.hyperparameters.save_replay_buffer);
             indent--;
 

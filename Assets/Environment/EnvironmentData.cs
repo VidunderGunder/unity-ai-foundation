@@ -7,7 +7,7 @@ public class EnvironmentData : ScriptableObject
 {
     [Header("General")]
     [SerializeField] [Range(0, 1f)] private float difficulty = 0;
-    [SerializeField] private Vector3Int instances = Vector3Int.one;
+    private Vector3Int instances = Vector3Int.one;
     [SerializeField] private float margin = 5f;
     [SerializeField] private bool debug = false;
 
@@ -18,7 +18,15 @@ public class EnvironmentData : ScriptableObject
     [SerializeField] private Vector3 startPosition = Vector3.zero;
 
     public float Difficulty { get => difficulty; }
-    public Vector3Int Instances { get => instances; }
+    public Vector3Int Instances
+    {
+        get => instances;
+        set
+        {
+            for (int i = 0; i < 3; i++)
+                instances[i] = value[i] > 0 ? value[i] : 0;
+        }
+    }
     public float Margin { get => margin; }
     public GameObject Prefab { get => prefab; }
     public float Size { get => size; }

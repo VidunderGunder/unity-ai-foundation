@@ -1,20 +1,23 @@
-using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class SpawnOptions
 {
-    [Header("Spawn Areas")] public List<Collider> allow;
-
-    public List<Collider> avoid;
+    public bool spawnEarly = false;
     public bool isStatic = true;
     public float maxScale = 1f;
     public float minScale = 1f;
 
     public Vector3 rotationRange = 180f * Vector3.one;
 
-    [Header("Transform")] public ScaleMethod scaleMethod = ScaleMethod.None;
+    [Header("Transform")]
+    public ScaleMethod scaleMethod = ScaleMethod.None;
+
+    [Header("Spawn Areas")]
+    public List<Collider> allow;
+    public List<Collider> avoid;
 }
 
 public enum ScaleMethod
@@ -31,34 +34,74 @@ public class Spawner : MonoBehaviour
     public ObjectPooler objectPooler;
     public List<Spawnable> objects;
 
-    // private void Start() {
-    //   Spawn();
-    // }
+    [System.Serializable]
+    public class Spawnable : SpawnOptions
+    {
+        public float groundOffset = 0;
+        [System.NonSerialized] public float? originalMass;
+        public Rigidbody rigidbody;
+        public Collider trigger;
+        public bool spawnOnGround = false;
+        public Transform transform;
+    }
+
+    IEnumerator SpawnRoutine()
+    {
+        DisableAllPoolObjects();
+        // DisableAllObjectTriggers();
+        yield return new WaitForFixedUpdate();
+
+        SpawnAllPoolObjects(early: true);
+        yield return new WaitForFixedUpdate();
+
+        SpawnAllObjects(early: true);
+        yield return new WaitForFixedUpdate();
+        MoveToGround(early: true);
+        yield return new WaitForFixedUpdate();
+
+        SpawnAllObjects();
+        yield return new WaitForFixedUpdate();
+        MoveToGround();
+
+        yield return new WaitForFixedUpdate();
+        SpawnAllPoolObjects();
+    }
 
     public void Spawn()
     {
-        DisableAllPoolObjects();
-        SpawnAllObjects();
-        SpawnAllPoolObjects();
-        MoveToGround();
+        StartCoroutine(SpawnRoutine());
     }
 
-    private void MoveToGround()
+    private void MoveToGround(bool early = false)
     {
         foreach (var thing in objects)
         {
-            if (!thing.spawnOnGround) continue;
-            thing.transform.PlaceOnGround(ground, thing.groundOffset);
+            if (thing.spawnEarly != early) continue;
+            if (thing.spawnOnGround)
+                thing.transform.PlaceOnGround(ground, thing.groundOffset);
         }
     }
 
-    public void SpawnAllObjects()
+    // public void DisableAllObjectTriggers()
+    // {
+    //     foreach (var thing in objects)
+    //     {
+    //         thing.trigger.enabled = false;
+    //     };
+    // }
+
+    public void SpawnAllObjects(bool early = false)
     {
-        foreach (var thing in objects) SpawnObject(thing);
+        foreach (var thing in objects)
+        {
+            if (thing.spawnEarly != early) continue;
+            SpawnObject(thing);
+        };
     }
 
     public void SpawnObject(Spawnable thing)
     {
+        thing.trigger.enabled = true;
         ResetSpawnable(thing);
         RandomizeObject(thing);
     }
@@ -68,10 +111,12 @@ public class Spawner : MonoBehaviour
         foreach (Transform child in transform) child.gameObject.SetActive(false);
     }
 
-    public void SpawnAllPoolObjects()
+    public void SpawnAllPoolObjects(bool early = false)
     {
         foreach (var pool in objectPooler.pools)
         {
+            if (pool.spawnEarly != early) continue;
+
             var amount =
                 pool.scaleAmountWithDifficulty
                     ? env.Difficulty <= 0.05f
@@ -175,7 +220,7 @@ public class Spawner : MonoBehaviour
 
                 var collisions = Physics.OverlapBox(
                     tf.position,
-                    tf.lossyScale,
+                    tf.lossyScale / 2f,
                     tf.rotation
                 );
 
@@ -262,15 +307,5 @@ public class Spawner : MonoBehaviour
             Random.Range(bounds.min.y, bounds.max.y),
             Random.Range(bounds.min.z, bounds.max.z)
         );
-    }
-
-    [Serializable]
-    public class Spawnable : SpawnOptions
-    {
-        public float groundOffset = 0;
-        [NonSerialized] public float? originalMass;
-        public Rigidbody rigidbody;
-        public bool spawnOnGround = false;
-        public Transform transform;
     }
 }

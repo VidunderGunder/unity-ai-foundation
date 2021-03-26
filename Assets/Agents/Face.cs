@@ -29,7 +29,7 @@ public class Face : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine("Blink");
+        StartCoroutine(Blink());
         SetMood();
     }
 
@@ -79,7 +79,7 @@ public class Face : MonoBehaviour
 
     private IEnumerator Blink()
     {
-        for (;;)
+        for (; ; )
         {
             if (mood != Mood.Asleep) OpenEyes();
             yield return new WaitForSeconds(Random.Range(0.75f, 2.5f));
