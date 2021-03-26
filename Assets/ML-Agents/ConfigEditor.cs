@@ -23,7 +23,7 @@ public class ConfigEditor : Editor
         {
             OpenFileButton();
             EditorGUI.BeginDisabledGroup(Application.isPlaying);
-            SaveFileButton();
+            // SaveFileButton();
 
             Space();
 
@@ -68,27 +68,27 @@ public class ConfigEditor : Editor
         }
     }
 
-    private void SaveFileButton()
-    {
-        EditorGUI.BeginDisabledGroup(!changed);
-        if (
-            GUILayout.Button(
-                "Apply to YAML-file"
-            )
-        )
-        {
-            OnSave();
-        };
-        EditorGUI.EndDisabledGroup();
-        EditorGUILayout.LabelField(
-            (
-                changed
-                ? "(Unsaved Changes)"
-                : ""
-            ),
-            EditorStyles.centeredGreyMiniLabel
-        );
-    }
+    // private void SaveFileButton()
+    // {
+    //     EditorGUI.BeginDisabledGroup(!changed);
+    //     if (
+    //         GUILayout.Button(
+    //             "Apply to YAML-file"
+    //         )
+    //     )
+    //     {
+    //         OnSave();
+    //     };
+    //     EditorGUI.EndDisabledGroup();
+    //     EditorGUILayout.LabelField(
+    //         (
+    //             changed
+    //             ? "(Unsaved Changes)"
+    //             : ""
+    //         ),
+    //         EditorStyles.centeredGreyMiniLabel
+    //     );
+    // }
 
     private void AllFields()
     {
@@ -222,13 +222,20 @@ public class ConfigEditor : Editor
         switch (entry.type.Name)
         {
             case nameof(System.String):
-                value = EditorGUILayout.TextField(entry.value);
+                if (entry.Options == null || entry.Options.Length == 0) value = EditorGUILayout.TextField(entry.value);
+                else
+                {
+                    entry.selectedIndex = EditorGUILayout.Popup(entry.selectedIndex, entry.Options);
+                    value = entry.Options[entry.selectedIndex];
+                }
                 break;
             case nameof(System.Int32):
-                value = EditorGUILayout.IntField(System.Int32.Parse(entry.value)).ToString();
+                if (entry.RangeInt == null) value = EditorGUILayout.IntField(System.Int32.Parse(entry.value)).ToString();
+                else value = EditorGUILayout.IntSlider(System.Int32.Parse(entry.value), entry.RangeInt.Item1, entry.RangeInt.Item2).ToString();
                 break;
             case nameof(System.Single):
-                value = EditorGUILayout.FloatField(System.Single.Parse(entry.value)).ToString();
+                if (entry.RangeFloat == null) value = EditorGUILayout.FloatField(System.Single.Parse(entry.value)).ToString();
+                else value = EditorGUILayout.Slider(System.Single.Parse(entry.value), entry.RangeFloat.Item1, entry.RangeFloat.Item2).ToString();
                 break;
             case nameof(System.Boolean):
                 value = EditorGUILayout.Toggle(System.Boolean.Parse(entry.value)).ToString();
@@ -236,6 +243,7 @@ public class ConfigEditor : Editor
             default:
                 break;
         }
+
 
         EditorGUI.EndDisabledGroup();
 
@@ -253,6 +261,7 @@ public class ConfigEditor : Editor
 
         if (EditorGUI.EndChangeCheck())
         {
+            // Debug.Log(value);
             Undo.RecordObject(target, "Changed Trainer Config");
             if (value != null)
             {
@@ -264,6 +273,7 @@ public class ConfigEditor : Editor
                 entry.active = active;
                 changed = true;
             };
+            OnSave();
         }
 
         EditorGUILayout.EndHorizontal();

@@ -1,7 +1,7 @@
 default_settings:
   trainer_type: ppo
-  summary_freq: 10000
-  max_steps: 500000
+  summary_freq: 0
+  max_steps: 4107595
   checkpoint_interval: 500000
   keep_checkpoints: 5
   time_horizon: 64
@@ -9,14 +9,14 @@ default_settings:
   hyperparameters:
     batch_size: 256
     buffer_size: 10240
-    learning_rate: 0.0003
+    learning_rate: 0.000527
     learning_rate_schedule: linear
     beta: 0.005
     epsilon: 0.2
     lambd: 0.95
     num_epoch: 3
   network_settings:
-    hidden_units: 128
+    hidden_units: 113
     num_layers: 2
     vis_encode_type: simple
     normalize: true

@@ -65,7 +65,8 @@ public class Config : MonoBehaviour
         public Entry trainer_type = new Entry(
             "trainer_type", "ppo",
             alwaysActive: true,
-            help: "(default = ppo) The type of trainer to use: ppo, sac, or poca."
+            help: "(default = ppo) The type of trainer to use: ppo, sac, or poca.",
+            options: new string[] { "ppo", "sac", "poca" }
         );
         public Entry summary_freq = new Entry(
             "summary_freq", 50000,
@@ -76,12 +77,14 @@ public class Config : MonoBehaviour
         public Entry time_horizon = new Entry(
             "time_horizon", 64,
             active: true,
+            range: new System.Tuple<int, int>(32, 2048),
             help:
             "(default = 64) How many steps of experience to collect per-agent before adding it to the experience buffer. When this limit is reached before the end of an episode, a value estimate is used to predict the overall expected reward from the agent's current state. As such, this parameter trades off between a less biased, but higher variance estimate (long time horizon) and more biased, but less varied estimate (short time horizon). In cases where there are frequent rewards within an episode, or episodes are prohibitively large, a smaller number can be more ideal. This number should be large enough to capture all the important behavior within a sequence of an agent's actions.\n\nTypical range: 32 - 2048"
         );
         public Entry max_steps = new Entry(
             "max_steps", 500000,
             active: true,
+            range: new System.Tuple<int, int>(500000, 10000000),
             help:
             "(default = 500000) Total number of steps (i.e., observation collected and action taken) that must be taken in the environment (or across all environments if using multiple in parallel) before ending the training process. If you have multiple agents with the same behavior name within your environment, all steps taken by those agents will contribute to the same max_steps count.\n\nTypical range: 5e5 - 1e7"
         );
@@ -121,12 +124,14 @@ public class Config : MonoBehaviour
             public Entry hidden_units = new Entry(
                 "hidden_units", 128,
                 active: true,
+                range: new System.Tuple<int, int>(32, 512),
                 help:
                 "(default = 128) Number of units in the hidden layers of the neural network. Correspond to how many units are in each fully connected layer of the neural network. For simple problems where the correct action is a straightforward combination of the observation inputs, this should be small. For problems where the action is a very complex interaction between the observation variables, this should be larger.\n\nTypical range: 32 - 512"
             );
             public Entry num_layers = new Entry(
                 "num_layers", 2,
                 active: true,
+                range: new System.Tuple<int, int>(1, 3),
                 help:
                 "(default = 2) The number of hidden layers in the neural network. Corresponds to how many hidden layers are present after the observation input, or after the CNN encoding of the visual observation. For simple problems, fewer layers are likely to train faster and more efficiently. More layers may be necessary for more complex control problems.\n\nTypical range: 1 - 3"
             );
@@ -151,6 +156,7 @@ public class Config : MonoBehaviour
             public Entry learning_rate = new Entry(
                 "learning_rate", 0.0003f,
                 active: true,
+                range: new System.Tuple<float, float>(0.001f, 0.00001f),
                 help:
                 "(default = 3e-4) Initial learning rate for gradient descent. Corresponds to the strength of each gradient descent update step. This should typically be decreased if training is unstable, and the reward does not consistently increase.\n\nTypical range: 1e-5 - 1e-3"
             );
@@ -175,6 +181,7 @@ public class Config : MonoBehaviour
             public Entry beta = new Entry(
                 "beta", 0.005f,
                 active: true,
+                range: new System.Tuple<float, float>(0.01f, 0.0001f),
                 trainers: new List<string> { "ppo", "poca" },
                 help:
                 "(default = 5.0e-3) Strength of the entropy regularization, which makes the policy \"more random.\" This ensures that agents properly explore the action space during training. Increasing this will ensure more random actions are taken. This should be adjusted such that the entropy (measurable from TensorBoard) slowly decreases alongside increases in reward. If entropy drops too quickly, increase beta. If entropy drops too slowly, decrease beta.\n\nTypical range: 1e-4 - 1e-2"
@@ -183,12 +190,14 @@ public class Config : MonoBehaviour
                 "epsilon", 0.2f,
                 active: true,
                 trainers: new List<string> { "ppo", "poca" },
+                range: new System.Tuple<float, float>(0.1f, 0.3f),
                 help:
                 "(default = 0.2) Influences how rapidly the policy can evolve during training. Corresponds to the acceptable threshold of divergence between the old and new policies during gradient descent updating. Setting this value small will result in more stable updates, but will also slow the training process.\n\nTypical range: 0.1 - 0.3"
             );
             public Entry lambd = new Entry( // Not sure if `lambd` is a typo?
                 "lambd", 0.95f,
                 active: true,
+                range: new System.Tuple<float, float>(0.9f, 0.95f),
                 trainers: new List<string> { "ppo", "poca" },
                 help:
                 "(default = 0.95) Regularization parameter (lambda) used when calculating the Generalized Advantage Estimate (GAE). This can be thought of as how much the agent relies on its current value estimate when calculating an updated value estimate. Low values correspond to relying more on the current value estimate (which can be high bias), and high values correspond to relying more on the actual rewards received in the environment (which can be high variance). The parameter provides a trade-off between the two, and the right value can lead to a more stable training process.\n\nTypical range: 0.9 - 0.95"
@@ -197,6 +206,7 @@ public class Config : MonoBehaviour
                 "num_epoch", 3,
                 active: true,
                 trainers: new List<string> { "ppo", "poca" },
+                range: new System.Tuple<int, int>(3, 10),
                 help:
                 "(default = 3) Number of passes to make through the experience buffer when performing gradient descent optimization.The larger the batch_size, the larger it is acceptable to make this. Decreasing this will ensure more stable updates, at the cost of slower learning.\n\nTypical range: 1000 - 10000"
             );
@@ -204,6 +214,7 @@ public class Config : MonoBehaviour
                 "buffer_init_steps", 0,
                 active: true,
                 trainers: new List<string> { "sac" },
+                range: new System.Tuple<int, int>(1000, 10000),
                 help:
                 "(default = 0) Number of experiences to collect into the buffer before updating the policy model. As the untrained policy is fairly random, pre-filling the buffer with random actions is useful for exploration. Typically, at least several episodes of experiences should be pre-filled.\n\nTypical range: 1000 - 10000"
             );
@@ -211,6 +222,7 @@ public class Config : MonoBehaviour
                 "init_entcoef", 1.0f,
                 active: true,
                 trainers: new List<string> { "sac" },
+                range: new System.Tuple<float, float>(0.05f, 1f),
                 help:
                 "(default = 1.0) How much the agent should explore in the beginning of training. Corresponds to the initial entropy coefficient set at the beginning of training. In SAC, the agent is incentivized to make its actions entropic to facilitate better exploration. The entropy coefficient weighs the true reward with a bonus entropy reward. The entropy coefficient is automatically adjusted to a preset target entropy, so the init_entcoef only corresponds to the starting value of the entropy bonus. Increase init_entcoef to explore more in the beginning, decrease to converge to a solution faster.\n\nTypical range: (Continuous): 0.5 - 1.0; (Discrete): 0.05 - 0.5"
             );
@@ -225,6 +237,7 @@ public class Config : MonoBehaviour
                 "tau", 0.005f,
                 active: true,
                 trainers: new List<string> { "sac" },
+                range: new System.Tuple<float, float>(0.05f, 0.01f),
                 help:
                 "(default = 0.005) How aggressively to update the target network used for bootstrapping value estimation in SAC. Corresponds to the magnitude of the target Q update during the SAC model update. In SAC, there are two neural networks: the target and the policy. The target network is used to bootstrap the policy's estimate of the future rewards at a given state, and is fixed while the policy is being updated. This target is then slowly updated according to tau. Typically, this value should be left at 0.005. For simple problems, increasing tau to 0.01 might reduce the time it takes to learn, at the cost of stability.\n\nTypical range: 0.005 - 0.01"
             );
@@ -232,11 +245,12 @@ public class Config : MonoBehaviour
                 "steps_per_update", 1,
                 active: true,
                 trainers: new List<string> { "sac" },
+                range: new System.Tuple<int, int>(1, 20),
                 help:
                 "(default = 1) Average ratio of agent steps (actions) taken to updates made of the agent's policy. In SAC, a single \"update\" corresponds to grabbing a batch of size batch_size from the experience replay buffer, and using this mini batch to update the models. Note that it is not guaranteed that after exactly steps_per_update steps an update will be made, only that the ratio will hold true over many steps. Typically, steps_per_update should be greater than or equal to 1. Note that setting steps_per_update lower will improve sample efficiency (reduce the number of steps required to train) but increase the CPU time spent performing updates. For most environments where steps are fairly fast (e.g. our example environments) steps_per_update equal to the number of agents in the scene is a good balance. For slow environments (steps take 0.1 seconds or more) reducing steps_per_update may improve training speed. We can also change steps_per_update to lower than 1 to update more often than once per step, though this will usually result in a slowdown unless the environment is very slow.\n\nTypical range: 1 - 20"
             );
             public Entry reward_signal_num_update = new Entry(
-                "reward_signal_num_update", 1,
+                "reward_signal_num_update", "steps_per_update",
                 active: true,
                 trainers: new List<string> { "sac" },
                 help:
@@ -333,12 +347,16 @@ public class Config : MonoBehaviour
         public bool active;
         public string value;
         public System.Type type;
+        public int selectedIndex = 0;
 
         private string key;
         private string help;
         private string label;
         private List<string> trainers;
         private bool alwaysActive;
+        private string[] options = null;
+        private System.Tuple<float, float> rangeFloat = null;
+        private System.Tuple<int, int> rangeInt = null;
 
         public string Key => key;
         public string Help => help;
@@ -347,6 +365,10 @@ public class Config : MonoBehaviour
         public bool AlwaysActive => alwaysActive;
         public bool Active => alwaysActive;
         public object Value => value;
+        public string[] Options => options;
+        public System.Tuple<float, float> RangeFloat => rangeFloat;
+        public System.Tuple<int, int> RangeInt => rangeInt;
+
 
         public Entry(
             string key,
@@ -355,11 +377,15 @@ public class Config : MonoBehaviour
             string label = null,
             bool active = true,
             List<string> trainers = null,
-            bool alwaysActive = false
+            bool alwaysActive = false,
+            string[] options = null,
+            int selectedIndex = 0
         )
         {
             this.type = typeof(string);
             this.value = value;
+            this.options = options;
+            this.selectedIndex = selectedIndex;
             AssignCommonProps(
                 key,
                 label,
@@ -399,10 +425,12 @@ public class Config : MonoBehaviour
             string label = null,
             bool active = true,
             List<string> trainers = null,
-            bool alwaysActive = false
+            bool alwaysActive = false,
+            System.Tuple<int, int> range = null
         )
         {
             this.type = typeof(int);
+            this.rangeInt = range;
             this.value = value.ToString();
             AssignCommonProps(
                 key,
@@ -421,10 +449,13 @@ public class Config : MonoBehaviour
             string label = null,
             bool active = true,
             List<string> trainers = null,
-            bool alwaysActive = false
+            bool alwaysActive = false,
+            System.Tuple<float, float> range = null
+
         )
         {
             this.type = typeof(float);
+            this.rangeFloat = range;
             this.value = value.ToString();
             AssignCommonProps(
                 key,
