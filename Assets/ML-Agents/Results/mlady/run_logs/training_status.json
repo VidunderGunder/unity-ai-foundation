@@ -1,0 +1,23 @@
+{
+    "My Behavior": {
+        "checkpoints": [
+            {
+                "steps": 478560,
+                "file_path": "Results\\mlady\\My Behavior\\My Behavior-478560.onnx",
+                "reward": 1.4893603173307264,
+                "creation_time": 1616677272.0627327
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 478560,
+            "file_path": "Results\\mlady\\My Behavior.onnx",
+            "reward": 1.4893603173307264,
+            "creation_time": 1616677272.0627327
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.2.0",
+        "mlagents_version": "0.25.0",
+        "torch_version": "1.7.1"
+    }
+}

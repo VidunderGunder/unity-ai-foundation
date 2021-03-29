@@ -7,7 +7,7 @@ public class EnvironmentData : ScriptableObject
 {
     [Header("General")]
     [SerializeField] [Range(0, 1f)] private float difficulty = 0;
-    private Vector3Int instances = Vector3Int.one;
+    [SerializeField] private Vector3Int instances = Vector3Int.one;
     [SerializeField] private float margin = 5f;
     [SerializeField] private bool debug = false;
 

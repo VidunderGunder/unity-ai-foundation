@@ -19,15 +19,15 @@ public class EnvironmentDataEditor : Editor
     {
         base.OnInspectorGUI();
 
-        env.Instances = EditorGUILayout.Vector3IntField("Instances", env.Instances);
+        // env.Instances = EditorGUILayout.Vector3IntField("Instances", env.Instances);
 
-        if (GUI.changed)
-        {
-            if (Application.isPlaying)
-            {
-                EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
-            }
-            EditorUtility.SetDirty(env);
-        }
+        // if (GUI.changed)
+        // {
+        //     if (Application.isPlaying)
+        //     {
+        //         EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+        //     }
+        //     EditorUtility.SetDirty(env);
+        // }
     }
 }

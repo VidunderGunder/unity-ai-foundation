@@ -20,8 +20,8 @@ public class VehicleAgent : GeneralAgent
     private float stoppedVelocitySq;
     private bool hasStopped;
     private float initialDistance;
-    [System.NonSerialized] public float maxCumulativeReward = 5f;
-    [System.NonSerialized] public float minCumulativeReward = -2f;
+    [System.NonSerialized] public float maxCumulativeReward = 6f;
+    [System.NonSerialized] public float minCumulativeReward = -3f;
 
     private float maxDistanceFromStart;
     private float maxDistanceFromStartSq;
@@ -114,18 +114,18 @@ public class VehicleAgent : GeneralAgent
         var agentBelowGround = transform.position.y < environmentOrigin.y - 15f;
         var agentOutsideArea = (transform.position - environmentOrigin).sqrMagnitude > maxDistanceFromStartSq;
 
-        var targetBelowGround = target.transform.position.y < environmentOrigin.y - 15f;
-        var targetOutsideArea = (target.transform.position - environmentOrigin).sqrMagnitude > maxDistanceFromStartSq;
+        // var targetBelowGround = target.transform.position.y < environmentOrigin.y - 15f;
+        // var targetOutsideArea = (target.transform.position - environmentOrigin).sqrMagnitude > maxDistanceFromStartSq;
 
         var error =
-            agentBelowGround |
-            agentOutsideArea |
-            targetBelowGround |
-            targetOutsideArea;
+            agentBelowGround
+            | agentOutsideArea;
+        // | targetBelowGround
+        // | targetOutsideArea;
 
         var episodeShouldEnd = error | success;
 
-        if (!atTarget & (TargetDistance < closestDistanceYet))
+        if (TargetDistance < closestDistanceYet)
         {
             AddReward((closestDistanceYet - TargetDistance) / initialDistance);
             closestDistanceYet = TargetDistance;
@@ -133,7 +133,7 @@ public class VehicleAgent : GeneralAgent
 
         if (episodeShouldEnd)
         {
-            AddReward(success ? 2f : 0);
+            AddReward(success ? 4f : 0);
             EndEpisode();
         }
     }

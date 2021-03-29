@@ -1,15 +1,15 @@
 default_settings:
   trainer_type: ppo
-  summary_freq: 10000
-  max_steps: 10000000
-  checkpoint_interval: 10000000
+  summary_freq: 50000
+  max_steps: 20000000
+  checkpoint_interval: 20000000
   keep_checkpoints: 5
   time_horizon: 64
   threaded: true
   hyperparameters:
-    batch_size: 256
-    buffer_size: 10240
-    learning_rate: 0.0003
+    batch_size: 2048
+    buffer_size: 16384
+    learning_rate: 0.00035
     learning_rate_schedule: linear
     beta: 0.005
     epsilon: 0.2
@@ -19,23 +19,14 @@ default_settings:
     hidden_units: 128
     num_layers: 2
     vis_encode_type: match3
-    normalize: false
 checkpoint_settings:
   results_dir: Results
-  run_id: mlady
+  run_id: mlady-medium-4
+  initialize_from: mlady-medium-4
   resume: false
   force: true
-  inference: false
-  load_model: false
-  train_model: false
 engine_settings:
-  time_scale: 25
+  time_scale: 2
   quality_level: 1
-  target_frame_rate: -1
-  capture_frame_rate: 60
-  width: 84
-  height: 84
-  no_graphics: false
 torch_settings:
   device: cuda
-debug: false

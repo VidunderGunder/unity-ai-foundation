@@ -1,0 +1,29 @@
+{
+    "My Behavior": {
+        "checkpoints": [
+            {
+                "steps": 499964,
+                "file_path": "Results\\mlady-small-2\\My Behavior\\My Behavior-499964.onnx",
+                "reward": 4.1287199723985974,
+                "creation_time": 1616786755.2311187
+            },
+            {
+                "steps": 500025,
+                "file_path": "Results\\mlady-small-2\\My Behavior\\My Behavior-500025.onnx",
+                "reward": 4.131662656180284,
+                "creation_time": 1616786755.3671186
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 500025,
+            "file_path": "Results\\mlady-small-2\\My Behavior.onnx",
+            "reward": 4.131662656180284,
+            "creation_time": 1616786755.3671186
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.2.0",
+        "mlagents_version": "0.25.0",
+        "torch_version": "1.7.1"
+    }
+}
