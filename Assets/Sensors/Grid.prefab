@@ -48,7 +48,7 @@ MonoBehaviour:
   CellScaleZ: 1
   GridNumSideX: 16
   GridNumSideZ: 16
-  CellScaleY: 5
+  CellScaleY: 1
   RotateToAgent: 1
   ChannelDepth: 03000000
   DetectableObjects:
@@ -59,7 +59,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 705
   gridDepthType: 0
-  rootReference: {fileID: 3929416580490401916}
+  rootReference: {fileID: 0}
   MaxColliderBufferSize: 500
   InitialColliderBufferSize: 8
   ObservationPerCell: 1

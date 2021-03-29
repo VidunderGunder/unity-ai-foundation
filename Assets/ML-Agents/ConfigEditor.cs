@@ -223,35 +223,34 @@ public class ConfigEditor : Editor
         EditorGUI.BeginDisabledGroup(excludeEntry);
 
         var content = new GUIContent(entry.Label.ToDirtyTitleCase(), config.alwaysShowTooltips ? null : entry.Help);
-        EditorGUILayout.PrefixLabel(content);
+        EditorGUIUtility.fieldWidth = 80;
 
         EditorGUI.BeginChangeCheck();
         string value = null;
         switch (entry.type.Name)
         {
             case nameof(System.String):
-                if (entry.Options == null || entry.Options.Length == 0) value = EditorGUILayout.TextField(entry.value);
+                if (entry.Options == null || entry.Options.Length == 0) value = EditorGUILayout.TextField(content, entry.value);
                 else
                 {
-                    entry.selectedIndex = EditorGUILayout.Popup(entry.selectedIndex, entry.Options);
+                    entry.selectedIndex = EditorGUILayout.Popup(content, entry.selectedIndex, entry.Options);
                     value = entry.Options[entry.selectedIndex];
                 }
                 break;
             case nameof(System.Int32):
-                if (entry.RangeInt == null) value = EditorGUILayout.IntField(System.Int32.Parse(entry.value)).ToString();
-                else value = EditorGUILayout.IntSlider(System.Int32.Parse(entry.value), entry.RangeInt.Item1, entry.RangeInt.Item2).ToString();
+                if (entry.RangeInt == null) value = EditorGUILayout.IntField(content, System.Int32.Parse(entry.value)).ToString();
+                else value = EditorGUILayout.IntSlider(content, System.Int32.Parse(entry.value), entry.RangeInt.Item1, entry.RangeInt.Item2).ToString();
                 break;
             case nameof(System.Single):
-                if (entry.RangeFloat == null) value = EditorGUILayout.FloatField(System.Single.Parse(entry.value)).ToString();
-                else value = EditorGUILayout.Slider(System.Single.Parse(entry.value), entry.RangeFloat.Item1, entry.RangeFloat.Item2).ToString();
+                if (entry.RangeFloat == null) value = EditorGUILayout.FloatField(content, System.Single.Parse(entry.value)).ToString();
+                else value = EditorGUILayout.Slider(content, System.Single.Parse(entry.value), entry.RangeFloat.Item1, entry.RangeFloat.Item2).ToString();
                 break;
             case nameof(System.Boolean):
-                value = EditorGUILayout.Toggle(System.Boolean.Parse(entry.value)).ToString();
+                value = EditorGUILayout.Toggle(content, System.Boolean.Parse(entry.value)).ToString();
                 break;
             default:
                 break;
         }
-
 
         EditorGUI.EndDisabledGroup();
 

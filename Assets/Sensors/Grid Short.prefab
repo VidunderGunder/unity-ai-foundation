@@ -16,12 +16,44 @@ PrefabInstance:
       value: GridShort
       objectReference: {fileID: 0}
     - target: {fileID: 6588940438165308079, guid: 6b3f5c2361004c24f826c196232b97c9, type: 3}
+      propertyPath: CellScaleX
+      value: 1.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 6588940438165308079, guid: 6b3f5c2361004c24f826c196232b97c9, type: 3}
+      propertyPath: CellScaleY
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6588940438165308079, guid: 6b3f5c2361004c24f826c196232b97c9, type: 3}
+      propertyPath: CellScaleZ
+      value: 2.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 6588940438165308079, guid: 6b3f5c2361004c24f826c196232b97c9, type: 3}
       propertyPath: GridNumSideX
-      value: 5
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6588940438165308079, guid: 6b3f5c2361004c24f826c196232b97c9, type: 3}
       propertyPath: GridNumSideZ
-      value: 5
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6588940438165308079, guid: 6b3f5c2361004c24f826c196232b97c9, type: 3}
+      propertyPath: NumberOfObservations
+      value: 49
+      objectReference: {fileID: 0}
+    - target: {fileID: 6588940438165308079, guid: 6b3f5c2361004c24f826c196232b97c9, type: 3}
+      propertyPath: DebugColors.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6588940438165308079, guid: 6b3f5c2361004c24f826c196232b97c9, type: 3}
+      propertyPath: InitialColliderBufferSize
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 6588940438165308079, guid: 6b3f5c2361004c24f826c196232b97c9, type: 3}
+      propertyPath: ChannelDepth.Array.data[0]
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6588940438165308079, guid: 6b3f5c2361004c24f826c196232b97c9, type: 3}
+      propertyPath: DetectableObjects.Array.size
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7242016878529592059, guid: 6b3f5c2361004c24f826c196232b97c9, type: 3}
       propertyPath: m_RootOrder
@@ -37,7 +69,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7242016878529592059, guid: 6b3f5c2361004c24f826c196232b97c9, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 4.5
       objectReference: {fileID: 0}
     - target: {fileID: 7242016878529592059, guid: 6b3f5c2361004c24f826c196232b97c9, type: 3}
       propertyPath: m_LocalRotation.w

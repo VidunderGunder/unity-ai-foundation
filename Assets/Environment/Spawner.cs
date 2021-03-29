@@ -47,6 +47,7 @@ public class Spawner : MonoBehaviour
 
     IEnumerator SpawnRoutine()
     {
+        yield return new WaitForFixedUpdate();
         DisableAllPoolObjects();
         // DisableAllObjectTriggers();
         yield return new WaitForFixedUpdate();
@@ -184,19 +185,22 @@ public class Spawner : MonoBehaviour
 
     private Transform SetTransform(Transform tf, SpawnOptions options)
     {
-        tf.rotation = tf.rotation.Randomize(options.rotationRange);
-        tf.localScale = RandomScale(
+        Quaternion randomRotation = tf.rotation.Randomize(options.rotationRange);
+        Vector3 randomScale = RandomScale(
             tf.localScale,
             options.minScale,
             options.maxScale,
             options.scaleMethod
         );
+
+        tf.rotation = randomRotation;
+        tf.localScale = randomScale;
         tf.position = GetAllowedRandomPosition(tf, options);
 
         return tf;
     }
 
-    private Vector3 GetAllowedRandomPosition(Transform tf, SpawnOptions options)
+    private Vector3 GetAllowedRandomPosition(Transform tf, SpawnOptions options, Quaternion? rot = null, Vector3? scale = null)
     {
         if (options.allow.Count > 0)
         {
@@ -220,8 +224,8 @@ public class Spawner : MonoBehaviour
 
                 var collisions = Physics.OverlapBox(
                     tf.position,
-                    tf.lossyScale / 2f,
-                    tf.rotation
+                    scale != null ? (Vector3) scale / 2 : tf.lossyScale / 2f,
+                    rot != null ? (Quaternion) rot : tf.rotation
                 );
 
                 foreach (var forbidden in options.avoid)

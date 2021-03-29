@@ -13,7 +13,7 @@ public class VehicleController : MonoBehaviour, IInputActionAssetProvider
     [Range(0, 5f)] public float boostModifier = 2.5f;
     [Range(0, 10000f)] public float brakeTorque = 10000f;
     public Transform centerOfMass;
-    [Range(0, 20000f)] public float handbrabrakeTorque = 10000f;
+    [Range(0, 100000f)] public float handbrakeTorque = 50000f;
     private bool handbrake;
     public bool manualControl = false;
     [Range(0, 1000f)] public float maxRpm = 250f;
@@ -91,7 +91,9 @@ public class VehicleController : MonoBehaviour, IInputActionAssetProvider
 
             if (handbrake)
             {
-                if (wheelIndex >= 2) wheel.brakeTorque = handbrabrakeTorque;
+                wheel.brakeTorque = handbrakeTorque;
+                // if (wheelIndex >= 2) wheel.brakeTorque = handbrakeTorque;
+                wheel.motorTorque = 0;
             }
             else
             {
