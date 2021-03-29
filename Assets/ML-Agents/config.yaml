@@ -1,15 +1,40 @@
 default_settings:
   trainer_type: ppo
+<<<<<<< HEAD
   summary_freq: 50000
+=======
+<<<<<<< HEAD
+  summary_freq: 50000
+  max_steps: 20000000
+  checkpoint_interval: 20000000
+=======
+  summary_freq: 0
+  max_steps: 4107595
+  checkpoint_interval: 500000
+>>>>>>> 38d21957edce1973d69fc0f43461716e887dbf86
+  keep_checkpoints: 5
+>>>>>>> 3597d7790806ddf42b9b2b56eee702796e4912f8
   time_horizon: 64
   max_steps: 500000
   keep_checkpoints: 5
   checkpoint_interval: 500000
   threaded: true
   hyperparameters:
+<<<<<<< HEAD
     learning_rate: 0.0003
     batch_size: 256
     buffer_size: 10240
+=======
+<<<<<<< HEAD
+    batch_size: 2048
+    buffer_size: 16384
+    learning_rate: 0.00035
+=======
+    batch_size: 256
+    buffer_size: 10240
+    learning_rate: 0.000527
+>>>>>>> 38d21957edce1973d69fc0f43461716e887dbf86
+>>>>>>> 3597d7790806ddf42b9b2b56eee702796e4912f8
     learning_rate_schedule: linear
     beta: 0.005
     epsilon: 0.2
@@ -18,6 +43,7 @@ default_settings:
   network_settings:
     hidden_units: 128
     num_layers: 2
+<<<<<<< HEAD
     normalize: false
     vis_encode_type: simple
 behaviors:
@@ -37,6 +63,17 @@ engine_settings:
   train_model: false
   inference: false
   results_dir: Results
+=======
+    vis_encode_type: match3
+checkpoint_settings:
+  results_dir: Results
+  run_id: mlady-medium-4
+  initialize_from: mlady-medium-4
+  resume: false
+  force: true
+engine_settings:
+  time_scale: 2
+  quality_level: 1
+>>>>>>> 3597d7790806ddf42b9b2b56eee702796e4912f8
 torch_settings:
   device: cuda
-debug: false
