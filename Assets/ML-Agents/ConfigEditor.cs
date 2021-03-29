@@ -2,6 +2,7 @@
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using System.Collections.Generic;
 
 [CustomEditor(typeof(Config))]
 public class ConfigEditor : Editor
@@ -18,6 +19,11 @@ public class ConfigEditor : Editor
     {
         base.OnInspectorGUI();
         serializedObject.Update();
+        if (GUILayout.Button("yaml read"))
+        {
+            var yaml = config.ReadFile();
+            Debug.Log(yaml);
+        };
 
         if (config.FileExists)
         {
@@ -89,84 +95,83 @@ public class ConfigEditor : Editor
     //         EditorStyles.centeredGreyMiniLabel
     //     );
     // }
+    private void DefaultFields(List<Config.Entry> entries, string trainer_type = null)
+    {
+        foreach (var entry in entries)
+        {
+            DefaultField(entry, trainer_type);
+        }
+    }
+    private void BehaviourFields(Config.TrainerSettings behaviour)
+    {
+        var trainer_type = behaviour.trainer_settings[0].value;
+        EditorGUI.indentLevel++;
+        DefaultFields(behaviour.trainer_settings);
+
+        Space();
+
+        DefaultSettingsHeader(behaviour.hyperparameters);
+        EditorGUI.indentLevel++;
+        DefaultFields(behaviour.hyperparameters.hyperparameters_entries_base);
+        Space();
+        EditorGUILayout.LabelField("PPO Only", EditorStyles.miniBoldLabel);
+        DefaultFields(behaviour.hyperparameters.hyperparameters_entries_ppo, trainer_type);
+        Space();
+        EditorGUILayout.LabelField("SAC Only", EditorStyles.miniBoldLabel);
+        DefaultFields(behaviour.hyperparameters.hyperparameters_entries_sac, trainer_type);
+
+        EditorGUI.indentLevel--;
+
+        Space();
+
+        DefaultSettingsHeader(behaviour.network_settings);
+        EditorGUI.indentLevel++;
+        DefaultFields(behaviour.network_settings.network_settings_entries);
+        EditorGUI.indentLevel--;
+        EditorGUI.indentLevel--;
+
+        Space();
+    }
 
     private void AllFields()
     {
+
         DefaultSettingsHeader(config.defaultSettings);
-        EditorGUI.indentLevel++;
-        DefaultField(config.defaultSettings.trainer_type);
-        DefaultField(config.defaultSettings.summary_freq);
-        DefaultField(config.defaultSettings.max_steps);
-        DefaultField(config.defaultSettings.checkpoint_interval);
-        DefaultField(config.defaultSettings.keep_checkpoints);
-        DefaultField(config.defaultSettings.time_horizon);
-        DefaultField(config.defaultSettings.init_path);
-        DefaultField(config.defaultSettings.threaded);
+        BehaviourFields(config.defaultSettings);
 
-        Space();
-
-        DefaultSettingsHeader(config.defaultSettings.hyperparameters);
-        EditorGUI.indentLevel++;
-        DefaultField(config.defaultSettings.hyperparameters.batch_size);
-        DefaultField(config.defaultSettings.hyperparameters.buffer_size);
-        DefaultField(config.defaultSettings.hyperparameters.learning_rate);
-        DefaultField(config.defaultSettings.hyperparameters.learning_rate_schedule);
-
-        Space();
-
-        EditorGUILayout.LabelField("PPO Only", EditorStyles.miniBoldLabel);
-        DefaultField(config.defaultSettings.hyperparameters.beta);
-        DefaultField(config.defaultSettings.hyperparameters.epsilon);
-        DefaultField(config.defaultSettings.hyperparameters.lambd);
-        DefaultField(config.defaultSettings.hyperparameters.num_epoch);
-
-        Space();
-
-        EditorGUILayout.LabelField("SAC Only", EditorStyles.miniBoldLabel);
-        DefaultField(config.defaultSettings.hyperparameters.init_entcoef);
-        DefaultField(config.defaultSettings.hyperparameters.buffer_init_steps);
-        DefaultField(config.defaultSettings.hyperparameters.tau);
-        DefaultField(config.defaultSettings.hyperparameters.steps_per_update);
-        DefaultField(config.defaultSettings.hyperparameters.reward_signal_num_update);
-        DefaultField(config.defaultSettings.hyperparameters.save_replay_buffer);
-        EditorGUI.indentLevel--;
-
-        Space();
-
-        DefaultSettingsHeader(config.defaultSettings.network_settings);
-        EditorGUI.indentLevel++;
-        DefaultField(config.defaultSettings.network_settings.hidden_units);
-        DefaultField(config.defaultSettings.network_settings.num_layers);
-        DefaultField(config.defaultSettings.network_settings.vis_encode_type);
-        DefaultField(config.defaultSettings.network_settings.normalize);
-        EditorGUI.indentLevel--;
-        EditorGUI.indentLevel--;
-
-        Space();
-
+        DefaultSettingsHeader(config.multipleBehaviours);
+        int index = 0;
+        foreach (var behavior in config.multipleBehaviours.behaviors)
+        {
+            EditorGUI.indentLevel++;
+            DefaultField(behavior.behavior_name);
+            BehaviourFields(behavior.Behaviour);
+            EditorGUI.indentLevel--;
+            if (GUILayout.Button("Remove Behaviour"))
+            {
+                config.multipleBehaviours.behaviors.RemoveAt(index);
+                changed = true;
+                OnSave();
+            };
+            Space();
+        }
+        if (GUILayout.Button("Add Behaviour"))
+        {
+            config.multipleBehaviours.behaviors.Add(new Config.TrainerSettingsMultipleBehaviour("behavior_name" + (config.multipleBehaviours.behaviors.Count + 1)));
+            changed = true;
+            OnSave();
+        };
+        index++;
         DefaultSettingsHeader(config.checkpointSettings);
         EditorGUI.indentLevel++;
-        DefaultField(config.checkpointSettings.results_dir);
-        DefaultField(config.checkpointSettings.run_id);
-        DefaultField(config.checkpointSettings.initialize_from);
-        DefaultField(config.checkpointSettings.resume);
-        DefaultField(config.checkpointSettings.force);
-        DefaultField(config.checkpointSettings.inference);
-        DefaultField(config.checkpointSettings.load_model);
-        DefaultField(config.checkpointSettings.train_model);
+        DefaultFields(config.checkpointSettings.checkpoint_settings);
         EditorGUI.indentLevel--;
 
         Space();
 
         DefaultSettingsHeader(config.engineSettings);
         EditorGUI.indentLevel++;
-        DefaultField(config.engineSettings.time_scale);
-        DefaultField(config.engineSettings.quality_level);
-        DefaultField(config.engineSettings.target_frame_rate);
-        DefaultField(config.engineSettings.capture_frame_rate);
-        DefaultField(config.engineSettings.width);
-        DefaultField(config.engineSettings.height);
-        DefaultField(config.engineSettings.no_graphics);
+        DefaultFields(config.engineSettings.engine_settings);
         EditorGUI.indentLevel--;
 
         Space();
@@ -205,9 +210,13 @@ public class ConfigEditor : Editor
         }
     }
 
-    public bool DefaultField(Config.Entry entry, bool isLabel = false)
+    public bool DefaultField(Config.Entry entry, string trainer_type = null)
     {
-        var wrongTrainer = !entry.Trainers.Contains((string) config.defaultSettings.trainer_type.value);
+        var wrongTrainer = false;
+        if (trainer_type != null)
+        {
+            wrongTrainer = !entry.Trainers.Contains((string) trainer_type);
+        }
         var excludeEntry = !entry.AlwaysActive && !entry.active | wrongTrainer;
 
         EditorGUILayout.BeginHorizontal();
@@ -218,7 +227,6 @@ public class ConfigEditor : Editor
 
         EditorGUI.BeginChangeCheck();
         string value = null;
-
         switch (entry.type.Name)
         {
             case nameof(System.String):
