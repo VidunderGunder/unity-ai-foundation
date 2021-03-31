@@ -12,20 +12,24 @@ PrefabInstance:
       value: Grid Small
       objectReference: {fileID: 0}
     - target: {fileID: 6615287179661826275, guid: 054e042e34151f24e90cbba3b2513b8e, type: 3}
+      propertyPath: Name
+      value: GridSmall
+      objectReference: {fileID: 0}
+    - target: {fileID: 6615287179661826275, guid: 054e042e34151f24e90cbba3b2513b8e, type: 3}
       propertyPath: CellScaleX
-      value: 1.5
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 6615287179661826275, guid: 054e042e34151f24e90cbba3b2513b8e, type: 3}
       propertyPath: CellScaleY
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6615287179661826275, guid: 054e042e34151f24e90cbba3b2513b8e, type: 3}
       propertyPath: CellScaleZ
-      value: 2.5
+      value: 0.875
       objectReference: {fileID: 0}
     - target: {fileID: 6615287179661826275, guid: 054e042e34151f24e90cbba3b2513b8e, type: 3}
       propertyPath: DebugColors.Array.size
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6615287179661826275, guid: 054e042e34151f24e90cbba3b2513b8e, type: 3}
       propertyPath: InitialColliderBufferSize

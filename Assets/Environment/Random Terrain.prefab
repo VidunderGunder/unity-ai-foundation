@@ -55,7 +55,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1486369991990418081}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 578e2e6ff9c871d45ab263bf94642738, type: 3}
   m_Name: 
@@ -79,12 +79,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578e2e6ff9c871d45ab263bf94642738, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  borderHeight: 1
+  borderHeight: 0.25
   borders: 1
   borderThickness: 1
   centered: 1
   env: {fileID: 11400000, guid: d2dbdef77e4169c42baa3ed5761025dd, type: 2}
-  maxDisplacement: -0.25
+  maxDisplacement: -0.025
   unevenness: 0.1
 --- !u!114 &852317949395575789
 MonoBehaviour:
@@ -93,17 +93,17 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1615525821759980819}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 578e2e6ff9c871d45ab263bf94642738, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  borderHeight: 1
+  borderHeight: 0.5
   borders: 1
   borderThickness: 1
   centered: 1
   env: {fileID: 11400000, guid: d2dbdef77e4169c42baa3ed5761025dd, type: 2}
-  maxDisplacement: -1.333
+  maxDisplacement: -0.1333
   unevenness: 0.1
 --- !u!1001 &593169008179768989
 PrefabInstance:
@@ -330,7 +330,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2061515788915897403, guid: 2dace4e7800237e44a08e0eb8cda518f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.333
+      value: -0.0333
       objectReference: {fileID: 0}
     - target: {fileID: 2061515788915897403, guid: 2dace4e7800237e44a08e0eb8cda518f, type: 3}
       propertyPath: m_LocalPosition.z

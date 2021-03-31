@@ -12,11 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a81169a24791544aa45028d864262f2, type: 3}
   m_Name: Environment
   m_EditorClassIdentifier: 
-  difficulty: 0.875
-  instances: {x: 8, y: 1, z: 4}
-  margin: 30
+  difficulty: 0
+  maxSteps: 2000
+  instances: {x: 3, y: 1, z: 2}
+  margin: 5
   debug: 0
   prefab: {fileID: 3950028274156649340, guid: 9f7fbd7e44a608444a9ea05aac2df95c, type: 3}
-  size: 250
-  skipFirstInstance: 1
   startPosition: {x: 0, y: 0, z: 0}
+  size: 50
+  skipFirstInstance: 1
+  isTraining: 0

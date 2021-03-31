@@ -7,17 +7,22 @@ public class EnvironmentData : ScriptableObject
 {
     [Header("General")]
     [SerializeField] [Range(0, 1f)] private float difficulty = 0;
+    [SerializeField] private int maxSteps = 1000;
     [SerializeField] private Vector3Int instances = Vector3Int.one;
     [SerializeField] private float margin = 5f;
     [SerializeField] private bool debug = false;
 
     [Header("Grid")]
     [SerializeField] private GameObject prefab;
+    [SerializeField] private Vector3 startPosition = Vector3.zero;
     [SerializeField] [Range(30f, 500f)] private float size = 100f;
     [SerializeField] private bool skipFirstInstance;
-    [SerializeField] private Vector3 startPosition = Vector3.zero;
+
+    [Space]
+    public bool isTraining = false;
 
     public float Difficulty { get => difficulty; }
+    public int MaxSteps { get => maxSteps; set => maxSteps = value; }
     public Vector3Int Instances
     {
         get => instances;
@@ -33,6 +38,7 @@ public class EnvironmentData : ScriptableObject
     public bool SkipFirstInstance { get => skipFirstInstance; }
     public Vector3 StartPosition { get => startPosition; }
     public bool Debug { get => debug; }
+    // public bool IsTraining { get => isTraining; set => isTraining = value; }
 
 #if UNITY_EDITOR
     /// <summary>

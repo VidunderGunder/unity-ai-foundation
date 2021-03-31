@@ -1,15 +1,17 @@
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 
 [CustomEditor(typeof(Training))]
 public class TrainingEditor : Editor
 {
     Training training;
+    SerializedObject serializedTraining;
+    SerializedObject serializedEnv;
 
     private void OnEnable()
     {
         training = (Training) target;
+        if (!Application.isPlaying) training.lockGameFocus = false;
     }
 
     public override void OnInspectorGUI()
@@ -29,21 +31,18 @@ public class TrainingEditor : Editor
             false
         );
 
+        EditorGUI.BeginDisabledGroup(training.env.isTraining);
         if (GUILayout.Button("Train")) Train();
-
-        if (GUI.changed)
-        {
-            EditorUtility.SetDirty(training);
-            EditorSceneManager.MarkSceneDirty(training.gameObject.scene);
-        }
+        EditorGUI.EndDisabledGroup();
     }
 
     public void Train()
     {
+        training.lockGameFocus = true;
+        training.env.isTraining = true;
         EditorUtility.OpenWithDefaultApp(
             AssetDatabase.GetAssetPath(training.MLAgentsShellScript)
         );
         EditorApplication.isPlaying = true;
     }
-
 }

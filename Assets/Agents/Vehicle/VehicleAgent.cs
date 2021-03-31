@@ -1,48 +1,58 @@
 // using System;
-
+using System.Collections.Generic;
+using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
 
-public class VehicleAgent : GeneralAgent
+public class VehicleAgent : Agent
 {
-    private readonly float maxCumulativeCollisionPenalty = 2f;
-    private readonly float maxSingleCollisionPenalty = 1.5f;
+    [Header("Dependencies")]
+    [SerializeField] private Spawner spawner;
+    [SerializeField] private Transform target;
+    [SerializeField] private EnvironmentData env;
     [SerializeField] private Rigidbody agentRigidbody;
+    [SerializeField] private VehicleController controller;
+
+    [SerializeField] private bool keepHistory = false;
+
     private bool atTarget;
     private float closestDistanceYet;
     private float closestDistanceYetSq;
-    private float cumulativeCollisionPenalty;
-    [SerializeField] private EnvironmentData env;
 
     // TODO: Make more robust (direct reference to environment)
     private Vector3 environmentOrigin;
-    private float stoppedVelocity;
+    private float stoppedVelocity = 0.5f;
     private float stoppedVelocitySq;
     private bool hasStopped;
     private float initialDistance;
-    [System.NonSerialized] public float maxCumulativeReward = 6f;
-    [System.NonSerialized] public float minCumulativeReward = -3f;
+    [System.NonSerialized] public float maxCumulativeReward = 10f;
+    [System.NonSerialized] public float minCumulativeReward = -10f;
 
     private float maxDistanceFromStart;
     private float maxDistanceFromStartSq;
     private float maxVectorMagnitude = 75f;
+    private int stepSafetyBuffer = 10;
+    private bool initialized = false;
+    private List<float> rewardHistory = new List<float>();
+    private int stepTotal = 0;
 
-    [Header("Dependencies")]
-    [SerializeField] private Spawner spawner;
-    [SerializeField] private Transform target;
+    public float Speed => agentRigidbody.transform.InverseTransformDirection(agentRigidbody.velocity).z;
+    public int StepTotal => stepTotal;
 
     // [Observable]
     private float TargetDistance => target != null ? (transform.position - target.position).magnitude : 0;
+    const int REWARD_HISTORY_LENGTH = 10;
+    public List<float> RewardHistory { get => rewardHistory; }
 
     private void Awake()
     {
         if (agentRigidbody == null) agentRigidbody = GetComponent<Rigidbody>();
+        if (controller == null) controller = GetComponent<VehicleController>();
         if (target == null) target = transform.parent.Find("Target");
 
         maxDistanceFromStart = 1.41f * 1.05f * env.Size / 2;
         maxDistanceFromStartSq = maxDistanceFromStart * maxDistanceFromStart;
 
-        stoppedVelocity = 0.5f;
         stoppedVelocitySq = stoppedVelocity * stoppedVelocity;
     }
 
@@ -54,11 +64,18 @@ public class VehicleAgent : GeneralAgent
 
     public override void OnEpisodeBegin()
     {
+        controller.ResetController();
+        initialized = false;
+        MaxStep = env.MaxSteps;
         spawner.Spawn();
-        cumulativeCollisionPenalty = 0;
+    }
 
+    private void Init()
+    {
+        if (initialized) return;
         closestDistanceYet = TargetDistance;
         initialDistance = TargetDistance;
+        initialized = true;
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -71,28 +88,29 @@ public class VehicleAgent : GeneralAgent
         }
         targetVector = targetVector / maxVectorMagnitude; // Normalized
         sensor.AddObservation(targetVector / maxVectorMagnitude); // Existential penalty
-
-        AddReward(-1f / MaxStep * (hasStopped & !atTarget ? 1f + env.Difficulty : 0.1f)); // Existential penalty
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         if (
             collision.collider.tag != "Terrain"
+            && StepCount > stepSafetyBuffer
         )
         {
-            var collisionPenalty = collision.relativeVelocity.sqrMagnitude * 0.025f;
-            collisionPenalty = collisionPenalty > maxSingleCollisionPenalty
-                ? maxSingleCollisionPenalty
-                : collisionPenalty;
-            cumulativeCollisionPenalty += collisionPenalty;
-            if (cumulativeCollisionPenalty > maxCumulativeCollisionPenalty)
+            var speedSelf = controller.Speed;
+            var maxSpeed = controller.maxSpeed;
+
+            float force = collision.impulse.magnitude / Time.fixedDeltaTime;
+            float penalty = 0f;
+            float threshold = 100f;
+            float forcePerPenaltyPoint = 1000f;
+
+            if (force > threshold)
             {
-                collisionPenalty = maxCumulativeCollisionPenalty - cumulativeCollisionPenalty;
-                cumulativeCollisionPenalty = maxCumulativeCollisionPenalty;
+                penalty = (force - threshold) * (1 / forcePerPenaltyPoint);
             }
 
-            AddReward(-collisionPenalty);
+            AddReward(-penalty);
         }
     }
 
@@ -108,33 +126,60 @@ public class VehicleAgent : GeneralAgent
 
     private void FixedUpdate()
     {
-        hasStopped = agentRigidbody.velocity.sqrMagnitude < stoppedVelocitySq;
-        var success = hasStopped & atTarget;
-
-        var agentBelowGround = transform.position.y < environmentOrigin.y - 15f;
-        var agentOutsideArea = (transform.position - environmentOrigin).sqrMagnitude > maxDistanceFromStartSq;
-
-        // var targetBelowGround = target.transform.position.y < environmentOrigin.y - 15f;
-        // var targetOutsideArea = (target.transform.position - environmentOrigin).sqrMagnitude > maxDistanceFromStartSq;
-
-        var error =
-            agentBelowGround
-            | agentOutsideArea;
-        // | targetBelowGround
-        // | targetOutsideArea;
-
-        var episodeShouldEnd = error | success;
-
-        if (TargetDistance < closestDistanceYet)
+        stepTotal++;
+        if (StepCount > stepSafetyBuffer)
         {
-            AddReward((closestDistanceYet - TargetDistance) / initialDistance);
-            closestDistanceYet = TargetDistance;
+            Init();
+
+            hasStopped = agentRigidbody.velocity.sqrMagnitude < stoppedVelocitySq;
+            var success = hasStopped & atTarget;
+
+            var agentBelowGround = transform.position.y < environmentOrigin.y - 15f;
+            var agentOutsideArea = (transform.position - environmentOrigin).sqrMagnitude > maxDistanceFromStartSq;
+
+            // var targetBelowGround = target.transform.position.y < environmentOrigin.y - 15f;
+            // var targetOutsideArea = (target.transform.position - environmentOrigin).sqrMagnitude > maxDistanceFromStartSq;
+
+            var error =
+                agentBelowGround
+                | agentOutsideArea;
+            // | targetBelowGround
+            // | targetOutsideArea;
+
+            var episodeShouldEnd = error | success;
+
+            if (TargetDistance < closestDistanceYet)
+            {
+                // Debug.Log(
+                //     "goal: " + TargetDistance.ToString("F1") + "m"
+                //      + " " + "best: " + closestDistanceYet.ToString("F1") + "m"
+                //      + " " + "init: " + initialDistance.ToString("F1") + "m"
+                // );
+                AddReward(2f * (closestDistanceYet - TargetDistance) / initialDistance);
+                closestDistanceYet = TargetDistance;
+            }
+
+            if (episodeShouldEnd)
+            {
+                AddReward(success ? 4f : 0);
+                RecordReward();
+                EndEpisode();
+            }
+
+            // Making the agent restless
+            AddReward(-1f / (MaxStep - stepSafetyBuffer) * (hasStopped & !atTarget ? 1f + env.Difficulty : 0.1f));
+
+            if (StepCount == MaxStep - 1) RecordReward();
         }
+    }
 
-        if (episodeShouldEnd)
+    void RecordReward()
+    {
+        if (!keepHistory) return;
+        rewardHistory.Add(GetCumulativeReward());
+        if (rewardHistory.Count > REWARD_HISTORY_LENGTH)
         {
-            AddReward(success ? 4f : 0);
-            EndEpisode();
+            rewardHistory.RemoveAt(0);
         }
     }
 }

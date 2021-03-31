@@ -19,7 +19,13 @@ public class EnvironmentDataEditor : Editor
     {
         base.OnInspectorGUI();
 
-        // env.Instances = EditorGUILayout.Vector3IntField("Instances", env.Instances);
+        // EditorGUILayout.Space();
+        // EditorGUILayout.LabelField(
+        //     "Training status: " + (env.IsTraining ? "In Progress..." : "Not Active"),
+        //     EditorStyles.centeredGreyMiniLabel
+        // );
+
+        // // env.Instances = EditorGUILayout.Vector3IntField("Instances", env.Instances);
 
         // if (GUI.changed)
         // {

@@ -1,9 +1,12 @@
 using System.Collections;
+using Unity.MLAgents;
 using UnityEngine;
 
 [ExecuteAlways]
 public class Face : MonoBehaviour
 {
+    public Agent agent;
+
     public enum Mood
     {
         Happy,
@@ -29,12 +32,29 @@ public class Face : MonoBehaviour
 
     private void Start()
     {
+        if (agent == null) agent = gameObject.GetComponent<Agent>();
         StartCoroutine(Blink());
         SetMood();
     }
 
     private void Update()
     {
+        float reward = 0;
+        if (agent != null) reward = (float) agent.GetCumulativeReward();
+
+        if (reward > 1f)
+        {
+            mood = Mood.Happy;
+        }
+        else if (reward < -0.05f)
+        {
+            mood = Mood.Sad;
+        }
+        else
+        {
+            mood = Mood.Neutral;
+        }
+
         SetMood();
     }
 

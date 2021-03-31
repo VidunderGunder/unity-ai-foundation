@@ -5,28 +5,40 @@ using UnityEngine.InputSystem;
 
 public class VehicleController : MonoBehaviour, IInputActionAssetProvider
 {
-    protected PlayerActions agentActions;
+    public EnvironmentData env;
     public Rigidbody body;
-
-    [Range(0, 2f)] private bool boost;
-    public bool boostAlwaysOn = false;
-    [Range(0, 5f)] public float boostModifier = 2.5f;
-    [Range(0, 10000f)] public float brakeTorque = 10000f;
     public Transform centerOfMass;
-    [Range(0, 100000f)] public float handbrakeTorque = 50000f;
-    private bool handbrake;
-    public bool manualControl = false;
-    [Range(0, 1000f)] public float maxRpm = 250f;
-    [Range(0, 90f)] public float maxSteerAngle = 30f;
-    [Range(0, 2000f)] public float maxTorque = 2500f;
-    protected PlayerActions playerActions;
     public PlayerInput playerInput;
-    private float steerAngle;
-    private float torque;
     public List<WheelCollider> wheelColliders;
     public List<Transform> wheels;
 
-    // Required for Input Actuator (autamatic machine learning output)
+    [Range(0, 100000f)] public float brakeTorque = 20000f;
+    [Range(0, 100000f)] public float handbrakeTorque = 50000f;
+    [Range(0, 10000f)] public float maxRpm = 250f;
+    [Range(0, 90f)] public float maxSteerAngle = 30f;
+    [Range(0, 2000f)] public float maxTorque = 2500f;
+    [Tooltip("Meters/second")]
+    [Range(0, 50f)] public float maxSpeed = 20f;
+    [Range(0, 50f)] public float maxSpeedReverse = 10f;
+    [Range(0, 2f)] public float speedDeadzone = 1f;
+    [Range(0, 0.1f)] public float inputDeadzone = 0.05f;
+    [Range(0, 5f)] public float boostModifier = 2.5f;
+
+    public bool boostAlwaysOn = false;
+    public bool manualControl = false;
+
+    protected PlayerActions playerActions;
+    protected PlayerActions agentActions;
+
+    private bool boost;
+    private float torque;
+    private bool handbrake;
+    private float steerAngle;
+    private float wantedSpeed;
+
+    public float Speed => body.transform.InverseTransformDirection(body.velocity).z;
+
+    // Required for Input Actuator (automatic machine learning output)
     public (InputActionAsset, IInputActionCollection2) GetInputActionAsset()
     {
         LazyInitializeActions(ref agentActions);
@@ -48,28 +60,60 @@ public class VehicleController : MonoBehaviour, IInputActionAssetProvider
         // actions.ActorVehicle.Boost.started += OnBoost;
         // actions.ActorVehicle.Boost.performed += OnBoost;
         // actions.ActorVehicle.Boost.canceled += OnBoost;
-        actions.ActorVehicle.Handbrake.started += OnHandbrake;
-        actions.ActorVehicle.Handbrake.performed += OnHandbrake;
-        actions.ActorVehicle.Handbrake.canceled += OnHandbrake;
+        // actions.ActorVehicle.Handbrake.started += OnHandbrake;
+        // actions.ActorVehicle.Handbrake.performed += OnHandbrake;
+        // actions.ActorVehicle.Handbrake.canceled += OnHandbrake;
     }
 
     private void OnAwake()
     {
         // https://docs.unity3d.com/ScriptReference/WheelCollider.ConfigureVehicleSubsteps.html
-        var wheelColliders = GetComponentInChildren<WheelCollider>();
-        wheelColliders.ConfigureVehicleSubsteps(2f, 12, 16);
+        foreach (var collider in wheelColliders)
+        {
+            // collider.ConfigureVehicleSubsteps(2f, 16, 64);
+        }
         body.centerOfMass = centerOfMass.position;
     }
 
     private void Start()
     {
-        if (manualControl) LazyInitializeActions(ref playerActions);
+        if (env != null && env.isTraining) manualControl = false;
+        if (manualControl)
+        {
+            LazyInitializeActions(ref playerActions);
+        }
+    }
+
+    private void SetWantedSpeed(float input)
+    {
+        input = Mathf.Clamp(input, -1f, 1f);
+        wantedSpeed = input > 0 ? input * maxSpeed : input * maxSpeedReverse;
+
+        if (Speed < wantedSpeed - maxSpeed * 0.01f)
+        {
+            SetTorque(maxTorque);
+        }
+        else if (Speed > wantedSpeed + maxSpeed * 0.01f)
+        {
+            SetTorque(-maxTorque);
+        }
+        else
+        {
+            SetTorque(0);
+        }
     }
 
     private void SetTorque(float input)
     {
         input = Mathf.Clamp(input, -1f, 1f);
-        torque = input * maxTorque * (boost | boostAlwaysOn ? boostModifier : 1f);
+        if (Mathf.Abs(input) < inputDeadzone)
+        {
+            torque = 0;
+        }
+        else
+        {
+            torque = input * maxTorque * (boost | boostAlwaysOn ? boostModifier : 1f);
+        }
     }
 
     private void SetSteer(float input)
@@ -84,23 +128,35 @@ public class VehicleController : MonoBehaviour, IInputActionAssetProvider
         foreach (var wheel in wheelColliders)
         {
             if (Mathf.Abs(wheel.rpm) < (boost | boostAlwaysOn ? maxRpm * 3 : maxRpm))
+            {
                 wheel.motorTorque = torque;
+            }
             else
+            {
                 wheel.motorTorque = 0;
-            ;
+            }
 
             if (handbrake)
             {
                 wheel.brakeTorque = handbrakeTorque;
-                // if (wheelIndex >= 2) wheel.brakeTorque = handbrakeTorque;
                 wheel.motorTorque = 0;
             }
             else
             {
                 if (((wheel.rpm > 0) & (torque < 0)) | ((wheel.rpm < 0) & (torque > 0)))
+                {
                     wheel.brakeTorque = brakeTorque;
+                }
                 else
+                {
                     wheel.brakeTorque = 0;
+                }
+            }
+
+            if (Mathf.Abs(Speed) < speedDeadzone && Mathf.Abs(torque) < 0.001f)
+            {
+                wheel.motorTorque = 0;
+                wheel.brakeTorque = brakeTorque;
             }
 
             wheelIndex++;
@@ -120,7 +176,14 @@ public class VehicleController : MonoBehaviour, IInputActionAssetProvider
     {
         var movement = context.ReadValue<Vector2>();
         SetSteer(movement.x);
-        SetTorque(movement.y);
+        if (manualControl)
+        {
+            SetTorque(movement.y);
+        }
+        else
+        {
+            SetWantedSpeed(movement.y);
+        }
     }
 
     public void OnBoost(InputAction.CallbackContext context)
@@ -164,5 +227,25 @@ public class VehicleController : MonoBehaviour, IInputActionAssetProvider
     private void Update()
     {
         SyncVisualWheels();
+        // Debug.Log(
+        //     Speed.ToString("F1")
+        //     + "m/s -> "
+        //     + wantedSpeed.ToString("F1") + "m/s"
+        // );
+    }
+
+    public void ResetController()
+    {
+        SetSteer(0);
+        SetWantedSpeed(0);
+        SetTorque(0);
+
+        foreach (var wheel in wheelColliders)
+        {
+            wheel.brakeTorque = Mathf.Infinity;
+        }
+
+        ApplyTorque();
+        ApplySteer();
     }
 }
