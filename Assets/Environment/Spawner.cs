@@ -79,7 +79,14 @@ public class Spawner : MonoBehaviour
         {
             if (thing.spawnEarly != early) continue;
             if (thing.spawnOnGround)
+            {
                 thing.transform.PlaceOnGround(ground, thing.groundOffset);
+                if (thing.rigidbody != null)
+                {
+                    thing.rigidbody.velocity = Vector3.zero;
+                    thing.rigidbody.angularVelocity = Vector3.zero;
+                }
+            }
         }
     }
 
@@ -158,7 +165,7 @@ public class Spawner : MonoBehaviour
 
     private void RandomizeObject(Spawnable thing)
     {
-        SetTransform(thing.transform, thing);
+        SetTransform(thing.transform, thing, thing.trigger.bounds);
 
         // TODO: Move mass setup to initialization method and only run on start-up (or preferably on object added)
         if (!thing.isStatic && thing.scaleMethod != ScaleMethod.None && thing.rigidbody != null)
@@ -183,7 +190,7 @@ public class Spawner : MonoBehaviour
         }
     }
 
-    private Transform SetTransform(Transform tf, SpawnOptions options)
+    private Transform SetTransform(Transform tf, SpawnOptions options, Bounds? bounds = null)
     {
         Quaternion randomRotation = tf.rotation.Randomize(options.rotationRange);
         Vector3 randomScale = RandomScale(
@@ -195,12 +202,12 @@ public class Spawner : MonoBehaviour
 
         tf.rotation = randomRotation;
         tf.localScale = randomScale;
-        tf.position = GetAllowedRandomPosition(tf, options);
+        tf.position = GetAllowedRandomPosition(tf, options, bounds);
 
         return tf;
     }
 
-    private Vector3 GetAllowedRandomPosition(Transform tf, SpawnOptions options, Quaternion? rot = null, Vector3? scale = null)
+    private Vector3 GetAllowedRandomPosition(Transform tf, SpawnOptions options, Bounds? bounds = null)
     {
         if (options.allow.Count > 0)
         {
@@ -214,24 +221,41 @@ public class Spawner : MonoBehaviour
 
             var maxAttempts = 25;
             var success = false;
+            Collider[] colliders = { };
+            List<Collider> forbiddenColliders = new List<Collider>();
 
             for (var attempt = 0; attempt < maxAttempts; attempt++)
             {
+                forbiddenColliders = new List<Collider>();
                 var forbiddenCollisions = 0;
 
                 if (success) break;
                 tf.position = RandomPointWithinBounds(allowed.bounds);
 
-                var collisions = Physics.OverlapBox(
-                    tf.position,
-                    scale != null ? (Vector3) scale / 2 : tf.lossyScale / 2f,
-                    rot != null ? (Quaternion) rot : tf.rotation
-                );
+                if (bounds != null)
+                {
+                    colliders = Physics.OverlapBox(
+                        tf.position,
+                        ((Bounds) bounds).extents / 2
+                    );
+                }
+                else
+                {
+                    colliders = Physics.OverlapBox(
+                        tf.position,
+                        tf.lossyScale / 2f,
+                        tf.rotation
+                    );
+                }
+
 
                 foreach (var forbidden in options.avoid)
-                    foreach (var collision in collisions)
-                        if (collision.Equals(forbidden))
+                    foreach (var collider in colliders)
+                        if (collider.Equals(forbidden))
+                        {
                             forbiddenCollisions++;
+                            forbiddenColliders.Add(collider);
+                        }
 
                 if (forbiddenCollisions.Equals(0))
                 {
@@ -240,9 +264,27 @@ public class Spawner : MonoBehaviour
                 }
             }
 
-            if (!success) tf.gameObject.SetActive(false);
-        }
+            if (!success)
+            {
+                var errorMessage = "Couldn't spawn object"
+                    + "\nPosition: " + tf.position.ToString()
+                    + "\nLossy Scale: " + tf.lossyScale.ToString()
+                    + "\nLossy Scale: " + tf.rotation.ToString()
+                    + "\nForbidden collisions: ";
 
+                foreach (var collider in forbiddenColliders)
+                {
+                    errorMessage +=
+                        "\n\t" + collider.name
+                        + "\nCenter: " + collider.bounds.center.ToString()
+                        + "\nExtents: " + collider.bounds.extents.ToString()
+                        ;
+                }
+
+                Debug.LogError(errorMessage, tf.gameObject);
+                tf.gameObject.SetActive(false);
+            };
+        }
 
         return tf.position;
     }

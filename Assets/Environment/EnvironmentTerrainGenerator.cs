@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter))]
@@ -31,18 +32,23 @@ public class EnvironmentTerrainGenerator : MonoBehaviour
     private int zNodes;
     private float zScale;
 
-    // TODO: Trigger on events:
-    private void Awake()
+    // Ugly live update
+    // -----------------------------
+#if UNITY_EDITOR
+    private float oldSize;
+    void Update()
     {
-        Generate();
+        if (!Application.isPlaying)
+            if (oldSize != env.Size)
+            {
+                Generate();
+                oldSize = env.Size;
+            }
     }
+#endif
+    // -----------------------------
 
-    private void Enabled()
-    {
-        Generate();
-    }
-
-    private void Start()
+    private void OnEnable()
     {
         Generate();
     }
@@ -87,6 +93,9 @@ public class EnvironmentTerrainGenerator : MonoBehaviour
         var zStart = centered ? -xNodes / 2f : 0;
         var zEnd = centered ? xNodes / 2f : xNodes;
 
+        float randomXOffset = (xScale / 2f) + Random.Range(0f, 100000f);
+        float randomZOffset = (zScale / 2f) + Random.Range(0f, 100000f);
+
         for (float i = 0, z = zStart; z <= zEnd; z++)
             for (var x = xStart; x <= xEnd; x++)
             {
@@ -101,7 +110,10 @@ public class EnvironmentTerrainGenerator : MonoBehaviour
                 )
                     y = borderHeight;
                 else
-                    y = Mathf.PerlinNoise(x * unevenness, z * unevenness) * maxDisplacement;
+                    y = Mathf.PerlinNoise(
+                        (x + randomXOffset) * unevenness,
+                        (z + randomZOffset) * unevenness
+                    ) * maxDisplacement;
 
                 vertices[(int) i] = new Vector3(x * xScale, y, z * zScale);
                 i++;
