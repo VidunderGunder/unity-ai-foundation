@@ -408,7 +408,6 @@ public class Config : MonoBehaviour
         public System.Tuple<float, float> RangeFloat => rangeFloat;
         public System.Tuple<int, int> RangeInt => rangeInt;
 
-
         public Entry(
             string key,
             string value,
@@ -434,7 +433,6 @@ public class Config : MonoBehaviour
                 alwaysActive
             );
         }
-
         public Entry(
             string key,
             bool value,
@@ -480,7 +478,6 @@ public class Config : MonoBehaviour
                 alwaysActive
             );
         }
-
         public Entry(
             string key,
             float value,
@@ -504,7 +501,6 @@ public class Config : MonoBehaviour
                 alwaysActive
             );
         }
-
         private void AssignCommonProps(
             string key,
             string label = null,
@@ -522,7 +518,6 @@ public class Config : MonoBehaviour
             this.alwaysActive = alwaysActive;
         }
     }
-
     public void WriteFile()
     {
         int indent = 0;

@@ -157,7 +157,7 @@ public class ConfigEditor : Editor
         };
         if (GUILayout.Button("Add Behaviour"))
         {
-            config.multipleBehaviours.behaviors.Add(new Config.TrainerSettingsMultipleBehaviour("behavior_name" + (config.multipleBehaviours.behaviors.Count + 1)));
+            config.multipleBehaviours.behaviors.Add(new Config.TrainerSettingsMultipleBehaviour("behavior name " + (config.multipleBehaviours.behaviors.Count + 1)));
             changed = true;
             OnSave();
         };
@@ -211,16 +211,16 @@ public class ConfigEditor : Editor
 
     private void uniqueBehaviorName(string value)
     {
-        bool showError = false;
+        int numberWithSameValue = 0;
         var multipleBehaviours = config.multipleBehaviours;
         foreach (var behavior in config.multipleBehaviours.behaviors)
         {
             if (behavior.behavior_name.value == value)
             {
-                showError = true;
+                numberWithSameValue++;
             }
         }
-        if (showError)
+        if (1 < numberWithSameValue)
         {
             EditorGUILayout.HelpBox("Behavior name are not unique", MessageType.Error);
         }
@@ -282,19 +282,20 @@ public class ConfigEditor : Editor
             EditorGUI.indentLevel = temp;
             EditorGUI.EndDisabledGroup();
         }
+        EditorGUILayout.EndHorizontal();
+
         // // Custom 
-        // switch (entry.Key)
-        // {
-        //     case "behavior_name":
-        //         uniqueBehaviorName(value);
-        //         break;
-        //     default:
-        //         break;
-        // }
+        switch (entry.Key)
+        {
+            case "behavior_name":
+                uniqueBehaviorName(entry.value);
+                break;
+            default:
+                break;
+        }
 
         if (EditorGUI.EndChangeCheck())
         {
-            // Debug.Log(value);
             Undo.RecordObject(target, "Changed Trainer Config");
             if (value != null)
             {
@@ -308,7 +309,6 @@ public class ConfigEditor : Editor
             };
             OnSave();
         }
-
 
         if (entry.Help != null && entry.Help != "" && config.alwaysShowTooltips)
         {

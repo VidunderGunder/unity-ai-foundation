@@ -1,40 +1,49 @@
 default_settings:
   trainer_type: ppo
-<<<<<<< HEAD
   summary_freq: 50000
-=======
-  summary_freq: 10000
-  max_steps: 500000
-  checkpoint_interval: 10000000
-  keep_checkpoints: 5
->>>>>>> e62adab70fa26017ac9076ce2f4408acfb7b23d6
   time_horizon: 64
   max_steps: 500000
   keep_checkpoints: 5
   checkpoint_interval: 500000
   threaded: true
   hyperparameters:
-<<<<<<< HEAD
     learning_rate: 0.0003
     batch_size: 256
     buffer_size: 10240
-=======
-    batch_size: 2048
-    buffer_size: 16384
-    learning_rate: 0.00035
->>>>>>> e62adab70fa26017ac9076ce2f4408acfb7b23d6
     learning_rate_schedule: linear
     beta: 0.005
     epsilon: 0.2
     lambd: 0.95
-    num_epoch: 10
+    num_epoch: 3
   network_settings:
     hidden_units: 128
     num_layers: 2
     normalize: false
     vis_encode_type: simple
 behaviors:
-  behavior_name1:
+  behavior name 2:
+    trainer_type: ppo
+    summary_freq: 50000
+    time_horizon: 64
+    max_steps: 500000
+    keep_checkpoints: 5
+    checkpoint_interval: 500000
+    threaded: true
+    hyperparameters:
+      learning_rate: 0.0003
+      batch_size: 256
+      buffer_size: 10240
+      learning_rate_schedule: linear
+      beta: 0.005
+      epsilon: 0.2
+      lambd: 0.95
+      num_epoch: 3
+    network_settings:
+      hidden_units: 128
+      num_layers: 2
+      normalize: false
+      vis_encode_type: simple
+  behavior name 1:
     trainer_type: ppo
     summary_freq: 50000
     time_horizon: 64
@@ -57,21 +66,14 @@ behaviors:
       normalize: false
       vis_encode_type: simple
 checkpoint_settings:
-<<<<<<< HEAD
   run_id: mlady
   load_model: false
-=======
-  results_dir: Results
-  run_id: mlady-rc-scale
-  initialize_from: mlady-rc-scale
->>>>>>> e62adab70fa26017ac9076ce2f4408acfb7b23d6
   resume: false
   force: false
   train_model: false
   inference: false
   results_dir: Results
 engine_settings:
-<<<<<<< HEAD
   run_id: mlady
   load_model: false
   resume: false
@@ -79,10 +81,5 @@ engine_settings:
   train_model: false
   inference: false
   results_dir: Results
-=======
-  time_scale: 10
-  quality_level: 5
->>>>>>> e62adab70fa26017ac9076ce2f4408acfb7b23d6
 torch_settings:
   device: cuda
-debug: false
