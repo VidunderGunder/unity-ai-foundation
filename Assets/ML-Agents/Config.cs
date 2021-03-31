@@ -9,17 +9,18 @@ public class Config : MonoBehaviour
 {
     public static List<string> defaultTrainers = new List<string> { "ppo", "sac", "poca" };
 
-    public bool alwaysShowTooltips = true;
     // public bool enableYAMLOutput = true;
     // [HideInInspector] public bool showYAMLOutput = true;
-
-    private string filename = "config";
-
+    [HideInInspector]
+    public string filename = "config";
+    [HideInInspector]
     public string Path => GetCWD() + "/" + filename + ".yaml";
+    [HideInInspector]
     public bool FileExists => File.Exists(Path);
     // public string Trainer => (string) defaultSettings.trainer_settings[0].value;
 
-    private string GetCWD(bool full = false)
+    [HideInInspector]
+    public string GetCWD(bool full = false)
     {
         string scriptPath = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName().Replace('\\', '/');
         string assetPath = Application.dataPath;
@@ -574,14 +575,17 @@ public class Config : MonoBehaviour
         {
             SettingsLine(defaultSettings);
             WriteBehaviour(defaultSettings);
-            SettingsLine(multipleBehaviours);
-            indent++;
-            foreach (var behavior in multipleBehaviours.behaviors)
+            if (multipleBehaviours.behaviors.Count() != 0)
             {
-                EntryLineAsKey(behavior.behavior_name);
-                WriteBehaviour(behavior.Behaviour);
+                SettingsLine(multipleBehaviours);
+                indent++;
+                foreach (var behavior in multipleBehaviours.behaviors)
+                {
+                    EntryLineAsKey(behavior.behavior_name);
+                    WriteBehaviour(behavior.Behaviour);
+                }
+                indent--;
             }
-            indent--;
             SettingsLine(checkpointSettings);
             indent++;
             EntryLines(checkpointSettings.checkpoint_settings);
@@ -589,7 +593,7 @@ public class Config : MonoBehaviour
 
             SettingsLine(engineSettings);
             indent++;
-            EntryLines(checkpointSettings.checkpoint_settings);
+            EntryLines(engineSettings.engine_settings);
             indent--;
 
             SettingsLine(torchSettings);
@@ -630,10 +634,23 @@ public class Config : MonoBehaviour
     public string ReadFile()
     {
         if (!FileExists) return "No YAML-file available yet";
-        var reader = new StreamReader(Path);
-        var yaml = reader.ReadToEnd();
-        reader.Close();
-        return yaml;
+        using (StreamReader sr = new StreamReader(Path))
+        {
+            Dictionary<string, string> file = new Dictionary<string, string>();
+            // Read and display lines from the file until the end of
+            // the file is reached.
+            string line = "";
+            while ((line = sr.ReadLine()) != null)
+            {
+                var spiltFile = line.Split(':');
+                file.Add(spiltFile[0], spiltFile[1]);
+            }
+        }
+        // Debug.Log(file);
+        // var reader = new StreamReader(Path);
+        // var yaml = reader.ReadLine();
+        // reader.Close();
+        return "yaml";
     }
 }
 #endif

@@ -9,48 +9,144 @@ public class ConfigEditor : Editor
 {
     private Config config;
     private bool changed = false;
+    private bool newFileExists = false;
+    private string newFilename;
+    private bool alwaysShowTooltips = false;
+    private int selectedIndexFile = 0;
+    private string[] allExistingFile = new string[] { };
+
+    private void getAllExistingFile()
+    {
+        var path = config.GetCWD() + "/";
+        var info = new DirectoryInfo(path);
+        var fileInfo = info.GetFiles("*.yaml");
+        allExistingFile = new string[fileInfo.Length + 1];
+        allExistingFile[0] = "";
+        for (int i = 0; i < fileInfo.Length; i++)
+        {
+            allExistingFile[i + 1] = Path.GetFileName(fileInfo[i].ToString().Split('.')[0]);
+        }
+    }
 
     private void OnEnable()
     {
         config = (Config) target;
+        newFilename = config.filename;
     }
 
     public override void OnInspectorGUI()
     {
+        getAllExistingFile();
         base.OnInspectorGUI();
         serializedObject.Update();
-        if (GUILayout.Button("yaml read"))
+        EditorGUI.BeginChangeCheck();
+        newFilename = EditorGUILayout.TextField("Filename", newFilename);
+        if (EditorGUI.EndChangeCheck())
         {
-            var yaml = config.ReadFile();
-            Debug.Log(yaml);
-        };
+            selectedIndexFile = 0;
+        }
+        newFileExists = File.Exists(config.GetCWD() + "/" + newFilename + ".yaml");
 
-        if (config.FileExists)
+        selectedIndexFile = EditorGUILayout.Popup("Select a Existing Files", selectedIndexFile, allExistingFile);
+        var selectednewFilename = allExistingFile[selectedIndexFile];
+        if (selectednewFilename != "")
+            newFilename = selectednewFilename;
+
+
+        if (config.FileExists && config.filename == newFilename)
         {
             OpenFileButton();
+            alwaysShowTooltips = EditorGUILayout.Toggle("Always Show Tooltips", alwaysShowTooltips);
             EditorGUI.BeginDisabledGroup(Application.isPlaying);
-            // SaveFileButton();
-
             Space();
-
             AllFields();
             EditorGUI.EndDisabledGroup();
         }
-        else
+        else if (newFileExists && config.filename != newFilename)
         {
-            if (GUILayout.Button("Generate Config File"))
+            Space();
+            if (GUILayout.Button("Edit " + newFilename))
             {
-                File.WriteAllText(
-                    config.Path,
-                    string.Empty
-                );
+                config.filename = newFilename;
+                config.ReadFile();
+            };
+            Space();
+            if (config.FileExists)
+            {
+                if (GUILayout.Button("Generate Config File Current File"))
+                {
+                    NewFileFromDefault();
+                };
+                EditorGUILayout.HelpBox(
+                "Are you secure that you want to overwrite the existing file",
+                MessageType.Warning
+            );
+            }
+            if (GUILayout.Button("Generate Config File From Default Value"))
+            {
+                NewFileFromFile();
+            };
+            EditorGUILayout.HelpBox(
+                "Are you secure that you want to overwrite the existing file",
+                MessageType.Warning
+            );
+
+        }
+        else if (!newFileExists)
+        {
+            if (config.FileExists)
+            {
+                if (GUILayout.Button("Generate Config File Current File"))
+                {
+                    NewFileFromDefault();
+                };
+            }
+            if (GUILayout.Button("Generate Config File From Default Value"))
+            {
+                NewFileFromFile();
             };
             EditorGUILayout.HelpBox(
                 "Add a config file to enable editing :)\n\nSadly, you can't yet load a YAML file, only write.",
                 MessageType.None
             );
         }
+        if (config.filename != newFilename)
+        {
+            Space();
+            if (GUILayout.Button("Go back to old filename"))
+            {
+                newFilename = config.filename;
+                selectedIndexFile = 0;
+            };
+        }
+    }
 
+    private void NewFileFromDefault()
+    {
+        config.filename = newFilename;
+        File.WriteAllText(
+            config.Path,
+            string.Empty
+        );
+        changed = true;
+        OnSave();
+    }
+
+    private void NewFileFromFile()
+    {
+        config.defaultSettings = new Config.TrainerSettings("default_settings", alwaysActive: true);
+        config.multipleBehaviours = new Config.MultipleBehaviours("behaviors", alwaysActive: false);
+        config.engineSettings = new Config.EngineSettings();
+        config.environmentParameters = new Config.EnvironmentParameters();
+        config.checkpointSettings = new Config.CheckpointSettings();
+        config.torchSettings = new Config.TorchSettings();
+        config.filename = newFilename;
+        File.WriteAllText(
+            config.Path,
+            string.Empty
+        );
+        changed = true;
+        OnSave();
     }
 
     private void OnLostFocus()
@@ -194,14 +290,14 @@ public class ConfigEditor : Editor
     {
         var content = new GUIContent(
             settings.Key.ToDirtyTitleCase(),
-            config.alwaysShowTooltips
+            alwaysShowTooltips
                 ? null
                 : settings.Help
         );
 
         EditorGUILayout.LabelField(content, EditorStyles.boldLabel);
         if (
-            config.alwaysShowTooltips
+            alwaysShowTooltips
             && settings.Help != null
             && settings.Help != "")
         {
@@ -239,7 +335,7 @@ public class ConfigEditor : Editor
         EditorGUILayout.BeginHorizontal();
         EditorGUI.BeginDisabledGroup(excludeEntry);
 
-        var content = new GUIContent(entry.Label.ToDirtyTitleCase(), config.alwaysShowTooltips ? null : entry.Help);
+        var content = new GUIContent(entry.Label.ToDirtyTitleCase(), alwaysShowTooltips ? null : entry.Help);
         EditorGUIUtility.fieldWidth = 80;
 
         EditorGUI.BeginChangeCheck();
@@ -310,7 +406,7 @@ public class ConfigEditor : Editor
             OnSave();
         }
 
-        if (entry.Help != null && entry.Help != "" && config.alwaysShowTooltips)
+        if (entry.Help != null && entry.Help != "" && alwaysShowTooltips)
         {
             EditorGUILayout.HelpBox(entry.Help, MessageType.None);
             EditorGUILayout.Space(5);
