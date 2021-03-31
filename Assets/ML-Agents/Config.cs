@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using UnityEditor;
 
 public class Config : MonoBehaviour
 {
@@ -277,8 +278,7 @@ public class Config : MonoBehaviour
             this.behavior_name = new Entry(
                         "behavior_name", behaviorName,
                         alwaysActive: true,
-                        help:
-                        "Name the behavior have to be unique"
+                        help: "Name the behavior have to be unique"
                     );
         }
     };
@@ -490,7 +490,6 @@ public class Config : MonoBehaviour
             List<string> trainers = null,
             bool alwaysActive = false,
             System.Tuple<float, float> range = null
-
         )
         {
             this.type = typeof(float);

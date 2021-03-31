@@ -140,28 +140,27 @@ public class ConfigEditor : Editor
         BehaviourFields(config.defaultSettings);
 
         DefaultSettingsHeader(config.multipleBehaviours);
-        int index = 0;
-        foreach (var behavior in config.multipleBehaviours.behaviors)
+        var behaviors = config.multipleBehaviours.behaviors;
+        for (int i = 0; i < config.multipleBehaviours.behaviors.Count; ++i)
         {
             EditorGUI.indentLevel++;
-            DefaultField(behavior.behavior_name);
-            BehaviourFields(behavior.Behaviour);
+            DefaultField(behaviors[i].behavior_name);
+            BehaviourFields(behaviors[i].Behaviour);
             EditorGUI.indentLevel--;
             if (GUILayout.Button("Remove Behaviour"))
             {
-                config.multipleBehaviours.behaviors.RemoveAt(index);
+                config.multipleBehaviours.behaviors.RemoveAt(i);
                 changed = true;
                 OnSave();
             };
             Space();
-        }
+        };
         if (GUILayout.Button("Add Behaviour"))
         {
             config.multipleBehaviours.behaviors.Add(new Config.TrainerSettingsMultipleBehaviour("behavior_name" + (config.multipleBehaviours.behaviors.Count + 1)));
             changed = true;
             OnSave();
         };
-        index++;
         DefaultSettingsHeader(config.checkpointSettings);
         EditorGUI.indentLevel++;
         DefaultFields(config.checkpointSettings.checkpoint_settings);
@@ -208,6 +207,24 @@ public class ConfigEditor : Editor
         {
             EditorGUILayout.HelpBox(settings.Help, MessageType.None);
         }
+    }
+
+    private void uniqueBehaviorName(string value)
+    {
+        bool showError = false;
+        var multipleBehaviours = config.multipleBehaviours;
+        foreach (var behavior in config.multipleBehaviours.behaviors)
+        {
+            if (behavior.behavior_name.value == value)
+            {
+                showError = true;
+            }
+        }
+        if (showError)
+        {
+            EditorGUILayout.HelpBox("Behavior name are not unique", MessageType.Error);
+        }
+
     }
 
     public bool DefaultField(Config.Entry entry, string trainer_type = null)
@@ -265,6 +282,15 @@ public class ConfigEditor : Editor
             EditorGUI.indentLevel = temp;
             EditorGUI.EndDisabledGroup();
         }
+        // // Custom 
+        // switch (entry.Key)
+        // {
+        //     case "behavior_name":
+        //         uniqueBehaviorName(value);
+        //         break;
+        //     default:
+        //         break;
+        // }
 
         if (EditorGUI.EndChangeCheck())
         {
@@ -283,7 +309,6 @@ public class ConfigEditor : Editor
             OnSave();
         }
 
-        EditorGUILayout.EndHorizontal();
 
         if (entry.Help != null && entry.Help != "" && config.alwaysShowTooltips)
         {
