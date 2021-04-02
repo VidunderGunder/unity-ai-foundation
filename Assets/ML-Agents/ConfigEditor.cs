@@ -4,6 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
 
+
 [CustomEditor(typeof(Config))]
 public class ConfigEditor : Editor
 {
@@ -32,6 +33,8 @@ public class ConfigEditor : Editor
     {
         config = (Config) target;
         newFilename = config.filename;
+        if (config.FileExists)
+            config.ReadFile();
     }
 
     public override void OnInspectorGUI()
@@ -42,9 +45,7 @@ public class ConfigEditor : Editor
         EditorGUI.BeginChangeCheck();
         newFilename = EditorGUILayout.TextField("Filename", newFilename);
         if (EditorGUI.EndChangeCheck())
-        {
             selectedIndexFile = 0;
-        }
         newFileExists = File.Exists(config.GetCWD() + "/" + newFilename + ".yaml");
 
         selectedIndexFile = EditorGUILayout.Popup("Select a Existing Files", selectedIndexFile, allExistingFile);
@@ -73,7 +74,7 @@ public class ConfigEditor : Editor
             Space();
             if (config.FileExists)
             {
-                if (GUILayout.Button("Generate Config File Current File"))
+                if (GUILayout.Button("Generate Config File From Current File"))
                 {
                     NewFileFromDefault();
                 };
@@ -170,27 +171,6 @@ public class ConfigEditor : Editor
         }
     }
 
-    // private void SaveFileButton()
-    // {
-    //     EditorGUI.BeginDisabledGroup(!changed);
-    //     if (
-    //         GUILayout.Button(
-    //             "Apply to YAML-file"
-    //         )
-    //     )
-    //     {
-    //         OnSave();
-    //     };
-    //     EditorGUI.EndDisabledGroup();
-    //     EditorGUILayout.LabelField(
-    //         (
-    //             changed
-    //             ? "(Unsaved Changes)"
-    //             : ""
-    //         ),
-    //         EditorStyles.centeredGreyMiniLabel
-    //     );
-    // }
     private void DefaultFields(List<Config.Entry> entries, string trainer_type = null)
     {
         foreach (var entry in entries)
@@ -231,9 +211,12 @@ public class ConfigEditor : Editor
 
     private void AllFields()
     {
-
-        DefaultSettingsHeader(config.defaultSettings);
-        BehaviourFields(config.defaultSettings);
+        InUse(config.defaultSettings);
+        if (config.defaultSettings.inUse)
+        {
+            DefaultSettingsHeader(config.defaultSettings);
+            BehaviourFields(config.defaultSettings);
+        }
 
         DefaultSettingsHeader(config.multipleBehaviours);
         var behaviors = config.multipleBehaviours.behaviors;
@@ -257,28 +240,43 @@ public class ConfigEditor : Editor
             changed = true;
             OnSave();
         };
-        DefaultSettingsHeader(config.checkpointSettings);
-        EditorGUI.indentLevel++;
-        DefaultFields(config.checkpointSettings.checkpoint_settings);
-        EditorGUI.indentLevel--;
 
-        Space();
+        InUse(config.checkpointSettings);
+        if (config.checkpointSettings.inUse)
+        {
+            DefaultSettingsHeader(config.checkpointSettings);
+            EditorGUI.indentLevel++;
+            DefaultFields(config.checkpointSettings.checkpoint_settings);
+            EditorGUI.indentLevel--;
+            Space();
+        }
 
-        DefaultSettingsHeader(config.engineSettings);
-        EditorGUI.indentLevel++;
-        DefaultFields(config.engineSettings.engine_settings);
-        EditorGUI.indentLevel--;
-
-        Space();
-
-        DefaultSettingsHeader(config.torchSettings);
-        EditorGUI.indentLevel++;
-        DefaultField(config.torchSettings.device);
-        EditorGUI.indentLevel--;
-
-        Space();
+        InUse(config.engineSettings);
+        if (config.engineSettings.inUse)
+        {
+            DefaultSettingsHeader(config.engineSettings);
+            EditorGUI.indentLevel++;
+            DefaultFields(config.engineSettings.engine_settings);
+            EditorGUI.indentLevel--;
+            Space();
+        }
+        InUse(config.torchSettings);
+        if (config.torchSettings.inUse)
+        {
+            DefaultSettingsHeader(config.torchSettings);
+            EditorGUI.indentLevel++;
+            DefaultFields(config.torchSettings.device);
+            EditorGUI.indentLevel--;
+            Space();
+        }
 
         DefaultField(config.debug);
+    }
+
+    private void InUse(Config.Settings settings)
+    {
+        settings.inUse = EditorGUILayout.Toggle("Use " + settings.Key.ToDirtyTitleCase(), settings.inUse);
+
     }
 
     public void Space(int pixels = 5)
@@ -334,12 +332,12 @@ public class ConfigEditor : Editor
 
         EditorGUILayout.BeginHorizontal();
         EditorGUI.BeginDisabledGroup(excludeEntry);
-
         var content = new GUIContent(entry.Label.ToDirtyTitleCase(), alwaysShowTooltips ? null : entry.Help);
         EditorGUIUtility.fieldWidth = 80;
 
         EditorGUI.BeginChangeCheck();
         string value = null;
+
         switch (entry.type.Name)
         {
             case nameof(System.String):

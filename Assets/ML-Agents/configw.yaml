@@ -23,8 +23,7 @@ default_settings:
 behaviors:
   behavior name 1:
     trainer_type: ppo
-    summary_freq: 50000
-    time_horizon: 64
+    time_horizon: 100
     max_steps: 500000
     keep_checkpoints: 5
     checkpoint_interval: 500000

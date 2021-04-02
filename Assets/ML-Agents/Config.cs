@@ -3,20 +3,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using System.Text.RegularExpressions;
 
 public class Config : MonoBehaviour
 {
     public static List<string> defaultTrainers = new List<string> { "ppo", "sac", "poca" };
 
-    // public bool enableYAMLOutput = true;
-    // [HideInInspector] public bool showYAMLOutput = true;
     [HideInInspector]
     public string filename = "config";
     [HideInInspector]
     public string Path => GetCWD() + "/" + filename + ".yaml";
     [HideInInspector]
     public bool FileExists => File.Exists(Path);
-    // public string Trainer => (string) defaultSettings.trainer_settings[0].value;
 
     [HideInInspector]
     public string GetCWD(bool full = false)
@@ -41,6 +39,11 @@ public class Config : MonoBehaviour
         string currentFolderProjectPath = System.String.Join("/", pathArray.Take(pathArray.Length - 1));
         return currentFolderProjectPath;
     }
+    // ReadFile
+    [HideInInspector]
+    Dictionary<string, Dictionary<string, string>> readData = new Dictionary<string, Dictionary<string, string>>();
+    [HideInInspector]
+    Dictionary<string, Dictionary<string, Dictionary<string, string>>> readDataMultipleBehaviours = new Dictionary<string, Dictionary<string, Dictionary<string, string>>>();
 
     // YAML
     [HideInInspector]
@@ -62,7 +65,7 @@ public class Config : MonoBehaviour
     [System.Serializable]
     public class TrainerSettings : Settings
     {
-        public TrainerSettings(string key, bool alwaysActive) : base(key) { }
+        public TrainerSettings(string key, bool alwaysActive, bool inUse = true) : base(key) { }
 
         [SerializeField]
         public List<Entry> trainer_settings = new List<Entry>() {
@@ -293,7 +296,7 @@ public class Config : MonoBehaviour
     [System.Serializable]
     public class EngineSettings : Settings
     {
-        public EngineSettings(string key = "engine_settings") : base(key) { }
+        public EngineSettings(string key = "engine_settings", bool inUse = true) : base(key) { }
         public List<Entry> engine_settings = new List<Entry>() {
          new Entry("time_scale", 1.0f),
          new Entry("quality_level", 5),
@@ -303,18 +306,16 @@ public class Config : MonoBehaviour
          new Entry("width", 84),
          new Entry("height", 84)
             };
-
-
     }
     [System.Serializable]
     public class EnvironmentParameters : Settings
     {
-        public EnvironmentParameters(string key = "environment_parameters") : base(key) { }
+        public EnvironmentParameters(string key = "environment_parameters", bool inUse = true) : base(key) { }
     }
     [System.Serializable]
     public class CheckpointSettings : Settings
     {
-        public CheckpointSettings(string key = "checkpoint_settings") : base(key) { }
+        public CheckpointSettings(string key = "checkpoint_settings", bool inUse = true) : base(key) { }
         public List<Entry> checkpoint_settings = new List<Entry>() {
          new Entry("run_id", "mlady"),
          new Entry("initialize_from", ""),
@@ -325,13 +326,12 @@ public class Config : MonoBehaviour
          new Entry("inference", false),
          new Entry("results_dir", "Results")
             };
-
     }
     [System.Serializable]
     public class TorchSettings : Settings
     {
-        public TorchSettings(string key = "torch_settings") : base(key) { }
-        public Entry device = new Entry("device", "cuda");
+        public TorchSettings(string key = "torch_settings", bool inUse = true) : base(key) { }
+        public List<Entry> device = new List<Entry>() { new Entry("device", "cuda") };
     }
     #endregion
 
@@ -352,6 +352,8 @@ public class Config : MonoBehaviour
     [System.Serializable]
     public class Settings : IYAMLLine
     {
+        public bool inUse = true;
+
         private string key;
         private string label;
         private string help;
@@ -369,7 +371,8 @@ public class Config : MonoBehaviour
             string label = null,
             string help = null,
             bool active = true,
-            bool alwaysActive = false
+            bool alwaysActive = false,
+            bool inUse = true
         )
         {
             this.key = key;
@@ -377,6 +380,7 @@ public class Config : MonoBehaviour
             this.help = help;
             this.active = alwaysActive || active;
             this.alwaysActive = alwaysActive;
+            this.inUse = inUse;
         }
     }
 
@@ -572,8 +576,11 @@ public class Config : MonoBehaviour
 
         void WriteLines()
         {
-            SettingsLine(defaultSettings);
-            WriteBehaviour(defaultSettings);
+            if (defaultSettings.inUse)
+            {
+                SettingsLine(defaultSettings);
+                WriteBehaviour(defaultSettings);
+            }
             if (multipleBehaviours.behaviors.Count() != 0)
             {
                 SettingsLine(multipleBehaviours);
@@ -585,20 +592,27 @@ public class Config : MonoBehaviour
                 }
                 indent--;
             }
-            SettingsLine(checkpointSettings);
-            indent++;
-            EntryLines(checkpointSettings.checkpoint_settings);
-            indent--;
-
-            SettingsLine(engineSettings);
-            indent++;
-            EntryLines(engineSettings.engine_settings);
-            indent--;
-
-            SettingsLine(torchSettings);
-            indent++;
-            EntryLine(torchSettings.device);
-            indent--;
+            if (checkpointSettings.inUse)
+            {
+                SettingsLine(checkpointSettings);
+                indent++;
+                EntryLines(checkpointSettings.checkpoint_settings);
+                indent--;
+            }
+            if (engineSettings.inUse)
+            {
+                SettingsLine(engineSettings);
+                indent++;
+                EntryLines(engineSettings.engine_settings);
+                indent--;
+            }
+            if (torchSettings.inUse)
+            {
+                SettingsLine(torchSettings);
+                indent++;
+                EntryLines(torchSettings.device);
+                indent--;
+            }
 
             EntryLine(debug);
         }
@@ -629,27 +643,184 @@ public class Config : MonoBehaviour
             }
         }
     }
-
-    public string ReadFile()
+    private void UpdateBehaviorsClass(Settings settings, Entry entry)
     {
-        if (!FileExists) return "No YAML-file available yet";
+        if (readData[settings.Key].ContainsKey(entry.Key))
+            entry.value = readData[settings.Key][entry.Key].ToString();
+        else entry.active = false;
+    }
+    private void UpdateMultipleBehavioursClass(Dictionary<string, Dictionary<string, Dictionary<string, string>>> data, TrainerSettingsMultipleBehaviour settings, Entry entry)
+    {
+        if (data["behaviors"][settings.behavior_name.value].ContainsKey(entry.Key))
+            entry.value = data["behaviors"][settings.behavior_name.value][entry.Key].ToString();
+        else entry.active = false;
+    }
+
+    private void WriteToClass(Settings settings, List<Entry> entries)
+    {
+        if (settings.inUse)
+        {
+            for (int i = 0; i < entries.Count; i++)
+            {
+                var entry = entries[i];
+                if (readData[settings.Key].ContainsKey(entry.Key))
+                    entry.value = readData[settings.Key][entry.Key].ToString();
+                else entry.active = false;
+            }
+        }
+    }
+    private void WriteBehaviorsToClass(TrainerSettings settings)
+    {
+
+        for (int i = 0; i < settings.trainer_settings.Count; i++)
+        {
+            UpdateBehaviorsClass(settings, settings.trainer_settings[i]);
+        }
+        for (int i = 0; i < settings.hyperparameters.hyperparameters_entries_base.Count; i++)
+        {
+            UpdateBehaviorsClass(settings, settings.hyperparameters.hyperparameters_entries_base[i]);
+        }
+        for (int i = 0; i < settings.hyperparameters.hyperparameters_entries_ppo.Count; i++)
+        {
+            UpdateBehaviorsClass(settings, settings.hyperparameters.hyperparameters_entries_ppo[i]);
+        }
+        for (int i = 0; i < settings.hyperparameters.hyperparameters_entries_sac.Count; i++)
+        {
+            UpdateBehaviorsClass(settings, settings.hyperparameters.hyperparameters_entries_sac[i]);
+        }
+        for (int i = 0; i < settings.network_settings.network_settings_entries.Count; i++)
+        {
+            UpdateBehaviorsClass(settings, settings.network_settings.network_settings_entries[i]);
+        }
+
+    }
+
+    public void ReadFile()
+    {
+        defaultSettings = new TrainerSettings("default_settings", alwaysActive: true, inUse: false);
+        multipleBehaviours = new MultipleBehaviours("behaviors", alwaysActive: false);
+        engineSettings = new EngineSettings(inUse: false);
+        checkpointSettings = new CheckpointSettings(inUse: false);
+        torchSettings = new TorchSettings(inUse: false);
         using (StreamReader sr = new StreamReader(Path))
         {
-            Dictionary<string, string> file = new Dictionary<string, string>();
-            // Read and display lines from the file until the end of
-            // the file is reached.
             string line = "";
+            string settingsType = "";
+            string multipleBehavioursType = "";
             while ((line = sr.ReadLine()) != null)
             {
                 var spiltFile = line.Split(':');
-                file.Add(spiltFile[0], spiltFile[1]);
+                string key = Regex.Replace(spiltFile[0], @"\s+", "");
+                string value = Regex.Replace(spiltFile[1], @"\s+", "");
+                switch (key)
+                {
+                    case "default_settings":
+                        defaultSettings.inUse = true;
+                        settingsType = "default_settings";
+                        break;
+                    case "behaviors":
+                        settingsType = "behaviors";
+                        break;
+                    case "engine_settings":
+                        engineSettings.inUse = true;
+                        settingsType = "engine_settings";
+                        break;
+                    case "checkpoint_settings":
+                        checkpointSettings.inUse = true;
+                        settingsType = "checkpoint_settings";
+                        break;
+                    case "torch_settings":
+                        torchSettings.inUse = true;
+                        settingsType = "torch_settings";
+                        break;
+                    default:
+                        break;
+                }
+                switch (settingsType)
+                {
+                    case "behaviors":
+                        if (value == "" && key == "behaviors")
+                            readDataMultipleBehaviours[settingsType] = new Dictionary<string, Dictionary<string, string>>();
+                        else if (value == "" && !(new List<string> { "behaviors", "hyperparameters", "network_settings" }.Contains(key)))
+                        {
+                            multipleBehavioursType = key;
+                            readDataMultipleBehaviours[settingsType][multipleBehavioursType] = new Dictionary<string, string>();
+                        }
+                        else if (key != "behaviors")
+                            readDataMultipleBehaviours[settingsType][multipleBehavioursType][key] = value;
+                        break;
+                    default:
+                        if (!readData.ContainsKey(settingsType))
+                            readData[settingsType] = new Dictionary<string, string>();
+                        else readData[settingsType][key] = value;
+                        break;
+                }
             }
         }
-        // Debug.Log(file);
-        // var reader = new StreamReader(Path);
-        // var yaml = reader.ReadLine();
-        // reader.Close();
-        return "yaml";
+        if (defaultSettings.inUse)
+        {
+            WriteBehaviorsToClass(defaultSettings);
+        }
+        if (readDataMultipleBehaviours.ContainsKey("behaviors"))
+        {
+            int index = 0;
+            foreach (KeyValuePair<string, Dictionary<string, string>> behaviors in readDataMultipleBehaviours["behaviors"])
+            {
+                multipleBehaviours.behaviors.Add(new Config.TrainerSettingsMultipleBehaviour(behaviors.Key));
+                WriteBehaviorsToClass(multipleBehaviours.behaviors[index].Behaviour);
+                var settings = multipleBehaviours.behaviors[index];
+                for (int i = 0; i < settings.Behaviour.trainer_settings.Count; i++)
+                {
+                    UpdateMultipleBehavioursClass(readDataMultipleBehaviours, settings, settings.Behaviour.trainer_settings[i]);
+                }
+                for (int i = 0; i < settings.Behaviour.hyperparameters.hyperparameters_entries_base.Count; i++)
+                {
+                    UpdateMultipleBehavioursClass(readDataMultipleBehaviours, settings, settings.Behaviour.trainer_settings[i]);
+                }
+                for (int i = 0; i < settings.Behaviour.hyperparameters.hyperparameters_entries_ppo.Count; i++)
+                {
+                    UpdateMultipleBehavioursClass(readDataMultipleBehaviours, settings, settings.Behaviour.trainer_settings[i]);
+                }
+                for (int i = 0; i < settings.Behaviour.hyperparameters.hyperparameters_entries_sac.Count; i++)
+                {
+                    UpdateMultipleBehavioursClass(readDataMultipleBehaviours, settings, settings.Behaviour.trainer_settings[i]);
+                }
+                for (int i = 0; i < settings.Behaviour.network_settings.network_settings_entries.Count; i++)
+                {
+                    UpdateMultipleBehavioursClass(readDataMultipleBehaviours, settings, settings.Behaviour.trainer_settings[i]);
+                }
+                index++;
+            }
+        }
+        WriteToClass(engineSettings, engineSettings.engine_settings);
+        WriteToClass(checkpointSettings, checkpointSettings.checkpoint_settings);
+        WriteToClass(torchSettings, torchSettings.device);
+
+        // logging
+        // foreach (KeyValuePair<string, Dictionary<string, string>> attachStat1 in readData)
+        // {
+        //     Debug.Log(attachStat1.Key);
+        //     foreach (KeyValuePair<string, string> attachStat2 in attachStat1.Value)
+        //     {
+        //         Debug.Log(attachStat2.Key);
+        //         Debug.Log(attachStat2.Value);
+        //     }
+        // }
+        // foreach (KeyValuePair<string, Dictionary<string, Dictionary<string, string>>> attachStat1 in readDataMultipleBehaviours)
+        // {
+        //     Debug.Log(attachStat1.Key);
+        //     foreach (KeyValuePair<string, Dictionary<string, string>> attachStat2 in attachStat1.Value)
+        //     {
+        //         Debug.Log(attachStat2.Key);
+        //         foreach (KeyValuePair<string, string> attachStat3 in attachStat2.Value)
+        //         {
+        //             Debug.Log(attachStat3.Key);
+        //             Debug.Log(attachStat3.Value);
+
+        //         }
+        //     }
+        // }
     }
+
 }
 #endif

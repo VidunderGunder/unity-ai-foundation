@@ -29,12 +29,13 @@ checkpoint_settings:
   inference: false
   results_dir: Results
 engine_settings:
-  run_id: mlady
-  load_model: false
-  resume: false
-  force: false
-  train_model: false
-  inference: false
-  results_dir: Results
+  time_scale: 1
+  quality_level: 5
+  target_frame_rate: -1
+  capture_frame_rate: 60
+  no_graphics: false
+  width: 84
+  height: 84
 torch_settings:
   device: cuda
+debug: false
