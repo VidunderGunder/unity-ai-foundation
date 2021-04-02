@@ -30,7 +30,7 @@ public class VehicleAgent : Agent
 
     private float maxDistanceFromStart;
     private float maxDistanceFromStartSq;
-    private float maxVectorMagnitude = 75f;
+    private float maxVectorMagnitude = 25f;
     private int stepSafetyBuffer = 10;
     private bool initialized = false;
     private List<float> rewardHistory = new List<float>();

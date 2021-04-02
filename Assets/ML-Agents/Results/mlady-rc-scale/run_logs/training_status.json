@@ -2,17 +2,17 @@
     "My Behavior": {
         "checkpoints": [
             {
-                "steps": 18608,
-                "file_path": "Results\\mlady-rc-scale\\My Behavior\\My Behavior-18608.onnx",
-                "reward": 0.2990554070100188,
-                "creation_time": 1617200861.601265
+                "steps": 500028,
+                "file_path": "Results\\mlady-rc-scale\\My Behavior\\My Behavior-500028.onnx",
+                "reward": 3.8460386190763725,
+                "creation_time": 1617206491.3922787
             }
         ],
         "final_checkpoint": {
-            "steps": 18608,
+            "steps": 500028,
             "file_path": "Results\\mlady-rc-scale\\My Behavior.onnx",
-            "reward": 0.2990554070100188,
-            "creation_time": 1617200861.601265
+            "reward": 3.8460386190763725,
+            "creation_time": 1617206491.3922787
         }
     },
     "metadata": {
