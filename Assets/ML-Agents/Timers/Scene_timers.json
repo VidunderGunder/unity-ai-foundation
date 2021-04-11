@@ -1,1 +1,176 @@
+<<<<<<< HEAD
+{
+  "count": 1,
+  "self": 30502.83008,
+  "total": 45711.0373067,
+  "children": {
+    "InitializeActuators": {
+      "count": 32,
+      "self": 0.0891448,
+      "total": 0.0891448,
+      "children": null
+    },
+    "InitializeSensors": {
+      "count": 32,
+      "self": 0.0030003,
+      "total": 0.0030003,
+      "children": null
+    },
+    "AgentSendState": {
+      "count": 4089807,
+      "self": 72.8914624,
+      "total": 7536.3151265999995,
+      "children": {
+        "GridSensor.Update": {
+          "count": 13087424,
+          "self": 28.676175999999998,
+          "total": 3764.4728284999997,
+          "children": {
+            "GridSensor.Perceive": {
+              "count": 13087424,
+              "self": 3735.7965311999997,
+              "total": 3735.7966538,
+              "children": null
+            }
+          }
+        },
+        "CollectObservations": {
+          "count": 6543712,
+          "self": 13.5996384,
+          "total": 13.5996378,
+          "children": null
+        },
+        "WriteActionMask": {
+          "count": 6543712,
+          "self": 11.219871999999999,
+          "total": 11.219872299999999,
+          "children": null
+        },
+        "RequestDecision": {
+          "count": 6543712,
+          "self": 30.115971199999997,
+          "total": 3674.1313247,
+          "children": {
+            "AgentInfo.ToProto": {
+              "count": 6543712,
+              "self": 18.8075568,
+              "total": 3644.0153542999997,
+              "children": {
+                "GenerateSensorData": {
+                  "count": 6543712,
+                  "self": 79.562143999999989,
+                  "total": 3625.2077974,
+                  "children": {
+                    "GridSensor.GetCompressedObservation": {
+                      "count": 13087424,
+                      "self": 272.16788479999997,
+                      "total": 3545.6456510999997,
+                      "children": {
+                        "GridSensor.Perceive": {
+                          "count": 13087424,
+                          "self": 3273.4777344,
+                          "total": 3273.477763,
+                          "children": null
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "DecideAction": {
+      "count": 4089807,
+      "self": 6889.2549119999994,
+      "total": 6889.2550145999994,
+      "children": null
+    },
+    "AgentAct": {
+      "count": 4089807,
+      "self": 623.7912064,
+      "total": 626.8765071,
+      "children": {
+        "AgentInfo.ToProto": {
+          "count": 3373,
+          "self": 0.0385506,
+          "total": 3.0852816,
+          "children": {
+            "GenerateSensorData": {
+              "count": 3373,
+              "self": 0.10724489999999999,
+              "total": 3.046731,
+              "children": {
+                "GridSensor.GetCompressedObservation": {
+                  "count": 6746,
+                  "self": 0.3643064,
+                  "total": 2.9394861,
+                  "children": {
+                    "GridSensor.Perceive": {
+                      "count": 6746,
+                      "self": 2.5751796,
+                      "total": 2.5751797,
+                      "children": null
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "AgentInfo.ToProto": {
+      "count": 189446,
+      "self": 1.5474312,
+      "total": 155.6677796,
+      "children": {
+        "GenerateSensorData": {
+          "count": 189446,
+          "self": 5.241436,
+          "total": 154.12034839999998,
+          "children": {
+            "GridSensor.GetCompressedObservation": {
+              "count": 378892,
+              "self": 18.6263664,
+              "total": 148.8789126,
+              "children": {
+                "GridSensor.Perceive": {
+                  "count": 378892,
+                  "self": 130.252544,
+                  "total": 130.2525466,
+                  "children": null
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "gauges": {
+    "My Behavior.CumulativeReward": {
+      "count": 192819,
+      "max": 29.21621,
+      "min": -1.69800174,
+      "runningAverage": 13.3478289,
+      "value": 16.9763,
+      "weightedAverage": 13.7462406
+    }
+  },
+  "metadata": {
+    "timer_format_version": "0.1.0",
+    "start_time_seconds": "1616967362",
+    "unity_version": "2021.1.0f1",
+    "command_line_arguments": "C:\\Program Files\\Unity\\Hub\\Editor\\2021.1.0f1\\Editor\\Unity.exe -projectpath C:/Code/Projects/unity-ai-foundation -useHub -hubIPC -cloudEnvironment production -hubSessionId d657cb80-8dbf-11eb-a844-591f0c36222f -accessToken qdCzjRBzoXn42xhmcH8wdYeTBX0QEm09dlfnmDCC3gE005f",
+    "communication_protocol_version": "1.5.0",
+    "com.unity.ml-agents_version": "1.9.0-preview",
+    "scene_name": "Scene",
+    "end_time_seconds": "1617013072"
+  }
+}
+=======
 {"count":1,"self":318.8385536,"total":627.8905403,"children":{"InitializeActuators":{"count":18,"self":0.0400007,"total":0.0400007,"children":null},"InitializeSensors":{"count":18,"self":0.0010000999999999999,"total":0.0010000999999999999,"children":null},"AgentSendState":{"count":162867,"self":1.3302275,"total":78.989764499999993,"children":{"GridSensor.Update":{"count":146592,"self":0.3410147,"total":37.3318143,"children":{"GridSensor.Perceive":{"count":146592,"self":36.9908,"total":36.990799599999995,"children":null}}},"CollectObservations":{"count":146592,"self":0.21828799999999998,"total":0.21828799999999998,"children":null},"WriteActionMask":{"count":146592,"self":0.1586243,"total":0.1586243,"children":null},"RequestDecision":{"count":146592,"self":0.5940536,"total":39.9508104,"children":{"AgentInfo.ToProto":{"count":146592,"self":0.4556884,"total":39.3567568,"children":{"GenerateSensorData":{"count":146592,"self":1.1232562,"total":38.9010684,"children":{"GridSensor.GetCompressedObservation":{"count":146592,"self":3.50655,"total":37.7778122,"children":{"GridSensor.Perceive":{"count":146592,"self":34.2712608,"total":34.2712623,"children":null}}}}}}}}}}},"DecideAction":{"count":162867,"self":212.5225216,"total":212.52252349999998,"children":null},"AgentAct":{"count":162867,"self":7.1630895999999993,"total":7.4148454,"children":{"AgentInfo.ToProto":{"count":694,"self":0.0085177,"total":0.25175559999999997,"children":{"GenerateSensorData":{"count":694,"self":0.0131119,"total":0.24323789999999998,"children":{"GridSensor.GetCompressedObservation":{"count":694,"self":0.0421675,"total":0.230126,"children":{"GridSensor.Perceive":{"count":694,"self":0.1879585,"total":0.1879585,"children":null}}}}}}}}},"AgentInfo.ToProto":{"count":2214,"self":0.0100386,"total":0.8072214,"children":{"GenerateSensorData":{"count":2214,"self":0.0536308,"total":0.7971828,"children":{"GridSensor.GetCompressedObservation":{"count":2214,"self":0.1552556,"total":0.743552,"children":{"GridSensor.Perceive":{"count":2214,"self":0.58829639999999994,"total":0.58829639999999994,"children":null}}}}}}},"GridSensor.Perceive":{"count":47028,"self":9.27564,"total":9.2756396,"children":null}},"gauges":{"My Behavior.CumulativeReward":{"count":2908,"max":5.906809,"min":-6.944932,"runningAverage":2.967989,"value":5.81411028,"weightedAverage":4.589799}},"metadata":{"timer_format_version":"0.1.0","start_time_seconds":"1617179273","unity_version":"2021.1.0f1","command_line_arguments":"C:\\Program Files\\Unity\\Hub\\Editor\\2021.1.0f1\\Editor\\Unity.exe -projectpath C:\/Code\/Projects\/unity-ai-foundation -useHub -hubIPC -cloudEnvironment production -hubSessionId b51b2150-9199-11eb-871b-f1cd3a405a9a -accessToken zO88X7IVdi5JXkAgWuK0YLipZBW8NoZFqL12kAeYLf8005f","communication_protocol_version":"1.5.0","com.unity.ml-agents_version":"1.9.0-preview","scene_name":"Scene","end_time_seconds":"1617179900"}}
+>>>>>>> e62adab70fa26017ac9076ce2f4408acfb7b23d6
