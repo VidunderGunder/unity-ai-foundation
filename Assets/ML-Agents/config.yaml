@@ -1,32 +1,77 @@
 default_settings:
   trainer_type: ppo
+<<<<<<< HEAD
   summary_freq: 25000
-  max_steps: 500000
-  checkpoint_interval: 10000000
-  keep_checkpoints: 5
+=======
+  summary_freq: 50000
   time_horizon: 64
+>>>>>>> 86f681be74ec6048719e6ea2bc5a3b0ef6e41351
+  max_steps: 500000
+  keep_checkpoints: 5
+  checkpoint_interval: 500000
   threaded: true
   hyperparameters:
+<<<<<<< HEAD
     batch_size: 2048
     buffer_size: 16384
     learning_rate: 0.0005
+=======
+    learning_rate: 0.0003
+    batch_size: 256
+    buffer_size: 10240
+>>>>>>> 86f681be74ec6048719e6ea2bc5a3b0ef6e41351
     learning_rate_schedule: linear
     beta: 0.005
     epsilon: 0.2
     lambd: 0.95
-    num_epoch: 10
+    num_epoch: 3
   network_settings:
     hidden_units: 128
     num_layers: 2
-    vis_encode_type: match3
+    normalize: false
+    vis_encode_type: simple
+behaviors:
+  behaviorname1:
+    trainer_type: ppo
+    time_horizon: 100
+    max_steps: 500000
+    keep_checkpoints: 5
+    checkpoint_interval: 500000
+    threaded: true
+    hyperparameters:
+      learning_rate: 0.0003
+      batch_size: 256
+      buffer_size: 10240
+      learning_rate_schedule: linear
+      beta: 0.005
+      epsilon: 0.2
+      lambd: 0.95
+      num_epoch: 3
+    network_settings:
+      hidden_units: 128
+      num_layers: 2
+      normalize: false
+      vis_encode_type: simple
 checkpoint_settings:
-  results_dir: Results
-  run_id: mlady-rc-scale
-  initialize_from: mlady-rc-scale
+  run_id: mlady
+  load_model: false
   resume: false
-  force: true
+  force: false
+  train_model: false
+  inference: false
+  results_dir: Results
 engine_settings:
+<<<<<<< HEAD
   time_scale: 5
+=======
+  time_scale: 1
+>>>>>>> 86f681be74ec6048719e6ea2bc5a3b0ef6e41351
   quality_level: 5
+  target_frame_rate: -1
+  capture_frame_rate: 60
+  no_graphics: false
+  width: 84
+  height: 84
 torch_settings:
   device: cuda
+debug: false
