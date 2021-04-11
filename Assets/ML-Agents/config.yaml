@@ -1,6 +1,6 @@
 default_settings:
   trainer_type: ppo
-  summary_freq: 10000
+  summary_freq: 25000
   max_steps: 500000
   checkpoint_interval: 10000000
   keep_checkpoints: 5
@@ -9,7 +9,7 @@ default_settings:
   hyperparameters:
     batch_size: 2048
     buffer_size: 16384
-    learning_rate: 0.00035
+    learning_rate: 0.0005
     learning_rate_schedule: linear
     beta: 0.005
     epsilon: 0.2
@@ -26,7 +26,7 @@ checkpoint_settings:
   resume: false
   force: true
 engine_settings:
-  time_scale: 10
+  time_scale: 5
   quality_level: 5
 torch_settings:
   device: cuda
