@@ -577,7 +577,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1533971190065373032}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1.165}
+  m_LocalPosition: {x: 0, y: 0, z: -1.2}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 1533971190358452785}
@@ -946,7 +946,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1533971190429236945}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.20399994, z: 8.629628}
+  m_LocalPosition: {x: 0, y: -0.20399994, z: 8.888888}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2741803276826937033}
@@ -1141,7 +1141,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1533971190630890224}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.20399994, z: 8.629628}
+  m_LocalPosition: {x: 0, y: -0.20399994, z: 8.888888}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2741803277626039278}
@@ -1206,7 +1206,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1533971190680474680}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.20399994, z: 8.629628}
+  m_LocalPosition: {x: 0, y: -0.20399994, z: 8.888888}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1533971191006907615}
@@ -1542,7 +1542,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1533971190924981341}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1.165}
+  m_LocalPosition: {x: 0, y: 0, z: -1.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1533971192030162245}
@@ -2466,7 +2466,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1533971191422421685}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.20399994, z: 8.629628}
+  m_LocalPosition: {x: 0, y: -0.20399994, z: 8.888888}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2741803277180748635}
@@ -5727,7 +5727,7 @@ MonoBehaviour:
   pools:
   - spawnEarly: 0
     isStatic: 1
-    maxScale: 7.5
+    maxScale: 12.5
     minScale: 2
     rotationRange: {x: 180, y: 180, z: 180}
     scaleMethod: 1
@@ -5736,7 +5736,7 @@ MonoBehaviour:
     avoid:
     - {fileID: 3710242109496151808}
     - {fileID: 1143949879269559643}
-    amount: 12
+    amount: 75
     poolName: Static Primitives
     scaleAmountWithDifficulty: 1
     prefabs:
